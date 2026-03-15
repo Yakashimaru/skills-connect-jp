@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
+import Discover from './pages/Discover'
+import ProfilePage from './pages/ProfilePage'
+import Chat from './pages/Chat'
 
 function App() {
   return (
@@ -9,6 +12,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/discover" element={<Discover />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/chat" element={<Chat />} />
         </Routes>
       </div>
     </BrowserRouter>
