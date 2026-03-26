@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Discover from './pages/Discover'
 import ProfilePage from './pages/ProfilePage'
 import Chat from './pages/Chat'
+import Meetups from './pages/Meetups'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/discover" element={<Discover />} />
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/meetups" element={<Meetups />} />
         </Routes>
       </div>
     </BrowserRouter>
