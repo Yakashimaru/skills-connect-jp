@@ -5,6 +5,9 @@ import Discover from './pages/Discover'
 import ProfilePage from './pages/ProfilePage'
 import Chat from './pages/Chat'
 import Meetups from './pages/Meetups'
+import Dashboard from './pages/Dashboard'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/meetups" element={<Meetups />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
     </BrowserRouter>
