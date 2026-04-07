@@ -6,6 +6,8 @@ import ProfilePage from './pages/ProfilePage'
 import Chat from './pages/Chat'
 import Meetups from './pages/Meetups'
 import Dashboard from './pages/Dashboard'
+import Contact from './pages/Contact'
+import EditProfile from './pages/EditProfile'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 
@@ -21,6 +23,8 @@ function App() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/meetups" element={<Meetups />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>

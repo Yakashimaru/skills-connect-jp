@@ -4,6 +4,7 @@
 // Seeker: sessions, saved profiles, subscription, settings
 
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const upcomingSessions = [
   { id: 1, name: 'James R.', image: 'https://randomuser.me/api/portraits/men/11.jpg', type: '1-on-1 Session', date: 'Sat 29 Mar · 10:00 AM', duration: '1 hour', price: '¥8,000', status: 'confirmed' },
@@ -96,6 +97,7 @@ function PastBookingItem({ booking }: { booking: typeof pastBookings[0] }) {
 }
 
 function ProviderDashboard() {
+  const navigate = useNavigate()
   return (
     <div className="grid grid-cols-3 gap-6">
 
@@ -160,7 +162,7 @@ function ProviderDashboard() {
           <p className="font-semibold text-gray-900">Yuki Tanaka</p>
           <p className="text-xs text-gray-400 mb-3">Life Coach & English Tutor</p>
           <span className="bg-teal-50 text-teal-600 text-xs font-medium px-3 py-1 rounded-full">✔ Verified</span>
-          <button className="w-full mt-4 text-sm border border-gray-200 text-gray-600 py-2 rounded-xl hover:bg-gray-50 transition-colors">
+          <button onClick={() => navigate('/edit-profile')} className="w-full mt-4 text-sm border border-gray-200 text-gray-600 py-2 rounded-xl hover:bg-gray-50 transition-colors">
             Edit profile
           </button>
         </div>
