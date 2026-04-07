@@ -9,6 +9,7 @@ const links = [
   { path: '/discover', label: 'Discover' },
   { path: '/meetups', label: 'Meetups' },
   { path: '/how-it-works', label: 'How it works' },
+  { path: '/contact', label: 'Contact' },
 ]
 
 export default function Navbar() {

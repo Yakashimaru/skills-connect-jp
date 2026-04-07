@@ -1,11 +1,12 @@
 import HeroV2 from '../components/HeroV2'
 import FeaturedProfiles from '../components/FeaturedProfiles'
 import HowItWorks from '../components/HowItWorks'
+import SubscriptionPlans from '../components/SubscriptionPlans'
 import Testimonials from '../components/Testimonials'
 import CTABanner from '../components/CTABanner'
 
 // Home page — landing page for new/unauthenticated visitors
-// Sections: Hero → Featured Profiles → How It Works → Testimonials → CTA
+// Sections: Hero → Featured Profiles → How It Works → Subscription Plans → Testimonials → CTA
 export default function Home() {
   return (
     <div>
@@ -17,6 +18,9 @@ export default function Home() {
 
       {/* 3-step explainer: Browse → Connect → Meet */}
       <HowItWorks />
+
+      {/* Subscription tiers: Standard, Premium, Elite */}
+      <SubscriptionPlans />
 
       {/* User testimonials for social proof */}
       <Testimonials />
