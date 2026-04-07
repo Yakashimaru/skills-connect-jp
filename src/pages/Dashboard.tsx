@@ -11,15 +11,89 @@ const upcomingSessions = [
 ]
 
 const pastBookings = [
-  { id: 1, name: 'Hiroshi T.', image: 'https://randomuser.me/api/portraits/men/63.jpg', type: '1-on-1 Session', date: 'Sat 22 Mar', price: '¥8,000', rating: 5 },
-  { id: 2, name: 'Emma L.', image: 'https://randomuser.me/api/portraits/women/35.jpg', type: 'Online Call', date: 'Thu 20 Mar', price: '¥8,000', rating: 4 },
-  { id: 3, name: 'Kenji S.', image: 'https://randomuser.me/api/portraits/men/22.jpg', type: '1-on-1 Session', date: 'Sat 15 Mar', price: '¥8,000', rating: 5 },
+  { id: 1, name: 'Hiroshi T.', image: 'https://randomuser.me/api/portraits/men/63.jpg', type: '1-on-1 Session', date: 'Sat 22 Mar', price: '¥8,000', rating: 5, review: 'Very insightful session. Yuki really helped me gain clarity on my next steps. Highly recommend!' },
+  { id: 2, name: 'Emma L.', image: 'https://randomuser.me/api/portraits/women/35.jpg', type: 'Online Call', date: 'Thu 20 Mar', price: '¥8,000', rating: 4, review: 'Great conversation, very warm and easy to talk to. My English confidence improved a lot.' },
+  { id: 3, name: 'Kenji S.', image: 'https://randomuser.me/api/portraits/men/22.jpg', type: '1-on-1 Session', date: 'Sat 15 Mar', price: '¥8,000', rating: 5, review: null },
 ]
 
 const savedProfiles = [
   { id: 1, name: 'Kenji Mori', title: 'Golf Instructor', image: 'https://randomuser.me/api/portraits/men/32.jpg', price: '¥10,000/hr' },
   { id: 2, name: 'Rin Sato', title: 'Language Partner', image: 'https://randomuser.me/api/portraits/women/68.jpg', price: '¥5,000/hr' },
 ]
+
+function PastBookingItem({ booking }: { booking: typeof pastBookings[0] }) {
+  const [showForm, setShowForm] = useState(false)
+  const [reviewText, setReviewText] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+  const [hoveredStar, setHoveredStar] = useState(0)
+  const [selectedStar, setSelectedStar] = useState(0)
+
+  const handleSubmit = () => {
+    if (!reviewText || !selectedStar) return
+    setSubmitted(true)
+    setShowForm(false)
+  }
+
+  return (
+    <div className="p-3 rounded-xl hover:bg-gray-50 transition-colors">
+      <div className="flex items-center gap-4">
+        <img src={booking.image} alt={booking.name} className="w-10 h-10 rounded-full object-cover" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-900">{booking.name}</p>
+          <p className="text-xs text-gray-400">{booking.type} · {booking.date}</p>
+        </div>
+        <span className="text-xs text-yellow-500">{'⭐'.repeat(booking.rating)}</span>
+        <span className="text-sm font-semibold text-gray-700">{booking.price}</span>
+      </div>
+
+      {/* Existing review */}
+      {booking.review && !submitted && (
+        <p className="text-xs text-gray-500 italic mt-2 ml-14">"{booking.review}"</p>
+      )}
+      {submitted && (
+        <p className="text-xs text-gray-500 italic mt-2 ml-14">"{reviewText}" — {'⭐'.repeat(selectedStar)}</p>
+      )}
+
+      {/* Leave a review button */}
+      {!booking.review && !submitted && !showForm && (
+        <button onClick={() => setShowForm(true)} className="ml-14 mt-2 text-xs text-teal-500 hover:underline">
+          + Leave a review
+        </button>
+      )}
+
+      {/* Review form */}
+      {showForm && (
+        <div className="ml-14 mt-3 flex flex-col gap-2">
+          {/* Star picker */}
+          <div className="flex gap-1">
+            {[1,2,3,4,5].map((star) => (
+              <button
+                key={star}
+                onMouseEnter={() => setHoveredStar(star)}
+                onMouseLeave={() => setHoveredStar(0)}
+                onClick={() => setSelectedStar(star)}
+                className="text-xl"
+              >
+                {star <= (hoveredStar || selectedStar) ? '⭐' : '☆'}
+              </button>
+            ))}
+          </div>
+          <textarea
+            value={reviewText}
+            onChange={(e) => setReviewText(e.target.value)}
+            placeholder="Share your experience..."
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-400 resize-none"
+            rows={2}
+          />
+          <div className="flex gap-2">
+            <button onClick={handleSubmit} className="text-xs bg-teal-500 text-white px-4 py-1.5 rounded-lg hover:bg-teal-600 transition-colors">Submit</button>
+            <button onClick={() => setShowForm(false)} className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 function ProviderDashboard() {
   return (
@@ -65,20 +139,12 @@ function ProviderDashboard() {
           </div>
         </div>
 
-        {/* Past bookings */}
+        {/* Past bookings + reviews */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">Past bookings</h3>
-          <div className="flex flex-col gap-3">
+          <h3 className="font-semibold text-gray-900 mb-4">Past bookings & reviews</h3>
+          <div className="flex flex-col divide-y divide-gray-50">
             {pastBookings.map((booking) => (
-              <div key={booking.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
-                <img src={booking.image} alt={booking.name} className="w-10 h-10 rounded-full object-cover" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{booking.name}</p>
-                  <p className="text-xs text-gray-400">{booking.type} · {booking.date}</p>
-                </div>
-                <span className="text-xs text-yellow-500">{'⭐'.repeat(booking.rating)}</span>
-                <span className="text-sm font-semibold text-gray-700">{booking.price}</span>
-              </div>
+              <PastBookingItem key={booking.id} booking={booking} />
             ))}
           </div>
         </div>
