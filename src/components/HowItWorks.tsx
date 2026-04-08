@@ -27,7 +27,7 @@ export default function HowItWorks() {
           <h2 className="text-4xl font-bold text-gray-900">How it works</h2>
         </div>
 
-        <div className="grid grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {steps.map((step, i) => (
             <div key={step.number} className="relative">
               {/* Connector line */}

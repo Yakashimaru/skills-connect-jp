@@ -66,13 +66,13 @@ export default function SubscriptionPlans() {
         </div>
 
         {/* Plans */}
-        <div className="grid grid-cols-3 gap-6 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           {plans.map((plan) => (
             <div
               key={plan.name}
               className={`rounded-3xl p-8 border transition-all ${
                 plan.highlighted
-                  ? 'bg-teal-500 border-teal-500 shadow-2xl scale-105'
+                  ? 'bg-teal-500 border-teal-500 shadow-2xl md:scale-105'
                   : plan.dark
                   ? 'bg-gray-900 border-gray-900 shadow-xl'
                   : 'bg-white border-gray-100 shadow-sm hover:shadow-lg'

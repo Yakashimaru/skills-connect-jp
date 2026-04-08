@@ -143,7 +143,7 @@ export default function Meetups() {
       {view === 'list' ? (
         <div className="max-w-6xl mx-auto px-6 pb-16">
           <p className="text-sm text-gray-400 mb-6">{filtered.length} events found</p>
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {filtered.map((event) => (
               <div key={event.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer overflow-hidden">
                 {/* Event photo */}
