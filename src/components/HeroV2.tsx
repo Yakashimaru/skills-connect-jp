@@ -16,10 +16,10 @@ export default function HeroV2() {
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col justify-center">
         <p className="text-teal-400 text-sm font-medium tracking-widest uppercase mb-4">Skills · Personality · Connection</p>
-        <h1 className="text-6xl font-bold text-white leading-tight mb-6 max-w-2xl [text-shadow:0_2px_12px_rgba(0,0,0,0.4)]">
+        <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6 max-w-2xl [text-shadow:0_2px_12px_rgba(0,0,0,0.4)]">
           Meet people.<br />Share skills.<br />Build real connections.
         </h1>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-3 rounded-full font-medium transition-colors">
             Get started
           </button>

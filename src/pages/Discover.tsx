@@ -18,7 +18,7 @@ export default function Discover() {
     <div className="bg-white min-h-screen">
       <div className="max-w-6xl mx-auto px-6 py-10">
         <p className="text-sm text-gray-400 mb-6">{profiles.length} profiles found</p>
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {profiles.map((profile) => (
             <ProfileCard key={profile.id} profile={profile} />
           ))}

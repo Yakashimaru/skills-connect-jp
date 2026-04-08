@@ -99,13 +99,13 @@ function PastBookingItem({ booking }: { booking: typeof pastBookings[0] }) {
 function ProviderDashboard() {
   const navigate = useNavigate()
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
       {/* Left column */}
-      <div className="col-span-2 flex flex-col gap-6">
+      <div className="lg:col-span-2 flex flex-col gap-6">
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { label: 'Total earnings', value: '¥248,000', sub: 'This month' },
             { label: 'Sessions completed', value: '31', sub: 'This month' },
@@ -177,9 +177,9 @@ function ProviderDashboard() {
               { label: 'ID verification', done: true },
               { label: 'Background check', done: false },
             ].map((item) => (
-              <div key={item.label} className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">{item.label}</span>
-                <span className={`text-xs font-medium ${item.done ? 'text-teal-500' : 'text-gray-300'}`}>
+              <div key={item.label} className="flex items-center justify-between gap-4">
+                <span className="text-sm text-gray-600 flex-1">{item.label}</span>
+                <span className={`text-xs font-medium flex-shrink-0 ${item.done ? 'text-teal-500' : 'text-gray-300'}`}>
                   {item.done ? '✔ Done' : '○ Pending'}
                 </span>
               </div>
@@ -219,10 +219,10 @@ function ProviderDashboard() {
 
 function SeekerDashboard() {
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
       {/* Left column */}
-      <div className="col-span-2 flex flex-col gap-6">
+      <div className="lg:col-span-2 flex flex-col gap-6">
 
         {/* Upcoming sessions */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">

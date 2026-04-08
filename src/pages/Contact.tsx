@@ -24,7 +24,7 @@ export default function Contact() {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-2 gap-16 items-start">
+      <div className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
 
         {/* Left — info */}
         <div>
@@ -66,7 +66,7 @@ export default function Contact() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-medium text-gray-600 block mb-1.5">Name</label>
                   <input

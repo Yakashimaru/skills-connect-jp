@@ -68,7 +68,7 @@ export default function FeaturedProfiles() {
       </div>
 
       {/* Card grid */}
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {profiles.map((profile) => (
           <div key={profile.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer overflow-hidden">
             {/* Photo */}
