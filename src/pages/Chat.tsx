@@ -25,12 +25,18 @@ const messages = [
 export default function Chat() {
   const [active, setActive] = useState(conversations[0])
   const [input, setInput] = useState('')
+  const [mobileView, setMobileView] = useState<'list' | 'chat'>('list')
+
+  const handleSelectConv = (conv: typeof conversations[0]) => {
+    setActive(conv)
+    setMobileView('chat')
+  }
 
   return (
-    <div className="flex h-[calc(100vh-64px)] bg-white">
+    <div className="flex h-[calc(100vh-64px)] bg-white overflow-hidden">
 
       {/* Left — conversation list */}
-      <div className="w-80 border-r border-gray-100 flex flex-col flex-shrink-0">
+      <div className={`${mobileView === 'chat' ? 'hidden' : 'flex'} md:flex w-full md:w-80 border-r border-gray-100 flex-col flex-shrink-0`}>
         <div className="p-4 border-b border-gray-100">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">Messages</h2>
           <input
@@ -44,7 +50,7 @@ export default function Chat() {
           {conversations.map((conv) => (
             <div
               key={conv.id}
-              onClick={() => setActive(conv)}
+              onClick={() => handleSelectConv(conv)}
               className={`flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors ${active.id === conv.id ? 'bg-teal-50 border-r-2 border-teal-500' : ''}`}
             >
               {/* Avatar + online dot */}
@@ -70,11 +76,12 @@ export default function Chat() {
       </div>
 
       {/* Right — active chat */}
-      <div className="flex-1 flex flex-col">
+      <div className={`${mobileView === 'list' ? 'hidden' : 'flex'} md:flex flex-1 flex-col`}>
 
         {/* Chat header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
+            <button onClick={() => setMobileView('list')} className="md:hidden text-gray-400 hover:text-gray-700 mr-1">←</button>
             <div className="relative">
               <img src={active.image} alt={active.name} className="w-10 h-10 rounded-full object-cover" />
               {active.online && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-teal-500 rounded-full border-2 border-white" />}
