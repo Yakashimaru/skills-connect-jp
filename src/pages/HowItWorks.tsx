@@ -1,5 +1,5 @@
-// HowItWorks page — full page explainer at /how-it-works
-// Expands on the home page section with more detail
+// HowItWorksPage — full page at /how-it-works
+// maroon #5C0A1E, antique gold #B8860B, white + cream surfaces
 
 const steps = [
   {
@@ -31,7 +31,7 @@ const steps = [
 const faqs = [
   { q: 'Is this a dating app?', a: 'No. SkillConnect is a skills and social matching platform. Connections are based on personality, skills, and shared interests — not just appearance or financial status.' },
   { q: 'How much does it cost?', a: 'Creating an account is free. Seekers can upgrade to Standard (¥5,000/mo), Premium (¥10,000/mo), or Elite (¥50,000/mo) for more features. Providers set their own hourly rates.' },
-  { q: 'How are profiles verified?', a: 'Users can verify their email, phone number, and ID. Verified profiles display a badge so you know who you\'re connecting with.' },
+  { q: 'How are profiles verified?', a: "Users can verify their email, phone number, and ID. Verified profiles display a badge so you know who you're connecting with." },
   { q: 'Can I be both a provider and a seeker?', a: 'Yes. Your profile has two layers — a social layer and a skills layer. You can offer services and seek connections at the same time.' },
   { q: 'Is it available outside Japan?', a: 'The platform is currently focused on Japan but available in English and Japanese. International expansion is planned.' },
 ]
@@ -41,10 +41,10 @@ export default function HowItWorksPage() {
     <div className="bg-white min-h-screen">
 
       {/* Header */}
-      <div className="bg-gray-50 py-16 text-center">
-        <p className="text-teal-500 text-xs font-semibold tracking-widest uppercase mb-3">Simple process</p>
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">How it works</h1>
-        <p className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
+      <div className="py-16 text-center" style={{ backgroundColor: '#FDF8F2' }}>
+        <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: '#5C0A1E' }}>Simple process</p>
+        <h1 className="text-4xl font-bold mb-4" style={{ color: '#1A0208' }}>How it works</h1>
+        <p className="text-sm max-w-md mx-auto leading-relaxed" style={{ color: '#7A6060' }}>
           From creating your profile to building real connections — here's how SkillConnect works.
         </p>
       </div>
@@ -55,18 +55,21 @@ export default function HowItWorksPage() {
           <div key={step.number} className={`flex flex-col md:flex-row gap-10 items-start ${i % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
             {/* Number */}
             <div className="flex-shrink-0">
-              <div className="w-16 h-16 rounded-2xl bg-teal-500 text-white flex items-center justify-center text-xl font-bold shadow-lg">
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold"
+                style={{ backgroundColor: '#5C0A1E', color: '#B8860B', border: '1px solid #B8860B' }}
+              >
                 {step.number}
               </div>
             </div>
             {/* Content */}
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">{step.title}</h2>
-              <p className="text-gray-400 text-sm leading-relaxed mb-4">{step.description}</p>
+              <h2 className="text-2xl font-bold mb-3" style={{ color: '#1A0208' }}>{step.title}</h2>
+              <p className="text-sm leading-relaxed mb-4" style={{ color: '#7A6060' }}>{step.description}</p>
               <ul className="flex flex-col gap-2">
                 {step.details.map((detail) => (
-                  <li key={detail} className="flex items-center gap-2 text-sm text-gray-600">
-                    <span className="text-teal-500 text-xs">✔</span>
+                  <li key={detail} className="flex items-center gap-2 text-sm" style={{ color: '#1A0208' }}>
+                    <span className="text-xs" style={{ color: '#B8860B' }}>✔</span>
                     {detail}
                   </li>
                 ))}
@@ -77,14 +80,18 @@ export default function HowItWorksPage() {
       </div>
 
       {/* FAQ */}
-      <div className="bg-gray-50 py-16">
+      <div className="py-16" style={{ backgroundColor: '#FDF8F2' }}>
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Frequently asked questions</h2>
+          <h2 className="text-3xl font-bold text-center mb-12" style={{ color: '#1A0208' }}>Frequently asked questions</h2>
           <div className="flex flex-col gap-6">
             {faqs.map((faq) => (
-              <div key={faq.q} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                <p className="font-semibold text-gray-900 mb-2">{faq.q}</p>
-                <p className="text-sm text-gray-400 leading-relaxed">{faq.a}</p>
+              <div
+                key={faq.q}
+                className="rounded-2xl p-6"
+                style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}
+              >
+                <p className="font-semibold mb-2" style={{ color: '#1A0208' }}>{faq.q}</p>
+                <p className="text-sm leading-relaxed" style={{ color: '#7A6060' }}>{faq.a}</p>
               </div>
             ))}
           </div>
@@ -94,3 +101,4 @@ export default function HowItWorksPage() {
     </div>
   )
 }
+

@@ -1,19 +1,16 @@
-// Dashboard — user control center
-// Toggle between Provider view and Seeker view
-// Provider: sessions, earnings, bookings, verification, settings
-// Seeker: sessions, saved profiles, subscription, settings
+// Dashboard — maroon #5C0A1E, antique gold #B8860B, white surfaces
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const upcomingSessions = [
-  { id: 1, name: 'James R.', image: 'https://randomuser.me/api/portraits/men/11.jpg', type: '1-on-1 Session', date: 'Sat 29 Mar · 10:00 AM', duration: '1 hour', price: '¥8,000', status: 'confirmed' },
-  { id: 2, name: 'Sophie M.', image: 'https://randomuser.me/api/portraits/women/29.jpg', type: 'Online Call', date: 'Sun 30 Mar · 2:00 PM', duration: '1 hour', price: '¥8,000', status: 'pending' },
+  { id: 1, name: 'James R.', image: 'https://randomuser.me/api/portraits/men/11.jpg', type: '1-on-1 Session', date: 'Sat 29 Mar · 10:00 AM', price: '¥8,000', status: 'confirmed' },
+  { id: 2, name: 'Sophie M.', image: 'https://randomuser.me/api/portraits/women/29.jpg', type: 'Online Call', date: 'Sun 30 Mar · 2:00 PM', price: '¥8,000', status: 'pending' },
 ]
 
 const pastBookings = [
-  { id: 1, name: 'Hiroshi T.', image: 'https://randomuser.me/api/portraits/men/63.jpg', type: '1-on-1 Session', date: 'Sat 22 Mar', price: '¥8,000', rating: 5, review: 'Very insightful session. Yuki really helped me gain clarity on my next steps. Highly recommend!' },
-  { id: 2, name: 'Emma L.', image: 'https://randomuser.me/api/portraits/women/35.jpg', type: 'Online Call', date: 'Thu 20 Mar', price: '¥8,000', rating: 4, review: 'Great conversation, very warm and easy to talk to. My English confidence improved a lot.' },
+  { id: 1, name: 'Hiroshi T.', image: 'https://randomuser.me/api/portraits/men/63.jpg', type: '1-on-1 Session', date: 'Sat 22 Mar', price: '¥8,000', rating: 5, review: 'Very insightful session. Yuki really helped me gain clarity on my next steps.' },
+  { id: 2, name: 'Emma L.', image: 'https://randomuser.me/api/portraits/women/35.jpg', type: 'Online Call', date: 'Thu 20 Mar', price: '¥8,000', rating: 4, review: 'Great conversation, very warm and easy to talk to.' },
   { id: 3, name: 'Kenji S.', image: 'https://randomuser.me/api/portraits/men/22.jpg', type: '1-on-1 Session', date: 'Sat 15 Mar', price: '¥8,000', rating: 5, review: null },
 ]
 
@@ -21,6 +18,8 @@ const savedProfiles = [
   { id: 1, name: 'Kenji Mori', title: 'Golf Instructor', image: 'https://randomuser.me/api/portraits/men/32.jpg', price: '¥10,000/hr' },
   { id: 2, name: 'Rin Sato', title: 'Language Partner', image: 'https://randomuser.me/api/portraits/women/68.jpg', price: '¥5,000/hr' },
 ]
+
+const card = { backgroundColor: '#fff', borderRadius: '16px', border: '0.5px solid #E8DDD5', padding: '20px' }
 
 function PastBookingItem({ booking }: { booking: typeof pastBookings[0] }) {
   const [showForm, setShowForm] = useState(false)
@@ -36,40 +35,35 @@ function PastBookingItem({ booking }: { booking: typeof pastBookings[0] }) {
   }
 
   return (
-    <div className="p-3 rounded-xl hover:bg-gray-50 transition-colors">
+    <div className="p-3 rounded-xl transition-colors" style={{ backgroundColor: 'transparent' }}
+      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+      onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+    >
       <div className="flex items-center gap-4">
         <img src={booking.image} alt={booking.name} className="w-10 h-10 rounded-full object-cover" />
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-900">{booking.name}</p>
-          <p className="text-xs text-gray-400">{booking.type} · {booking.date}</p>
+          <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{booking.name}</p>
+          <p className="text-xs" style={{ color: '#aaa' }}>{booking.type} · {booking.date}</p>
         </div>
         <span className="text-xs text-yellow-500">{'⭐'.repeat(booking.rating)}</span>
-        <span className="text-sm font-semibold text-gray-700">{booking.price}</span>
+        <span className="text-sm font-semibold" style={{ color: '#5C0A1E' }}>{booking.price}</span>
       </div>
-
-      {/* Existing review */}
       {booking.review && !submitted && (
-        <p className="text-xs text-gray-500 italic mt-2 ml-14">"{booking.review}"</p>
+        <p className="text-xs italic mt-2 ml-14" style={{ color: '#7A6060' }}>"{booking.review}"</p>
       )}
       {submitted && (
-        <p className="text-xs text-gray-500 italic mt-2 ml-14">"{reviewText}" — {'⭐'.repeat(selectedStar)}</p>
+        <p className="text-xs italic mt-2 ml-14" style={{ color: '#7A6060' }}>"{reviewText}" — {'⭐'.repeat(selectedStar)}</p>
       )}
-
-      {/* Leave a review button */}
       {!booking.review && !submitted && !showForm && (
-        <button onClick={() => setShowForm(true)} className="ml-14 mt-2 text-xs text-teal-500 hover:underline">
+        <button onClick={() => setShowForm(true)} className="ml-14 mt-2 text-xs hover:underline" style={{ color: '#B8860B' }}>
           + Leave a review
         </button>
       )}
-
-      {/* Review form */}
       {showForm && (
         <div className="ml-14 mt-3 flex flex-col gap-2">
-          {/* Star picker */}
           <div className="flex gap-1">
             {[1,2,3,4,5].map((star) => (
-              <button
-                key={star}
+              <button key={star} type="button"
                 onMouseEnter={() => setHoveredStar(star)}
                 onMouseLeave={() => setHoveredStar(0)}
                 onClick={() => setSelectedStar(star)}
@@ -79,16 +73,17 @@ function PastBookingItem({ booking }: { booking: typeof pastBookings[0] }) {
               </button>
             ))}
           </div>
-          <textarea
-            value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
+          <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)}
             placeholder="Share your experience..."
-            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-teal-400 resize-none"
+            className="w-full rounded-xl px-3 py-2 text-sm outline-none resize-none"
+            style={{ border: '0.5px solid #E8DDD5', color: '#1A0208' }}
             rows={2}
+            onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+            onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
           />
           <div className="flex gap-2">
-            <button onClick={handleSubmit} className="text-xs bg-teal-500 text-white px-4 py-1.5 rounded-lg hover:bg-teal-600 transition-colors">Submit</button>
-            <button onClick={() => setShowForm(false)} className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Cancel</button>
+            <button onClick={handleSubmit} className="text-xs px-4 py-1.5 rounded-lg transition-colors" style={{ backgroundColor: '#B8860B', color: '#3A2400' }}>Submit</button>
+            <button onClick={() => setShowForm(false)} className="text-xs transition-colors" style={{ color: '#aaa' }}>Cancel</button>
           </div>
         </div>
       )}
@@ -100,8 +95,6 @@ function ProviderDashboard() {
   const navigate = useNavigate()
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-      {/* Left column */}
       <div className="lg:col-span-2 flex flex-col gap-6">
 
         {/* Stats */}
@@ -111,65 +104,74 @@ function ProviderDashboard() {
             { label: 'Sessions completed', value: '31', sub: 'This month' },
             { label: 'Average rating', value: '4.9 ⭐', sub: 'All time' },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-              <p className="text-xs text-gray-400 mb-1">{stat.label}</p>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-              <p className="text-xs text-teal-500 mt-1">{stat.sub}</p>
+            <div key={stat.label} style={card}>
+              <p className="text-xs mb-1" style={{ color: '#aaa' }}>{stat.label}</p>
+              <p className="text-2xl font-bold" style={{ color: '#1A0208' }}>{stat.value}</p>
+              <p className="text-xs mt-1" style={{ color: '#B8860B' }}>{stat.sub}</p>
             </div>
           ))}
         </div>
 
         {/* Upcoming sessions */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">Upcoming sessions</h3>
+        <div style={card}>
+          <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>Upcoming sessions</h3>
           <div className="flex flex-col gap-3">
             {upcomingSessions.map((session) => (
-              <div key={session.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
+              <div key={session.id} className="flex items-center gap-4 p-3 rounded-xl transition-colors"
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+              >
                 <img src={session.image} alt={session.name} className="w-10 h-10 rounded-full object-cover" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{session.name}</p>
-                  <p className="text-xs text-gray-400">{session.type} · {session.date}</p>
+                  <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{session.name}</p>
+                  <p className="text-xs" style={{ color: '#aaa' }}>{session.type} · {session.date}</p>
                 </div>
-                <span className={`text-xs font-medium px-3 py-1 rounded-full ${
-                  session.status === 'confirmed' ? 'bg-teal-50 text-teal-600' : 'bg-yellow-50 text-yellow-600'
-                }`}>
+                <span className="text-xs font-medium px-3 py-1 rounded-full"
+                  style={session.status === 'confirmed'
+                    ? { backgroundColor: '#FDF0E0', color: '#7A4A00' }
+                    : { backgroundColor: '#FEF9C3', color: '#854D0E' }
+                  }>
                   {session.status}
                 </span>
-                <span className="text-sm font-semibold text-gray-700">{session.price}</span>
+                <span className="text-sm font-semibold" style={{ color: '#5C0A1E' }}>{session.price}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Past bookings + reviews */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">Past bookings & reviews</h3>
-          <div className="flex flex-col divide-y divide-gray-50">
+        {/* Past bookings */}
+        <div style={card}>
+          <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>Past bookings & reviews</h3>
+          <div className="flex flex-col divide-y" style={{ borderColor: '#E8DDD5' }}>
             {pastBookings.map((booking) => (
               <PastBookingItem key={booking.id} booking={booking} />
             ))}
           </div>
         </div>
-
       </div>
 
       {/* Right column */}
       <div className="flex flex-col gap-6">
 
         {/* Profile summary */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
-          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="profile" className="w-16 h-16 rounded-full object-cover mx-auto mb-3 border-2 border-teal-100" />
-          <p className="font-semibold text-gray-900">Yuki Tanaka</p>
-          <p className="text-xs text-gray-400 mb-3">Life Coach & English Tutor</p>
-          <span className="bg-teal-50 text-teal-600 text-xs font-medium px-3 py-1 rounded-full">✔ Verified</span>
-          <button onClick={() => navigate('/edit-profile')} className="w-full mt-4 text-sm border border-gray-200 text-gray-600 py-2 rounded-xl hover:bg-gray-50 transition-colors">
+        <div style={{ ...card, textAlign: 'center' }}>
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="profile" className="w-16 h-16 rounded-full object-cover mx-auto mb-3" style={{ border: '2px solid #B8860B' }} />
+          <p className="font-semibold" style={{ color: '#1A0208' }}>Yuki Tanaka</p>
+          <p className="text-xs mb-3" style={{ color: '#aaa' }}>Life Coach & English Tutor</p>
+          <span className="text-xs font-medium px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>✔ Verified</span>
+          <button onClick={() => navigate('/edit-profile')}
+            className="w-full mt-4 text-sm py-2 rounded-xl transition-colors"
+            style={{ border: '0.5px solid #E8DDD5', color: '#5C0A1E', backgroundColor: 'transparent' }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+          >
             Edit profile
           </button>
         </div>
 
-        {/* Verification status */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Verification</h3>
+        {/* Verification */}
+        <div style={card}>
+          <h3 className="font-semibold mb-3" style={{ color: '#1A0208' }}>Verification</h3>
           <div className="flex flex-col gap-2">
             {[
               { label: 'Email', done: true },
@@ -177,9 +179,9 @@ function ProviderDashboard() {
               { label: 'ID verification', done: true },
               { label: 'Background check', done: false },
             ].map((item) => (
-              <div key={item.label} className="flex items-center justify-between gap-4">
-                <span className="text-sm text-gray-600 flex-1">{item.label}</span>
-                <span className={`text-xs font-medium flex-shrink-0 ${item.done ? 'text-teal-500' : 'text-gray-300'}`}>
+              <div key={item.label} className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: '#1A0208' }}>{item.label}</span>
+                <span className="text-xs font-medium" style={{ color: item.done ? '#B8860B' : '#ccc' }}>
                   {item.done ? '✔ Done' : '○ Pending'}
                 </span>
               </div>
@@ -188,30 +190,34 @@ function ProviderDashboard() {
         </div>
 
         {/* Subscription */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-1">Subscription</h3>
-          <p className="text-xs text-gray-400 mb-3">Current plan</p>
-          <div className="bg-teal-500 rounded-xl p-4 text-white text-center">
-            <p className="font-bold text-lg">Premium</p>
-            <p className="text-teal-100 text-xs mt-0.5">¥10,000 / month</p>
+        <div style={card}>
+          <h3 className="font-semibold mb-1" style={{ color: '#1A0208' }}>Subscription</h3>
+          <p className="text-xs mb-3" style={{ color: '#aaa' }}>Current plan</p>
+          <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#5C0A1E', border: '1px solid #B8860B' }}>
+            <p className="font-bold text-lg text-white">Premium</p>
+            <p className="text-xs mt-0.5" style={{ color: '#B8860B' }}>¥10,000 / month</p>
           </div>
-          <button className="w-full mt-3 text-sm border border-gray-200 text-gray-600 py-2 rounded-xl hover:bg-gray-50 transition-colors">
+          <button className="w-full mt-3 text-sm py-2 rounded-xl transition-colors"
+            style={{ border: '0.5px solid #E8DDD5', color: '#5C0A1E', backgroundColor: 'transparent' }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+          >
             Manage plan
           </button>
         </div>
 
         {/* Settings */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Settings</h3>
+        <div style={card}>
+          <h3 className="font-semibold mb-3" style={{ color: '#1A0208' }}>Settings</h3>
           <div className="flex flex-col gap-2">
             {['Notifications', 'Privacy', 'Payment methods', 'Help & support', 'Log out'].map((item) => (
-              <button key={item} className={`text-left text-sm py-1.5 transition-colors ${item === 'Log out' ? 'text-red-400 hover:text-red-600' : 'text-gray-600 hover:text-gray-900'}`}>
+              <button key={item} className="text-left text-sm py-1.5 transition-colors"
+                style={{ color: item === 'Log out' ? '#DC2626' : '#5C0A1E' }}>
                 {item} →
               </button>
             ))}
           </div>
         </div>
-
       </div>
     </div>
   )
@@ -220,108 +226,116 @@ function ProviderDashboard() {
 function SeekerDashboard() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-      {/* Left column */}
       <div className="lg:col-span-2 flex flex-col gap-6">
 
-        {/* Upcoming sessions */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">Upcoming sessions</h3>
+        <div style={card}>
+          <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>Upcoming sessions</h3>
           <div className="flex flex-col gap-3">
             {upcomingSessions.map((session) => (
-              <div key={session.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
+              <div key={session.id} className="flex items-center gap-4 p-3 rounded-xl transition-colors"
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+              >
                 <img src={session.image} alt={session.name} className="w-10 h-10 rounded-full object-cover" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{session.name}</p>
-                  <p className="text-xs text-gray-400">{session.type} · {session.date}</p>
+                  <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{session.name}</p>
+                  <p className="text-xs" style={{ color: '#aaa' }}>{session.type} · {session.date}</p>
                 </div>
-                <span className={`text-xs font-medium px-3 py-1 rounded-full ${
-                  session.status === 'confirmed' ? 'bg-teal-50 text-teal-600' : 'bg-yellow-50 text-yellow-600'
-                }`}>
+                <span className="text-xs font-medium px-3 py-1 rounded-full"
+                  style={session.status === 'confirmed'
+                    ? { backgroundColor: '#FDF0E0', color: '#7A4A00' }
+                    : { backgroundColor: '#FEF9C3', color: '#854D0E' }
+                  }>
                   {session.status}
                 </span>
-                <span className="text-sm font-semibold text-gray-700">{session.price}</span>
+                <span className="text-sm font-semibold" style={{ color: '#5C0A1E' }}>{session.price}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Past bookings */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">Past bookings</h3>
+        <div style={card}>
+          <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>Past bookings</h3>
           <div className="flex flex-col gap-3">
             {pastBookings.map((booking) => (
-              <div key={booking.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
+              <div key={booking.id} className="flex items-center gap-4 p-3 rounded-xl transition-colors"
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+              >
                 <img src={booking.image} alt={booking.name} className="w-10 h-10 rounded-full object-cover" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{booking.name}</p>
-                  <p className="text-xs text-gray-400">{booking.type} · {booking.date}</p>
+                  <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{booking.name}</p>
+                  <p className="text-xs" style={{ color: '#aaa' }}>{booking.type} · {booking.date}</p>
                 </div>
                 <span className="text-xs text-yellow-500">{'⭐'.repeat(booking.rating)}</span>
-                <span className="text-sm font-semibold text-gray-700">{booking.price}</span>
+                <span className="text-sm font-semibold" style={{ color: '#5C0A1E' }}>{booking.price}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Saved profiles */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">Saved profiles</h3>
+        <div style={card}>
+          <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>Saved profiles</h3>
           <div className="flex flex-col gap-3">
             {savedProfiles.map((profile) => (
-              <div key={profile.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
+              <div key={profile.id} className="flex items-center gap-4 p-3 rounded-xl cursor-pointer transition-colors"
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+              >
                 <img src={profile.image} alt={profile.name} className="w-10 h-10 rounded-full object-cover" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{profile.name}</p>
-                  <p className="text-xs text-gray-400">{profile.title}</p>
+                  <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{profile.name}</p>
+                  <p className="text-xs" style={{ color: '#aaa' }}>{profile.title}</p>
                 </div>
-                <span className="text-xs text-teal-500 font-medium">{profile.price}</span>
-                <button className="text-xs bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors">Book</button>
+                <span className="text-xs font-medium" style={{ color: '#B8860B' }}>{profile.price}</span>
+                <button className="text-xs px-3 py-1.5 rounded-lg transition-colors"
+                  style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
+                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}
+                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#5C0A1E')}
+                >Book</button>
               </div>
             ))}
           </div>
         </div>
-
       </div>
 
-      {/* Right column */}
       <div className="flex flex-col gap-6">
-
-        {/* Profile summary */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
-          <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="profile" className="w-16 h-16 rounded-full object-cover mx-auto mb-3 border-2 border-teal-100" />
-          <p className="font-semibold text-gray-900">James R.</p>
-          <p className="text-xs text-gray-400 mb-3">Seeker · Tokyo</p>
-          <button className="w-full text-sm border border-gray-200 text-gray-600 py-2 rounded-xl hover:bg-gray-50 transition-colors">
-            Edit profile
-          </button>
+        <div style={{ ...card, textAlign: 'center' }}>
+          <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="profile" className="w-16 h-16 rounded-full object-cover mx-auto mb-3" style={{ border: '2px solid #B8860B' }} />
+          <p className="font-semibold" style={{ color: '#1A0208' }}>James R.</p>
+          <p className="text-xs mb-3" style={{ color: '#aaa' }}>Seeker · Tokyo</p>
+          <button className="w-full text-sm py-2 rounded-xl transition-colors"
+            style={{ border: '0.5px solid #E8DDD5', color: '#5C0A1E', backgroundColor: 'transparent' }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+          >Edit profile</button>
         </div>
 
-        {/* Subscription */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-1">Subscription</h3>
-          <p className="text-xs text-gray-400 mb-3">Current plan</p>
-          <div className="bg-gray-900 rounded-xl p-4 text-white text-center">
-            <p className="font-bold text-lg">Elite</p>
-            <p className="text-gray-400 text-xs mt-0.5">¥50,000 / month</p>
+        <div style={card}>
+          <h3 className="font-semibold mb-1" style={{ color: '#1A0208' }}>Subscription</h3>
+          <p className="text-xs mb-3" style={{ color: '#aaa' }}>Current plan</p>
+          <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#1A0208', border: '0.5px solid rgba(184,134,11,0.3)' }}>
+            <p className="font-bold text-lg text-white">Elite</p>
+            <p className="text-xs mt-0.5" style={{ color: '#B8860B' }}>¥50,000 / month</p>
           </div>
-          <button className="w-full mt-3 text-sm border border-gray-200 text-gray-600 py-2 rounded-xl hover:bg-gray-50 transition-colors">
-            Manage plan
-          </button>
+          <button className="w-full mt-3 text-sm py-2 rounded-xl transition-colors"
+            style={{ border: '0.5px solid #E8DDD5', color: '#5C0A1E', backgroundColor: 'transparent' }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+          >Manage plan</button>
         </div>
 
-        {/* Settings */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Settings</h3>
+        <div style={card}>
+          <h3 className="font-semibold mb-3" style={{ color: '#1A0208' }}>Settings</h3>
           <div className="flex flex-col gap-2">
             {['Notifications', 'Privacy', 'Payment methods', 'Help & support', 'Log out'].map((item) => (
-              <button key={item} className={`text-left text-sm py-1.5 transition-colors ${item === 'Log out' ? 'text-red-400 hover:text-red-600' : 'text-gray-600 hover:text-gray-900'}`}>
+              <button key={item} className="text-left text-sm py-1.5 transition-colors"
+                style={{ color: item === 'Log out' ? '#DC2626' : '#5C0A1E' }}>
                 {item} →
               </button>
             ))}
           </div>
         </div>
-
       </div>
     </div>
   )
@@ -331,31 +345,29 @@ export default function Dashboard() {
   const [view, setView] = useState<'provider' | 'seeker'>('provider')
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto px-6 py-10">
-
-        {/* Header + toggle */}
+    <div className="min-h-screen py-10" style={{ backgroundColor: '#FDF8F2' }}>
+      <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-400 text-sm mt-1">Welcome back, Yuki</p>
+            <h1 className="text-3xl font-bold" style={{ color: '#1A0208' }}>Dashboard</h1>
+            <p className="text-sm mt-1" style={{ color: '#aaa' }}>Welcome back, Yuki</p>
           </div>
-          <div className="flex items-center bg-white border border-gray-200 p-1 rounded-full shadow-sm">
-            <button
-              onClick={() => setView('provider')}
-              className={`text-sm px-5 py-2 rounded-full transition-colors font-medium ${view === 'provider' ? 'bg-teal-500 text-white' : 'text-gray-400 hover:text-gray-700'}`}
-            >
-              Provider
-            </button>
-            <button
-              onClick={() => setView('seeker')}
-              className={`text-sm px-5 py-2 rounded-full transition-colors font-medium ${view === 'seeker' ? 'bg-teal-500 text-white' : 'text-gray-400 hover:text-gray-700'}`}
-            >
-              Seeker
-            </button>
+          <div className="flex items-center p-1 rounded-full" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
+            {(['provider', 'seeker'] as const).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className="text-sm px-5 py-2 rounded-full transition-colors font-medium capitalize"
+                style={view === v
+                  ? { backgroundColor: '#5C0A1E', color: '#fff' }
+                  : { backgroundColor: 'transparent', color: '#aaa' }
+                }
+              >
+                {v}
+              </button>
+            ))}
           </div>
         </div>
-
         {view === 'provider' ? <ProviderDashboard /> : <SeekerDashboard />}
       </div>
     </div>
