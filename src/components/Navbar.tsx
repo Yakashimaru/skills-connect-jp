@@ -8,8 +8,13 @@ const links = [
   { path: '/', label: 'Home' },
   { path: '/discover', label: 'Discover' },
   { path: '/meetups', label: 'Meetups' },
-  { path: '/how-it-works', label: 'How it works' },
   { path: '/contact', label: 'Contact' },
+]
+
+const howItWorksDropdown = [
+  { hash: '#how-it-works', label: 'How it works' },
+  { hash: '#fees', label: 'Fees' },
+  { hash: '#faq', label: 'FAQ' },
 ]
 
 export default function Navbar() {
@@ -19,8 +24,10 @@ export default function Navbar() {
   const isDiscover = pathname === '/discover'
   const [search, setSearch] = useState('')
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [howItWorksOpen, setHowItWorksOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const howItWorksRef = useRef<HTMLDivElement>(null)
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -54,6 +61,41 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+
+          {/* How it works — hover dropdown */}
+          <div
+            ref={howItWorksRef}
+            className="relative"
+            onMouseEnter={() => setHowItWorksOpen(true)}
+            onMouseLeave={() => setHowItWorksOpen(false)}
+          >
+            <NavLink
+              to="/how-it-works"
+              className={({ isActive }) =>
+                `text-sm transition-colors flex items-center gap-1 ${isActive ? 'text-gray-900 font-medium' : 'text-gray-400 hover:text-gray-700'}`
+              }
+            >
+              How it works
+              <span className="text-xs" style={{ lineHeight: 1 }}>{howItWorksOpen ? '∧' : '∨'}</span>
+            </NavLink>
+
+            {howItWorksOpen && (
+              <div className="absolute left-0 top-full pt-2 z-30">
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 py-2 min-w-[160px]">
+                  {howItWorksDropdown.map((item) => (
+                    <a
+                      key={item.hash}
+                      href={`/how-it-works${item.hash}`}
+                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      onClick={() => setHowItWorksOpen(false)}
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -107,6 +149,19 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+          {/* How it works sub-links on mobile */}
+          <div className="flex flex-col gap-1 pl-3 border-l-2" style={{ borderColor: '#E8DDD5' }}>
+            {howItWorksDropdown.map((item) => (
+              <a
+                key={item.hash}
+                href={`/how-it-works${item.hash}`}
+                onClick={() => setMobileOpen(false)}
+                className="text-sm text-gray-400"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
           {!isLoggedIn && (
             <div className="flex gap-3 pt-2 border-t border-gray-100">
               <NavLink to="/login" onClick={() => setMobileOpen(false)} className="text-sm text-gray-500">Log in</NavLink>
