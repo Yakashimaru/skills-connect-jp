@@ -199,7 +199,7 @@ export default function HowItWorksPage() {
       </div>
 
       {/* ── SECTION: Fees ── */}
-      <div id="fees">
+      <div id="fees" style={{ borderTop: '1px solid #E8DDD5' }}>
         <SubscriptionPlans />
       </div>
 

@@ -8,7 +8,6 @@ const links = [
   { path: '/', label: 'Home' },
   { path: '/discover', label: 'Discover' },
   { path: '/meetups', label: 'Meetups' },
-  { path: '/contact', label: 'Contact' },
 ]
 
 const howItWorksDropdown = [
@@ -72,11 +71,20 @@ export default function Navbar() {
             <NavLink
               to="/how-it-works"
               className={({ isActive }) =>
-                `text-sm transition-colors flex items-center gap-1 ${isActive ? 'text-gray-900 font-medium' : 'text-gray-400 hover:text-gray-700'}`
+                `text-sm transition-colors flex items-center gap-1 group ${isActive ? 'text-gray-900 font-medium' : 'text-gray-400 hover:text-gray-700'}`
               }
             >
               How it works
-              <span className="text-xs" style={{ lineHeight: 1 }}>{howItWorksOpen ? '∧' : '∨'}</span>
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                fill="none"
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ transform: howItWorksOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s, opacity 0.2s' }}
+              >
+                <path d="M1 3L5 7L9 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </NavLink>
 
             {howItWorksOpen && (
@@ -96,6 +104,15 @@ export default function Navbar() {
               </div>
             )}
           </div>
+
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `text-sm transition-colors ${isActive ? 'text-gray-900 font-medium' : 'text-gray-400 hover:text-gray-700'}`
+            }
+          >
+            Contact
+          </NavLink>
         </nav>
 
         <div className="flex items-center gap-3">
