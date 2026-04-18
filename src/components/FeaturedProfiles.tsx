@@ -1,4 +1,4 @@
-// FeaturedProfiles — white bg, maroon price, gold verified badge, warm gold tags
+import { useTranslation } from 'react-i18next'
 
 const profiles = [
   { id: 1, name: 'Yuki Tanaka', verified: true, title: 'Life Coach & English Tutor', skills: ['Coaching', 'English', 'Mindfulness'], rating: 4.9, reviews: 128, location: 'Tokyo', price: '¥8,000/hr', image: 'https://randomuser.me/api/portraits/women/44.jpg' },
@@ -8,16 +8,17 @@ const profiles = [
 ]
 
 export default function FeaturedProfiles() {
+  const { t } = useTranslation()
   return (
     <section className="bg-white py-16">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: '#5C0A1E' }}>Meet the community</p>
-            <h2 className="text-3xl font-bold" style={{ color: '#1A0208' }}>Featured profiles</h2>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: '#5C0A1E' }}>{t('featured.eyebrow')}</p>
+            <h2 className="text-3xl font-bold" style={{ color: '#1A0208' }}>{t('featured.heading')}</h2>
           </div>
           <button className="text-sm hover:opacity-70 transition-opacity underline underline-offset-2" style={{ color: '#5C0A1E' }}>
-            View all
+            {t('featured.view_all')}
           </button>
         </div>
 

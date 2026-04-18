@@ -1,0 +1,292 @@
+{
+  "nav": {
+    "home": "Home",
+    "discover": "Discover",
+    "meetups": "Meetups",
+    "how_it_works": "How it works",
+    "fees": "Fees",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "my_profile": "My profile",
+    "messages": "Messages",
+    "logout": "Log out",
+    "login": "Log in",
+    "signup": "Sign up",
+    "search_placeholder": "Search skills or people...",
+    "filter_category": "Category",
+    "filter_skills": "Skills",
+    "filter_social": "Social",
+    "filter_meetups": "Meetups",
+    "filter_online": "Online",
+    "filter_location": "Location",
+    "filter_tokyo": "Tokyo",
+    "filter_osaka": "Osaka",
+    "filter_kyoto": "Kyoto",
+    "filter_price": "Price",
+    "price_under": "Under ¥5,000/hr",
+    "price_mid": "¥5,000 – ¥10,000/hr",
+    "price_over": "Over ¥10,000/hr",
+    "filter_gender": "Gender",
+    "gender_male": "Male",
+    "gender_female": "Female",
+    "gender_any": "Any",
+    "verified_only": "Verified only"
+  },
+  "hero": {
+    "eyebrow": "Skills · Personality · Connection",
+    "headline_1": "Meet people.",
+    "headline_2": "Share skills.",
+    "headline_3": "Build real connections.",
+    "cta_start": "Get started",
+    "cta_browse": "Browse profiles"
+  },
+  "featured": {
+    "eyebrow": "Meet the community",
+    "heading": "Featured profiles",
+    "view_all": "View all"
+  },
+  "how_it_works_section": {
+    "eyebrow": "Simple process",
+    "heading": "How it works",
+    "steps": [
+      {
+        "title": "Browse profiles",
+        "description": "Search by skill, personality, location, or price. Filter to find exactly who you need."
+      },
+      {
+        "title": "Connect & chat",
+        "description": "Send a message, learn more about them, and schedule a session that works for you."
+      },
+      {
+        "title": "Meet & grow",
+        "description": "Meet online or offline. Build real connections, learn new skills, and leave a review."
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "Real stories",
+    "heading": "What people are saying",
+    "items": [
+      {
+        "text": "I found an amazing English conversation partner through SkillConnect. We meet weekly and my confidence has improved so much.",
+        "name": "Sarah M.",
+        "location": "Tokyo"
+      },
+      {
+        "text": "As a golf instructor, this platform helped me connect with serious learners. Bookings are smooth and the quality of clients is great.",
+        "name": "Hiroshi K.",
+        "location": "Osaka"
+      },
+      {
+        "text": "I wanted to learn about Japanese culture from a local. Found the perfect guide — we went to hidden spots tourists never see.",
+        "name": "Emma L.",
+        "location": "Kyoto"
+      }
+    ]
+  },
+  "cta_banner": {
+    "eyebrow": "Join the community",
+    "heading": "Ready to connect?",
+    "body": "Join thousands of people building real connections through skills and shared experiences.",
+    "cta_start": "Get started free",
+    "cta_browse": "Browse profiles"
+  },
+  "plans": {
+    "eyebrow": "Pricing",
+    "heading": "Find the right plan for you",
+    "subheading": "Start free, upgrade when you're ready. All plans include access to our verified community.",
+    "period": "/month",
+    "standard": {
+      "name": "Standard",
+      "description": "Great for getting started and exploring the platform.",
+      "cta": "Get started",
+      "features": [
+        "View limited profiles",
+        "5 connections per month",
+        "Basic search filters",
+        "Basic profile visibility"
+      ]
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "For those who want more connections and better matches.",
+      "cta": "Get Premium",
+      "features": [
+        "View unlimited profiles",
+        "Advanced filters",
+        "Priority matching suggestions",
+        "See who viewed your profile",
+        "Enhanced profile visibility"
+      ]
+    },
+    "elite": {
+      "name": "Elite",
+      "description": "Exclusive access for serious seekers who want the best.",
+      "cta": "Go Elite",
+      "features": [
+        "Everything in Premium",
+        "Concierge service",
+        "Access to elite providers",
+        "Priority booking",
+        "Private events & membership lounge",
+        "Personal matchmaking suggestions"
+      ]
+    }
+  },
+  "login": {
+    "heading": "Welcome back",
+    "subheading": "Log in to your account",
+    "label_email": "Email",
+    "label_password": "Password",
+    "placeholder_email": "you@example.com",
+    "cta": "Log in",
+    "no_account": "Don't have an account?",
+    "signup_link": "Sign up"
+  },
+  "signup": {
+    "heading": "Create an account",
+    "subheading": "Join the community today",
+    "role_seeker": "I'm looking for someone",
+    "role_provider": "I offer a service",
+    "label_name": "Full name",
+    "label_email": "Email",
+    "label_password": "Password",
+    "placeholder_name": "Your name",
+    "placeholder_email": "you@example.com",
+    "cta": "Create account",
+    "have_account": "Already have an account?",
+    "login_link": "Log in"
+  },
+  "contact": {
+    "eyebrow": "Get in touch",
+    "heading": "Contact us",
+    "body": "Have a question, a partnership idea, or need help? Fill in the form and we'll get back to you within 1–2 business days.",
+    "info_email_label": "Email",
+    "info_based_label": "Based in",
+    "info_response_label": "Response time",
+    "info_email_value": "hello@skillconnect.jp",
+    "info_based_value": "Tokyo, Japan",
+    "info_response_value": "1–2 business days",
+    "label_name": "Name",
+    "label_email": "Email",
+    "label_subject": "Subject",
+    "label_message": "Message",
+    "placeholder_name": "Your name",
+    "placeholder_email": "you@example.com",
+    "placeholder_message": "How can we help?",
+    "subject_select": "Select a subject",
+    "subject_general": "General enquiry",
+    "subject_partnership": "Partnership / Business",
+    "subject_report": "Report a user",
+    "subject_billing": "Billing & subscription",
+    "subject_technical": "Technical issue",
+    "subject_other": "Other",
+    "submit": "Send message",
+    "success_heading": "Message sent!",
+    "success_body": "We'll get back to you within 1–2 business days.",
+    "send_another": "Send another message"
+  },
+  "how_it_works_page": {
+    "eyebrow": "Simple process",
+    "heading": "How it works",
+    "intro": "From creating your profile to building real connections — here's how SkillConnect works.",
+    "steps": [
+      {
+        "title": "Create your profile",
+        "description": "Sign up and build your profile by adding your skills, personality traits, interests, education, and experience. You can also verify your profile for added trust.",
+        "details": [
+          "Add basic profile information",
+          "List your skills and qualifications",
+          "Set your personality traits and interests",
+          "Choose your session types and pricing"
+        ]
+      },
+      {
+        "title": "Choose your role",
+        "description": "Select whether you would like to participate as a provider, a seeker, or both.",
+        "details": []
+      },
+      {
+        "title": "Browse and discover",
+        "description": "Find the right match using smart filters and recommendations. Use our matching algorithm to find people who complement your skills and interests.",
+        "details": [
+          "Filter by skill, location, age, gender, and price",
+          "View verified profiles",
+          "Match based on personality traits and interests",
+          "AI-powered suggestions"
+        ]
+      },
+      {
+        "title": "Chat and connect",
+        "description": "Send a message or book a session directly. Ask questions, share your goals, find the right match and start connecting.",
+        "details": [
+          "Text, voice, and video messaging",
+          "Schedule online or in-person sessions",
+          "Book sessions directly from profiles",
+          "Rate and review after each session"
+        ]
+      },
+      {
+        "title": "Meet & grow",
+        "description": "Learn new skills, build meaningful connections, join group meetups and events, or simply share an experience.",
+        "details": [
+          "All members can participate in community events",
+          "Premium members can create their own events",
+          "Elite members receive invitations to exclusive VIP networking events"
+        ]
+      }
+    ],
+    "for_seekers": "For Seekers",
+    "for_providers": "For Providers",
+    "seeker_points": [
+      "Option to stay anonymous",
+      "Add basic profile details",
+      "Include skills, interests, and personality traits",
+      "Select a subscription plan (cancel anytime)"
+    ],
+    "provider_points": [
+      "Create a detailed profile",
+      "Set your own pricing and session types",
+      "Promote your profile for more visibility (optional)"
+    ],
+    "faq_heading": "Frequently asked questions",
+    "faqs": [
+      {
+        "q": "What is SkillConnect?",
+        "a": "SkillConnect is a skills and social matching platform. Connections are based on personality, skills, and shared interests, helping users to build both professional and social connections."
+      },
+      {
+        "q": "Why can't I chat or connect?",
+        "a": "To connect with providers, seekers need to upgrade to a paid plan (Standard, Premium, or Elite). Subscriptions can be canceled anytime."
+      },
+      {
+        "q": "What if I do not have adequate skills, experience, or education?",
+        "a": "No problem — you can still connect based on personality and shared interests, whether for social companionship or making friends."
+      },
+      {
+        "q": "Can I be both a provider and a seeker?",
+        "a": "Yes. Your profile has two layers — a social layer and a skills layer. You can offer services and seek connections at the same time."
+      },
+      {
+        "q": "How are profiles verified?",
+        "a": "Users can verify their email, phone number, identity, and more. Verified profiles display a badge."
+      },
+      {
+        "q": "Is it safe?",
+        "a": "You may choose verified profiles for enhanced safety and connect with real, active users."
+      },
+      {
+        "q": "Why am I blacklisted?",
+        "a": "Users may be blacklisted after repeated complaints such as no-shows, lack of responsiveness, or inappropriate behavior. Warnings are given before blacklisting to protect the community."
+      },
+      {
+        "q": "Is it available outside Japan?",
+        "a": "The platform is currently focused on Japan but available in English and Japanese. International expansion is planned."
+      }
+    ],
+    "questions_not_listed": "Questions not listed?",
+    "questions_body": "If you have any additional questions or run into issues, feel free to contact us. Our team typically responds within 1–2 business days.",
+    "contact_us": "Contact us"
+  }
+}

@@ -1,12 +1,12 @@
-// Login — dark bg, maroon card, gold accents
-
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -16,6 +16,11 @@ export default function Login() {
     navigate('/dashboard')
   }
 
+  const fields = [
+    { label: t('login.label_email'), type: 'email', value: email, set: setEmail, placeholder: t('login.placeholder_email') },
+    { label: t('login.label_password'), type: 'password', value: password, set: setPassword, placeholder: '••••••••' },
+  ]
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#0A0A0A' }}>
       <div className="w-full max-w-md p-8 rounded-3xl" style={{ backgroundColor: '#1A0208', border: '0.5px solid rgba(184,134,11,0.3)' }}>
@@ -24,14 +29,11 @@ export default function Login() {
           skillconnect
         </Link>
 
-        <h1 className="text-2xl font-bold text-white text-center mb-1">Welcome back</h1>
-        <p className="text-sm text-center mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>Log in to your account</p>
+        <h1 className="text-2xl font-bold text-white text-center mb-1">{t('login.heading')}</h1>
+        <p className="text-sm text-center mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('login.subheading')}</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {[
-            { label: 'Email', type: 'email', value: email, set: setEmail, placeholder: 'you@example.com' },
-            { label: 'Password', type: 'password', value: password, set: setPassword, placeholder: '••••••••' },
-          ].map(({ label, type, value, set, placeholder }) => (
+          {fields.map(({ label, type, value, set, placeholder }) => (
             <div key={label}>
               <label className="text-xs font-medium block mb-1.5" style={{ color: '#B8860B' }}>{label}</label>
               <input
@@ -54,13 +56,13 @@ export default function Login() {
             onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#9A6F09')}
             onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#B8860B')}
           >
-            Log in
+            {t('login.cta')}
           </button>
         </form>
 
         <p className="text-sm text-center mt-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          Don't have an account?{' '}
-          <Link to="/signup" className="font-medium hover:underline" style={{ color: '#B8860B' }}>Sign up</Link>
+          {t('login.no_account')}{' '}
+          <Link to="/signup" className="font-medium hover:underline" style={{ color: '#B8860B' }}>{t('login.signup_link')}</Link>
         </p>
       </div>
     </div>
