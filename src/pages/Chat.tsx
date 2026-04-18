@@ -1,6 +1,5 @@
-// Chat — maroon #5C0A1E, antique gold #B8860B, white surfaces
-
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const conversations = [
   { id: 1, name: 'Yuki Tanaka', title: 'Life Coach & English Tutor', image: 'https://randomuser.me/api/portraits/women/44.jpg', lastMessage: 'Looking forward to our session!', time: '2m ago', unread: 2, online: true },
@@ -21,6 +20,7 @@ const messages = [
 ]
 
 export default function Chat() {
+  const { t } = useTranslation()
   const [active, setActive] = useState(conversations[0])
   const [input, setInput] = useState('')
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list')
@@ -39,10 +39,10 @@ export default function Chat() {
         style={{ backgroundColor: '#fff', borderRight: '0.5px solid #E8DDD5' }}
       >
         <div className="p-4" style={{ borderBottom: '0.5px solid #E8DDD5' }}>
-          <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Messages</h2>
+          <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('chat.title')}</h2>
           <input
             type="text"
-            placeholder="Search conversations..."
+            placeholder={t('chat.search_placeholder')}
             className="w-full rounded-full px-4 py-2 text-sm outline-none"
             style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5', color: '#1A0208' }}
           />
@@ -97,7 +97,7 @@ export default function Chat() {
             </div>
             <div>
               <p className="font-semibold text-sm" style={{ color: '#1A0208' }}>{active.name}</p>
-              <p className="text-xs" style={{ color: active.online ? '#B8860B' : '#aaa' }}>{active.online ? 'Online now' : 'Last seen recently'}</p>
+              <p className="text-xs" style={{ color: active.online ? '#B8860B' : '#aaa' }}>{active.online ? t('chat.online') : t('chat.last_seen')}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -109,7 +109,7 @@ export default function Chat() {
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#5C0A1E')}
             >
-              Book Session
+              {t('chat.book_session')}
             </button>
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function Chat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message..."
+            placeholder={t('chat.input_placeholder')}
             className="flex-1 rounded-full px-5 py-2.5 text-sm outline-none"
             style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5', color: '#1A0208' }}
           />

@@ -1,4 +1,4 @@
-// ProfilePage — maroon #5C0A1E, antique gold #B8860B, white surfaces
+import { useTranslation } from 'react-i18next'
 
 const profile = {
   name: 'Yuki Tanaka',
@@ -34,6 +34,7 @@ const profile = {
 }
 
 export default function ProfilePage() {
+  const { t } = useTranslation()
   return (
     <div className="pb-24 bg-white">
 
@@ -60,13 +61,13 @@ export default function ProfilePage() {
           <div className="flex items-center gap-2 mb-0.5">
             <h1 className="text-2xl font-bold" style={{ color: '#1A0208' }}>{profile.name}</h1>
             {profile.verified && (
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#B8860B', color: '#3A2400' }}>✔ Verified</span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#B8860B', color: '#3A2400' }}>{t('profile.verified')}</span>
             )}
           </div>
           <p className="text-sm mb-1" style={{ color: '#7A6060' }}>{profile.title}</p>
           <div className="flex items-center gap-3 text-xs" style={{ color: '#aaa' }}>
             <span>📍 {profile.location}</span>
-            <span>⭐ {profile.rating} ({profile.reviews} reviews)</span>
+            <span>⭐ {profile.rating} ({profile.reviews} {t('profile.reviews')})</span>
             <span className="font-semibold" style={{ color: '#5C0A1E' }}>{profile.price}</span>
           </div>
         </div>
@@ -76,12 +77,12 @@ export default function ProfilePage() {
           <div className="lg:col-span-2 flex flex-col gap-8">
 
             <section>
-              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>About</h2>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.about')}</h2>
               <p className="text-sm leading-relaxed" style={{ color: '#5A4040' }}>{profile.bio}</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Skills</h2>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.skills')}</h2>
               <div className="flex flex-wrap gap-2">
                 {profile.skills.map((skill) => (
                   <span key={skill} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{skill}</span>
@@ -90,7 +91,7 @@ export default function ProfilePage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Experience</h2>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.experience')}</h2>
               <div className="flex flex-col gap-3">
                 {profile.experience.map((exp) => (
                   <div key={exp.role} className="flex items-start gap-3">
@@ -105,7 +106,7 @@ export default function ProfilePage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Education</h2>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.education')}</h2>
               <div className="flex flex-col gap-3">
                 {profile.education.map((edu) => (
                   <div key={edu.degree} className="flex items-start gap-3">
@@ -120,7 +121,7 @@ export default function ProfilePage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>Reviews</h2>
+              <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>{t('profile.reviews_section')}</h2>
               <div className="flex flex-col gap-4">
                 {profile.testimonials.map((t) => (
                   <div key={t.name} className="rounded-2xl p-4" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
@@ -141,7 +142,7 @@ export default function ProfilePage() {
           {/* Right column — session options */}
           <div className="col-span-1">
             <div className="sticky top-24">
-              <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>Session options</h2>
+              <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>{t('profile.session_options')}</h2>
               <div className="flex flex-col gap-3">
                 {profile.sessionTypes.map((s) => (
                   <div
@@ -178,7 +179,7 @@ export default function ProfilePage() {
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(184,134,11,0.06)')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
             >
-              Send Message
+              {t('profile.send_message')}
             </button>
             <button
               className="font-medium text-sm px-6 py-2.5 rounded-xl transition-colors"
@@ -186,7 +187,7 @@ export default function ProfilePage() {
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#5C0A1E')}
             >
-              Book Session
+              {t('profile.book_session')}
             </button>
           </div>
         </div>
