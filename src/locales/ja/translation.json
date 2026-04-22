@@ -1,0 +1,403 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "discover": "探す",
+    "meetups": "ミートアップ",
+    "how_it_works": "使い方",
+    "fees": "料金",
+    "faq": "よくある質問",
+    "contact": "お問い合わせ",
+    "dashboard": "ダッシュボード",
+    "my_profile": "マイプロフィール",
+    "messages": "メッセージ",
+    "logout": "ログアウト",
+    "login": "ログイン",
+    "signup": "新規登録",
+    "search_placeholder": "スキルや人を検索...",
+    "filter_category": "カテゴリー",
+    "filter_skills": "スキル",
+    "filter_social": "社交",
+    "filter_meetups": "ミートアップ",
+    "filter_online": "オンライン",
+    "filter_location": "場所",
+    "filter_tokyo": "東京",
+    "filter_osaka": "大阪",
+    "filter_kyoto": "京都",
+    "filter_price": "料金",
+    "price_under": "¥5,000/時間未満",
+    "price_mid": "¥5,000〜¥10,000/時間",
+    "price_over": "¥10,000/時間超",
+    "filter_gender": "性別",
+    "gender_male": "男性",
+    "gender_female": "女性",
+    "gender_any": "すべて",
+    "verified_only": "認証済みのみ"
+  },
+  "hero": {
+    "eyebrow": "スキル・個性・つながり",
+    "headline_1": "人と出会う。",
+    "headline_2": "スキルを分かち合う。",
+    "headline_3": "本当のつながりを築く。",
+    "cta_start": "始める",
+    "cta_browse": "プロフィールを見る"
+  },
+  "featured": {
+    "eyebrow": "コミュニティに参加",
+    "heading": "注目のプロフィール",
+    "view_all": "すべて見る"
+  },
+  "how_it_works_section": {
+    "eyebrow": "シンプルなプロセス",
+    "heading": "使い方",
+    "steps": [
+      {
+        "title": "プロフィールを探す",
+        "description": "スキル・個性・場所・料金で検索。ぴったりの相手を見つけよう。"
+      },
+      {
+        "title": "つながってチャット",
+        "description": "メッセージを送り、相手のことをもっと知り、都合のいいセッションを予約しよう。"
+      },
+      {
+        "title": "出会って成長",
+        "description": "オンラインでもオフラインでも。本当のつながりを築き、新しいスキルを学び、レビューを残そう。"
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "リアルな声",
+    "heading": "みんなの声",
+    "items": [
+      {
+        "text": "SkillConnectを通じて素晴らしい英会話パートナーを見つけました。毎週会っていて、自信がとても向上しました。",
+        "name": "Sarah M.",
+        "location": "東京"
+      },
+      {
+        "text": "ゴルフ講師として、このプラットフォームのおかげで真剣な受講者とつながれました。予約もスムーズで、クライアントの質も高いです。",
+        "name": "Hiroshi K.",
+        "location": "大阪"
+      },
+      {
+        "text": "地元の人から日本文化を学びたかったんです。完璧なガイドを見つけて、観光客が知らない隠れた場所に連れて行ってもらいました。",
+        "name": "Emma L.",
+        "location": "京都"
+      }
+    ]
+  },
+  "cta_banner": {
+    "eyebrow": "コミュニティに参加しよう",
+    "heading": "つながる準備はできていますか？",
+    "body": "スキルと共有体験を通じて、本当のつながりを築く何千もの人々に参加しよう。",
+    "cta_start": "無料で始める",
+    "cta_browse": "プロフィールを見る"
+  },
+  "plans": {
+    "eyebrow": "料金プラン",
+    "heading": "あなたに合ったプランを見つけよう",
+    "subheading": "まずは無料で始めて、準備ができたらアップグレード。全プランで認証済みコミュニティへアクセス可能。",
+    "period": "/月",
+    "standard": {
+      "name": "スタンダード",
+      "description": "プラットフォームを試し始めるのに最適。",
+      "cta": "始める",
+      "features": [
+        "限定プロフィール閲覧",
+        "月5回のコネクション",
+        "基本検索フィルター",
+        "基本プロフィール表示"
+      ]
+    },
+    "premium": {
+      "name": "プレミアム",
+      "description": "より多くのつながりとより良いマッチングを求める方に。",
+      "cta": "プレミアムにする",
+      "features": [
+        "プロフィール無制限閲覧",
+        "詳細フィルター",
+        "優先マッチング提案",
+        "プロフィール閲覧者確認",
+        "強化プロフィール表示"
+      ]
+    },
+    "elite": {
+      "name": "エリート",
+      "description": "最高を求める本気のシーカーのための限定アクセス。",
+      "cta": "エリートにする",
+      "features": [
+        "プレミアムの全機能",
+        "コンシェルジュサービス",
+        "エリートプロバイダーへのアクセス",
+        "優先予約",
+        "プライベートイベント＆会員ラウンジ",
+        "個人マッチメイキング提案"
+      ]
+    }
+  },
+  "login": {
+    "heading": "おかえりなさい",
+    "subheading": "アカウントにログイン",
+    "label_email": "メールアドレス",
+    "label_password": "パスワード",
+    "placeholder_email": "you@example.com",
+    "cta": "ログイン",
+    "no_account": "アカウントをお持ちでないですか？",
+    "signup_link": "新規登録"
+  },
+  "signup": {
+    "heading": "アカウントを作成",
+    "subheading": "今日からコミュニティに参加",
+    "role_seeker": "サービスを探しています",
+    "role_provider": "サービスを提供しています",
+    "label_name": "お名前",
+    "label_email": "メールアドレス",
+    "label_password": "パスワード",
+    "placeholder_name": "お名前",
+    "placeholder_email": "you@example.com",
+    "cta": "アカウントを作成する",
+    "have_account": "すでにアカウントをお持ちですか？",
+    "login_link": "ログイン"
+  },
+  "contact": {
+    "eyebrow": "お問い合わせ",
+    "heading": "お問い合わせ",
+    "body": "ご質問、パートナーシップのご提案、またはサポートが必要な場合は、フォームにご記入ください。1〜2営業日以内にご返信いたします。",
+    "info_email_label": "メールアドレス",
+    "info_based_label": "所在地",
+    "info_response_label": "返信時間",
+    "info_email_value": "hello@skillconnect.jp",
+    "info_based_value": "東京、日本",
+    "info_response_value": "1〜2営業日",
+    "label_name": "お名前",
+    "label_email": "メールアドレス",
+    "label_subject": "件名",
+    "label_message": "メッセージ",
+    "placeholder_name": "お名前",
+    "placeholder_email": "you@example.com",
+    "placeholder_message": "どのようなご用件ですか？",
+    "subject_select": "件名を選択してください",
+    "subject_general": "一般的なお問い合わせ",
+    "subject_partnership": "パートナーシップ・ビジネス",
+    "subject_report": "ユーザーを報告",
+    "subject_billing": "請求・サブスクリプション",
+    "subject_technical": "技術的な問題",
+    "subject_other": "その他",
+    "submit": "送信する",
+    "success_heading": "メッセージを送信しました！",
+    "success_body": "1〜2営業日以内にご返信いたします。",
+    "send_another": "別のメッセージを送る"
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "welcome": "おかえりなさい、Yukiさん",
+    "tab_provider": "プロバイダー",
+    "tab_seeker": "シーカー",
+    "stat_earnings": "総収益",
+    "stat_sessions": "完了セッション数",
+    "stat_rating": "平均評価",
+    "stat_this_month": "今月",
+    "stat_all_time": "累計",
+    "upcoming_sessions": "予定セッション",
+    "past_bookings": "過去の予約とレビュー",
+    "past_bookings_seeker": "過去の予約",
+    "saved_profiles": "保存済みプロフィール",
+    "edit_profile": "プロフィールを編集",
+    "verified": "✔ 認証済み",
+    "verification": "認証",
+    "verify_email": "メールアドレス",
+    "verify_phone": "電話番号",
+    "verify_id": "本人確認",
+    "verify_bg": "身元調査",
+    "done": "✔ 完了",
+    "pending": "○ 未完了",
+    "subscription": "サブスクリプション",
+    "current_plan": "現在のプラン",
+    "manage_plan": "プランを管理",
+    "settings": "設定",
+    "setting_notifications": "通知",
+    "setting_privacy": "プライバシー",
+    "setting_payment": "支払い方法",
+    "setting_help": "ヘルプ・サポート",
+    "setting_logout": "ログアウト",
+    "leave_review": "+ レビューを投稿",
+    "review_placeholder": "感想を書いてください...",
+    "submit": "送信",
+    "cancel": "キャンセル",
+    "book": "予約"
+  },
+  "discover": {
+    "profiles_found": "{{count}}件のプロフィールが見つかりました"
+  },
+  "meetups": {
+    "eyebrow": "開催予定",
+    "heading": "ミートアップ・イベント",
+    "view_list": "リスト",
+    "view_map": "マップ",
+    "cat_all": "すべて",
+    "cat_social": "社交",
+    "cat_sports": "スポーツ",
+    "cat_culture": "文化",
+    "cat_business": "ビジネス",
+    "cat_wellness": "ウェルネス",
+    "cat_food": "食",
+    "events_found": "{{count}}件のイベントが見つかりました",
+    "hosted_by": "主催：",
+    "joined": "参加済み",
+    "rsvp": "参加する",
+    "map_coming_soon": "マップビュー 近日公開",
+    "map_pending": "Google Maps / Mapbox 連携予定"
+  },
+  "profile": {
+    "verified": "✔ 認証済み",
+    "reviews": "件のレビュー",
+    "about": "自己紹介",
+    "skills": "スキル",
+    "experience": "経験",
+    "education": "学歴",
+    "reviews_section": "レビュー",
+    "session_options": "セッションオプション",
+    "send_message": "メッセージを送る",
+    "book_session": "セッションを予約"
+  },
+  "edit_profile": {
+    "title": "プロフィールを編集",
+    "subtitle": "公開プロフィール情報を更新",
+    "back": "← ダッシュボードに戻る",
+    "section_photo": "プロフィール写真",
+    "upload_photo": "新しい写真をアップロード",
+    "photo_hint": "JPG、PNG、またはWEBP。最大5MB。",
+    "section_basic": "基本情報",
+    "label_name": "お名前",
+    "label_title": "タイトル / 役職",
+    "label_location": "場所",
+    "label_bio": "自己紹介",
+    "section_skills": "スキル",
+    "skills_hint": "該当するものをすべて選択してください",
+    "section_edu_exp": "学歴・経験",
+    "label_education": "学歴",
+    "label_experience": "経験",
+    "section_pricing": "料金",
+    "per_hour": "時間あたり",
+    "section_session_types": "提供するセッションの種類",
+    "session_1on1": "1対1セッション",
+    "session_group": "グループミートアップ",
+    "session_online": "オンライン通話",
+    "session_social": "社交体験",
+    "section_privacy": "プライバシー",
+    "privacy_public": "プロフィールを公開する",
+    "privacy_hidden": "最初のセッションまで名前/写真を非表示",
+    "privacy_anonymous": "匿名プロフィール",
+    "save": "変更を保存",
+    "saved": "✔ プロフィールを保存しました！"
+  },
+  "chat": {
+    "title": "メッセージ",
+    "search_placeholder": "会話を検索...",
+    "online": "オンライン",
+    "last_seen": "最近オンライン",
+    "book_session": "セッションを予約",
+    "input_placeholder": "メッセージを入力..."
+  },
+  "how_it_works_page": {
+    "eyebrow": "シンプルなプロセス",
+    "heading": "使い方",
+    "intro": "プロフィール作成から本当のつながりを築くまで — SkillConnectの使い方をご紹介します。",
+    "steps": [
+      {
+        "title": "プロフィールを作成する",
+        "description": "サインアップしてプロフィールを作成しましょう。スキル・個性・興味・学歴・経歴を追加できます。信頼性向上のためにプロフィールを認証することもできます。",
+        "details": [
+          "基本プロフィール情報を追加",
+          "スキルと資格を一覧表示",
+          "個性と興味を設定",
+          "セッションの種類と料金を選択"
+        ]
+      },
+      {
+        "title": "役割を選択する",
+        "description": "プロバイダー、シーカー、またはその両方として参加するかを選択してください。",
+        "details": []
+      },
+      {
+        "title": "探して発見する",
+        "description": "スマートフィルターとレコメンドを使って最適なマッチを見つけよう。マッチングアルゴリズムで、スキルと興味が合う人を探せます。",
+        "details": [
+          "スキル・場所・年齢・性別・料金でフィルター",
+          "認証済みプロフィールを表示",
+          "個性と興味に基づいてマッチング",
+          "AIによる提案"
+        ]
+      },
+      {
+        "title": "チャットしてつながる",
+        "description": "メッセージを送るか、直接セッションを予約しよう。質問し、目標を共有し、最適なマッチを見つけてつながり始めよう。",
+        "details": [
+          "テキスト・音声・ビデオメッセージ",
+          "オンラインまたは対面セッションを予約",
+          "プロフィールから直接セッションを予約",
+          "各セッション後に評価とレビュー"
+        ]
+      },
+      {
+        "title": "出会って成長する",
+        "description": "新しいスキルを学び、意味のあるつながりを築き、グループミートアップやイベントに参加しよう。",
+        "details": [
+          "全メンバーがコミュニティイベントに参加可能",
+          "プレミアム会員は独自のイベントを作成可能",
+          "エリート会員は限定VIPネットワーキングイベントへの招待を受け取る"
+        ]
+      }
+    ],
+    "for_seekers": "シーカーの方へ",
+    "for_providers": "プロバイダーの方へ",
+    "seeker_points": [
+      "匿名を維持するオプション",
+      "基本プロフィール詳細を追加",
+      "スキル・興味・個性を含める",
+      "サブスクリプションプランを選択（いつでもキャンセル可能）"
+    ],
+    "provider_points": [
+      "詳細なプロフィールを作成",
+      "料金とセッションの種類を自分で設定",
+      "プロフィールを宣伝してより多くの注目を集める（任意）"
+    ],
+    "faq_heading": "よくある質問",
+    "faqs": [
+      {
+        "q": "SkillConnectとは何ですか？",
+        "a": "SkillConnectはスキルとソーシャルのマッチングプラットフォームです。個性・スキル・共通の興味に基づいてつながりを築き、プロフェッショナルな関係も社交的な関係も両方サポートします。"
+      },
+      {
+        "q": "チャットやつながりができないのはなぜですか？",
+        "a": "プロバイダーとつながるには、シーカーが有料プラン（スタンダード・プレミアム・エリート）にアップグレードする必要があります。サブスクリプションはいつでもキャンセル可能です。"
+      },
+      {
+        "q": "スキルや経験・学歴が十分でない場合はどうすればいいですか？",
+        "a": "問題ありません。個性や共通の興味に基づいて、友達作りや社交的なつながりとしても参加できます。"
+      },
+      {
+        "q": "プロバイダーとシーカーの両方になれますか？",
+        "a": "はい。プロフィールはソーシャルレイヤーとスキルレイヤーの2層構造です。サービスを提供しながら同時につながりを求めることができます。"
+      },
+      {
+        "q": "プロフィールの認証はどのように行われますか？",
+        "a": "メールアドレス・電話番号・本人確認などを認証できます。認証済みプロフィールにはバッジが表示されます。"
+      },
+      {
+        "q": "安全ですか？",
+        "a": "認証済みプロフィールを選ぶことで、安全性を高めてリアルでアクティブなユーザーとつながれます。"
+      },
+      {
+        "q": "なぜブラックリストに載っているのですか？",
+        "a": "無断キャンセル・返信なし・不適切な行動などの繰り返しの苦情によりブラックリストに登録されることがあります。コミュニティを守るため、ブラックリスト登録前に警告が行われます。"
+      },
+      {
+        "q": "日本国外でも利用できますか？",
+        "a": "現在は日本を中心としたサービスですが、日本語と英語で利用可能です。国際展開も予定しています。"
+      }
+    ],
+    "questions_not_listed": "記載されていない質問がありますか？",
+    "questions_body": "ご不明な点やお困りのことがございましたら、お気軽にお問い合わせください。通常1〜2営業日以内にご返信いたします。",
+    "contact_us": "お問い合わせ"
+  }
+}

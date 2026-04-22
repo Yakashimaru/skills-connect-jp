@@ -1,6 +1,5 @@
-// Discover page — maroon #5C0A1E, antique gold #B8860B, white + cream surfaces
-
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const profiles = [
   { id: 1, name: 'Yuki Tanaka', verified: true, title: 'Life Coach & English Tutor', skills: ['Coaching', 'English', 'Mindfulness'], rating: 4.9, reviews: 128, location: 'Tokyo', price: '¥8,000/hr', image: 'https://randomuser.me/api/portraits/women/44.jpg' },
@@ -15,12 +14,13 @@ const profiles = [
 
 export default function Discover() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
       <div className="max-w-6xl mx-auto px-6 py-10">
 
-        <p className="text-sm mb-6" style={{ color: '#7A6060' }}>{profiles.length} profiles found</p>
+        <p className="text-sm mb-6" style={{ color: '#7A6060' }}>{t('discover.profiles_found', { count: profiles.length })}</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {profiles.map((profile) => (

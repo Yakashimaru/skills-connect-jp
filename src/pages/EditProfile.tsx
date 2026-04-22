@@ -1,7 +1,6 @@
-// EditProfile — maroon #5C0A1E, antique gold #B8860B, white surfaces
-
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const skillOptions = ['Coaching', 'English', 'Japanese', 'Golf', 'Business', 'Fitness', 'Nutrition', 'Music', 'Piano', 'Cooking', 'Travel', 'Mindfulness', 'Yoga', 'Startups', 'Finance', 'Mentorship']
 
@@ -25,6 +24,7 @@ const cardStyle = {
 
 export default function EditProfile() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [saved, setSaved] = useState(false)
   const [selectedSkills, setSelectedSkills] = useState(['Coaching', 'English', 'Mindfulness'])
   const [form, setForm] = useState({
@@ -61,15 +61,15 @@ export default function EditProfile() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold" style={{ color: '#1A0208' }}>Edit profile</h1>
-            <p className="text-sm mt-1" style={{ color: '#7A6060' }}>Update your public profile information</p>
+            <h1 className="text-3xl font-bold" style={{ color: '#1A0208' }}>{t('edit_profile.title')}</h1>
+            <p className="text-sm mt-1" style={{ color: '#7A6060' }}>{t('edit_profile.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/dashboard')}
             className="text-sm transition-colors hover:opacity-70"
             style={{ color: '#5C0A1E' }}
           >
-            ← Back to dashboard
+            {t('edit_profile.back')}
           </button>
         </div>
 
@@ -77,7 +77,7 @@ export default function EditProfile() {
 
           {/* Photo */}
           <div style={cardStyle}>
-            <p style={sectionTitle}>Profile photo</p>
+            <p style={sectionTitle}>{t('edit_profile.section_photo')}</p>
             <div className="flex items-center gap-5">
               <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" className="w-20 h-20 rounded-2xl object-cover" style={{ border: '2px solid #E8DDD5' }} />
               <div>
@@ -88,38 +88,38 @@ export default function EditProfile() {
                   onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#F5E4CC')}
                   onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#FDF0E0')}
                 >
-                  Upload new photo
+                  {t('edit_profile.upload_photo')}
                 </button>
-                <p className="text-xs mt-2" style={{ color: '#aaa' }}>JPG, PNG or WEBP. Max 5MB.</p>
+                <p className="text-xs mt-2" style={{ color: '#aaa' }}>{t('edit_profile.photo_hint')}</p>
               </div>
             </div>
           </div>
 
           {/* Basic info */}
           <div style={cardStyle}>
-            <p style={sectionTitle}>Basic information</p>
+            <p style={sectionTitle}>{t('edit_profile.section_basic')}</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label style={labelStyle}>Full name</label>
+                <label style={labelStyle}>{t('edit_profile.label_name')}</label>
                 <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={inputStyle}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
               </div>
               <div>
-                <label style={labelStyle}>Title / Role</label>
+                <label style={labelStyle}>{t('edit_profile.label_title')}</label>
                 <input type="text" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} style={inputStyle}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
               </div>
               <div className="col-span-2">
-                <label style={labelStyle}>Location</label>
+                <label style={labelStyle}>{t('edit_profile.label_location')}</label>
                 <select value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })}
                   style={{ ...inputStyle, cursor: 'pointer' }}>
                   <option>Tokyo</option><option>Osaka</option><option>Kyoto</option><option>Online only</option>
                 </select>
               </div>
               <div className="col-span-2">
-                <label style={labelStyle}>Bio</label>
+                <label style={labelStyle}>{t('edit_profile.label_bio')}</label>
                 <textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} rows={4}
                   style={{ ...inputStyle, resize: 'none' }}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
@@ -130,8 +130,8 @@ export default function EditProfile() {
 
           {/* Skills */}
           <div style={cardStyle}>
-            <p style={sectionTitle}>Skills</p>
-            <p className="text-xs mb-4" style={{ color: '#aaa' }}>Select all that apply</p>
+            <p style={sectionTitle}>{t('edit_profile.section_skills')}</p>
+            <p className="text-xs mb-4" style={{ color: '#aaa' }}>{t('edit_profile.skills_hint')}</p>
             <div className="flex flex-wrap gap-2">
               {skillOptions.map((skill) => (
                 <button
@@ -153,16 +153,16 @@ export default function EditProfile() {
 
           {/* Education & Experience */}
           <div style={cardStyle}>
-            <p style={sectionTitle}>Education & Experience</p>
+            <p style={sectionTitle}>{t('edit_profile.section_edu_exp')}</p>
             <div className="flex flex-col gap-4">
               <div>
-                <label style={labelStyle}>Education</label>
+                <label style={labelStyle}>{t('edit_profile.label_education')}</label>
                 <input type="text" value={form.education} onChange={(e) => setForm({ ...form, education: e.target.value })} style={inputStyle}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
               </div>
               <div>
-                <label style={labelStyle}>Experience</label>
+                <label style={labelStyle}>{t('edit_profile.label_experience')}</label>
                 <input type="text" value={form.experience} onChange={(e) => setForm({ ...form, experience: e.target.value })} style={inputStyle}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
@@ -172,22 +172,27 @@ export default function EditProfile() {
 
           {/* Pricing */}
           <div style={cardStyle}>
-            <p style={sectionTitle}>Pricing</p>
+            <p style={sectionTitle}>{t('edit_profile.section_pricing')}</p>
             <div className="flex items-center gap-3">
               <span className="text-sm" style={{ color: '#5C0A1E', fontWeight: 500 }}>¥</span>
               <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })}
                 style={{ ...inputStyle, width: '160px' }}
                 onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                 onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-              <span className="text-sm" style={{ color: '#aaa' }}>per hour</span>
+              <span className="text-sm" style={{ color: '#aaa' }}>{t('edit_profile.per_hour')}</span>
             </div>
           </div>
 
           {/* Session types */}
           <div style={cardStyle}>
-            <p style={sectionTitle}>Session types offered</p>
+            <p style={sectionTitle}>{t('edit_profile.section_session_types')}</p>
             <div className="flex flex-col gap-3">
-              {['1-on-1 Session', 'Group Meetup', 'Online Call', 'Social Experience'].map((type) => (
+              {([
+                ['1-on-1 Session', t('edit_profile.session_1on1')],
+                ['Group Meetup', t('edit_profile.session_group')],
+                ['Online Call', t('edit_profile.session_online')],
+                ['Social Experience', t('edit_profile.session_social')],
+              ] as const).map(([type, label]) => (
                 <label key={type} className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="checkbox"
@@ -201,7 +206,7 @@ export default function EditProfile() {
                     className="w-4 h-4"
                     style={{ accentColor: '#B8860B' }}
                   />
-                  <span className="text-sm" style={{ color: '#1A0208' }}>{type}</span>
+                  <span className="text-sm" style={{ color: '#1A0208' }}>{label}</span>
                 </label>
               ))}
             </div>
@@ -209,12 +214,12 @@ export default function EditProfile() {
 
           {/* Privacy */}
           <div style={cardStyle}>
-            <p style={sectionTitle}>Privacy</p>
+            <p style={sectionTitle}>{t('edit_profile.section_privacy')}</p>
             <div className="flex flex-col gap-3">
               {[
-                { value: 'public', label: 'Show full profile publicly' },
-                { value: 'hidden', label: 'Hide name/photo until first session' },
-                { value: 'anonymous', label: 'Anonymous profile' },
+                { value: 'public', label: t('edit_profile.privacy_public') },
+                { value: 'hidden', label: t('edit_profile.privacy_hidden') },
+                { value: 'anonymous', label: t('edit_profile.privacy_anonymous') },
               ].map((option) => (
                 <label key={option.value} className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -241,9 +246,9 @@ export default function EditProfile() {
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#9A6F09')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#B8860B')}
             >
-              Save changes
+              {t('edit_profile.save')}
             </button>
-            {saved && <p className="text-sm font-medium" style={{ color: '#B8860B' }}>✔ Profile saved!</p>}
+            {saved && <p className="text-sm font-medium" style={{ color: '#B8860B' }}>{t('edit_profile.saved')}</p>}
           </div>
 
         </form>

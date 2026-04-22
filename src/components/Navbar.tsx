@@ -1,25 +1,13 @@
-// Navbar — persistent top bar across all pages
-// On /discover, renders a filter bar directly underneath as one connected sticky unit
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
-
-const links = [
-  { path: '/', label: 'Home' },
-  { path: '/discover', label: 'Discover' },
-  { path: '/meetups', label: 'Meetups' },
-]
-
-const howItWorksDropdown = [
-  { hash: '#how-it-works', label: 'How it works' },
-  { hash: '#fees', label: 'Fees' },
-  { hash: '#faq', label: 'FAQ' },
-]
 
 export default function Navbar() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { isLoggedIn, logout } = useAuth()
+  const { t, i18n } = useTranslation()
   const isDiscover = pathname === '/discover'
   const [search, setSearch] = useState('')
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -28,7 +16,18 @@ export default function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const howItWorksRef = useRef<HTMLDivElement>(null)
 
-  // Close dropdown when clicking outside
+  const links = [
+    { path: '/', label: t('nav.home') },
+    { path: '/discover', label: t('nav.discover') },
+    { path: '/meetups', label: t('nav.meetups') },
+  ]
+
+  const howItWorksDropdown = [
+    { hash: '#how-it-works', label: t('nav.how_it_works') },
+    { hash: '#fees', label: t('nav.fees') },
+    { hash: '#faq', label: t('nav.faq') },
+  ]
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -74,7 +73,7 @@ export default function Navbar() {
                 `text-sm transition-colors flex items-center gap-1 group ${isActive ? 'text-gray-900 font-medium' : 'text-gray-400 hover:text-gray-700'}`
               }
             >
-              How it works
+              {t('nav.how_it_works')}
               <svg
                 width="10"
                 height="10"
@@ -111,11 +110,19 @@ export default function Navbar() {
               `text-sm transition-colors ${isActive ? 'text-gray-900 font-medium' : 'text-gray-400 hover:text-gray-700'}`
             }
           >
-            Contact
+            {t('nav.contact')}
           </NavLink>
         </nav>
 
         <div className="flex items-center gap-3">
+          {/* Language toggle */}
+          <button
+            onClick={() => i18n.changeLanguage(i18n.language === 'ja' ? 'en' : 'ja')}
+            className="text-xs font-medium px-2.5 py-1 rounded-full border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700 transition-colors"
+          >
+            {i18n.language === 'ja' ? 'EN' : 'JA'}
+          </button>
+
           {isLoggedIn ? (
             <div className="relative" ref={dropdownRef}>
               <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -123,20 +130,20 @@ export default function Navbar() {
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-lg border border-gray-100 py-2 z-30">
-                  <NavLink to="/dashboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Dashboard</NavLink>
-                  <NavLink to="/profile/1" onClick={() => setDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">My profile</NavLink>
-                  <NavLink to="/chat" onClick={() => setDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Messages</NavLink>
+                  <NavLink to="/dashboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">{t('nav.dashboard')}</NavLink>
+                  <NavLink to="/profile/1" onClick={() => setDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">{t('nav.my_profile')}</NavLink>
+                  <NavLink to="/chat" onClick={() => setDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">{t('nav.messages')}</NavLink>
                   <hr className="my-1 border-gray-100" />
                   <button onClick={() => { logout(); setDropdownOpen(false); navigate('/') }} className="block w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-gray-50 transition-colors">
-                    Log out
+                    {t('nav.logout')}
                   </button>
                 </div>
               )}
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-3">
-              <NavLink to="/login" className="text-sm text-gray-500 hover:text-gray-800 transition-colors">Log in</NavLink>
-              <NavLink to="/signup" className="text-sm bg-teal-500 hover:bg-teal-600 text-white px-5 py-2 rounded-full transition-colors">Sign up</NavLink>
+              <NavLink to="/login" className="text-sm text-gray-500 hover:text-gray-800 transition-colors">{t('nav.login')}</NavLink>
+              <NavLink to="/signup" className="text-sm bg-teal-500 hover:bg-teal-600 text-white px-5 py-2 rounded-full transition-colors">{t('nav.signup')}</NavLink>
             </div>
           )}
 
@@ -181,8 +188,8 @@ export default function Navbar() {
           </div>
           {!isLoggedIn && (
             <div className="flex gap-3 pt-2 border-t border-gray-100">
-              <NavLink to="/login" onClick={() => setMobileOpen(false)} className="text-sm text-gray-500">Log in</NavLink>
-              <NavLink to="/signup" onClick={() => setMobileOpen(false)} className="text-sm bg-teal-500 text-white px-4 py-1.5 rounded-full">Sign up</NavLink>
+              <NavLink to="/login" onClick={() => setMobileOpen(false)} className="text-sm text-gray-500">{t('nav.login')}</NavLink>
+              <NavLink to="/signup" onClick={() => setMobileOpen(false)} className="text-sm bg-teal-500 text-white px-4 py-1.5 rounded-full">{t('nav.signup')}</NavLink>
             </div>
           )}
         </div>
@@ -198,7 +205,7 @@ export default function Navbar() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search skills or people..."
+                placeholder={t('nav.search_placeholder')}
                 className="w-full pl-9 pr-4 py-2 text-sm bg-gray-100 rounded-full outline-none text-gray-700 placeholder-gray-400 focus:bg-gray-200 transition-colors"
               />
             </div>
@@ -206,38 +213,38 @@ export default function Navbar() {
             <div className="h-5 w-px bg-gray-200" />
 
             <select className="text-sm text-gray-500 border border-gray-200 rounded-full px-4 py-2 outline-none bg-white hover:border-gray-400 transition-colors cursor-pointer">
-              <option>Category</option>
-              <option>Skills</option>
-              <option>Social</option>
-              <option>Meetups</option>
-              <option>Online</option>
+              <option>{t('nav.filter_category')}</option>
+              <option>{t('nav.filter_skills')}</option>
+              <option>{t('nav.filter_social')}</option>
+              <option>{t('nav.filter_meetups')}</option>
+              <option>{t('nav.filter_online')}</option>
             </select>
 
             <select className="text-sm text-gray-500 border border-gray-200 rounded-full px-4 py-2 outline-none bg-white hover:border-gray-400 transition-colors cursor-pointer">
-              <option>Location</option>
-              <option>Tokyo</option>
-              <option>Osaka</option>
-              <option>Kyoto</option>
-              <option>Online</option>
+              <option>{t('nav.filter_location')}</option>
+              <option>{t('nav.filter_tokyo')}</option>
+              <option>{t('nav.filter_osaka')}</option>
+              <option>{t('nav.filter_kyoto')}</option>
+              <option>{t('nav.filter_online')}</option>
             </select>
 
             <select className="text-sm text-gray-500 border border-gray-200 rounded-full px-4 py-2 outline-none bg-white hover:border-gray-400 transition-colors cursor-pointer">
-              <option>Price</option>
-              <option>Under ¥5,000/hr</option>
-              <option>¥5,000 – ¥10,000/hr</option>
-              <option>Over ¥10,000/hr</option>
+              <option>{t('nav.filter_price')}</option>
+              <option>{t('nav.price_under')}</option>
+              <option>{t('nav.price_mid')}</option>
+              <option>{t('nav.price_over')}</option>
             </select>
 
             <select className="text-sm text-gray-500 border border-gray-200 rounded-full px-4 py-2 outline-none bg-white hover:border-gray-400 transition-colors cursor-pointer">
-              <option>Gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Any</option>
+              <option>{t('nav.filter_gender')}</option>
+              <option>{t('nav.gender_male')}</option>
+              <option>{t('nav.gender_female')}</option>
+              <option>{t('nav.gender_any')}</option>
             </select>
 
             <label className="flex items-center gap-2 cursor-pointer ml-1">
               <input type="checkbox" className="accent-teal-500 w-4 h-4" />
-              <span className="text-sm text-gray-500 whitespace-nowrap">Verified only</span>
+              <span className="text-sm text-gray-500 whitespace-nowrap">{t('nav.verified_only')}</span>
             </label>
           </div>
         </div>
