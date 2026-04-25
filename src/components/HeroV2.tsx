@@ -25,7 +25,7 @@ export default function HeroV2() {
 
         {/* Eyebrow */}
         <p className="text-sm font-semibold tracking-widest uppercase mb-5" style={{ color: '#B8860B' }}>
-          PERSONALITY · SKILLS · CONNECTION
+          {t('hero.eyebrow')}
         </p>
 
         {/* Headline */}
@@ -34,14 +34,13 @@ export default function HeroV2() {
           style={{ textShadow: '0 2px 16px rgba(0,0,0,0.45)' }}
         >
           {t('hero.headline_1')}<br />
-          Learn and Share skills.<br />
+          {t('hero.headline_2')}<br />
           {t('hero.headline_3')}
         </h1>
 
         {/* Sub-text */}
         <p className="text-base mb-8 max-w-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.60)' }}>
-          Connect through <strong className="text-white">who you are</strong> and{' '}
-          <strong className="text-white">what you know</strong> — find language partners, coaches, guides and more across all of Japan.
+          {t('hero.subtext')}
         </p>
 
         {/* CTAs */}
@@ -72,10 +71,10 @@ export default function HeroV2() {
           style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}
         >
           {[
-            { value: '2,400+', label: 'Verified hosts' },
-            { value: '47',     label: 'Prefectures' },
-            { value: '12K+',   label: 'Sessions done' },
-            { value: '4.9★',   label: 'Avg. rating' },
+            { value: '2,400+', label: t('hero.stat_hosts') },
+            { value: '47',     label: t('hero.stat_prefectures') },
+            { value: '12K+',   label: t('hero.stat_sessions') },
+            { value: '4.9★',   label: t('hero.stat_rating') },
           ].map(stat => (
             <div key={stat.label} className="flex items-baseline gap-1.5">
               <span className="font-bold text-white text-lg">{stat.value}</span>
