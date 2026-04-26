@@ -70,7 +70,7 @@ export default function HowItWorksPage() {
                   </div>
                 </div>
               ) : (
-                <div className={`flex flex-col md:flex-row gap-10 items-start ${i % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+                <div className="flex flex-col md:flex-row gap-10 items-start">
                   <div className="flex-shrink-0">
                     <div
                       className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold"

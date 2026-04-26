@@ -1,4 +1,18 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
+
+function ScrollToTop() {
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo(0, 0)
+    } else {
+      const el = document.querySelector(hash)
+      if (el) el.scrollIntoView()
+    }
+  }, [pathname, hash])
+  return null
+}
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Discover from './pages/Discover'
@@ -16,6 +30,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50">
+        <ScrollToTop />
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
