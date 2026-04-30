@@ -13,7 +13,9 @@ function ScrollToTop() {
   }, [pathname, hash])
   return null
 }
+
 import Navbar from './components/Navbar'
+import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import Discover from './pages/Discover'
 import ProfilePage from './pages/ProfilePage'
@@ -25,6 +27,7 @@ import HowItWorksPage from './pages/HowItWorks'
 import EditProfile from './pages/EditProfile'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import ForgotPassword from './pages/ForgotPassword'
 
 function App() {
   return (
@@ -38,12 +41,13 @@ function App() {
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/meetups" element={<Meetups />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
         </Routes>
       </div>
     </BrowserRouter>

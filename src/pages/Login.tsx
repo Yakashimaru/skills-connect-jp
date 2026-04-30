@@ -5,14 +5,23 @@ import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { signIn } = useAuth()
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    login()
+    setError(null)
+    setLoading(true)
+    const { error: authError } = await signIn(email, password)
+    setLoading(false)
+    if (authError) {
+      setError(authError)
+      return
+    }
     navigate('/dashboard')
   }
 
@@ -49,18 +58,29 @@ export default function Login() {
             </div>
           ))}
 
+          {error && (
+            <p className="text-xs text-center" style={{ color: '#f87171' }}>{error}</p>
+          )}
+
           <button
             type="submit"
-            className="w-full font-medium py-3 rounded-xl transition-colors mt-2"
+            disabled={loading}
+            className="w-full font-medium py-3 rounded-xl transition-colors mt-2 disabled:opacity-60"
             style={{ backgroundColor: '#B8860B', color: '#3A2400' }}
             onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#9A6F09')}
             onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#B8860B')}
           >
-            {t('login.cta')}
+            {loading ? '...' : t('login.cta')}
           </button>
         </form>
 
-        <p className="text-sm text-center mt-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
+        <p className="text-sm text-center mt-4" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <Link to="/forgot-password" className="hover:underline" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            {t('login.forgot_password', 'Forgot password?')}
+          </Link>
+        </p>
+
+        <p className="text-sm text-center mt-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
           {t('login.no_account')}{' '}
           <Link to="/signup" className="font-medium hover:underline" style={{ color: '#B8860B' }}>{t('login.signup_link')}</Link>
         </p>

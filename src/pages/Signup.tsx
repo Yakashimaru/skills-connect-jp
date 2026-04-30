@@ -5,17 +5,26 @@ import { useAuth } from '../context/AuthContext'
 
 export default function Signup() {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { signUp } = useAuth()
   const { t } = useTranslation()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState<'provider' | 'seeker'>('seeker')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    login()
-    navigate('/dashboard')
+    setError(null)
+    setLoading(true)
+    const { error: authError } = await signUp(email, password, name, role)
+    setLoading(false)
+    if (authError) {
+      setError(authError)
+      return
+    }
+    navigate(role === 'provider' ? '/edit-profile' : '/dashboard')
   }
 
   const fields = [
@@ -70,14 +79,19 @@ export default function Signup() {
             </div>
           ))}
 
+          {error && (
+            <p className="text-xs text-center" style={{ color: '#f87171' }}>{error}</p>
+          )}
+
           <button
             type="submit"
-            className="w-full font-medium py-3 rounded-xl transition-colors mt-2"
+            disabled={loading}
+            className="w-full font-medium py-3 rounded-xl transition-colors mt-2 disabled:opacity-60"
             style={{ backgroundColor: '#B8860B', color: '#3A2400' }}
             onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#9A6F09')}
             onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#B8860B')}
           >
-            {t('signup.cta')}
+            {loading ? '...' : t('signup.cta')}
           </button>
         </form>
 

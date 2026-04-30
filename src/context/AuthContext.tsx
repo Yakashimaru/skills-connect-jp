@@ -1,36 +1,68 @@
-// AuthContext — dummy auth state shared across the app
-// Persists login state in localStorage so it survives page refresh
-// Replace with Supabase auth when backend is ready
-
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import type { User } from '@supabase/supabase-js'
+import * as authService from '../lib/auth'
+import { getProfile } from '../lib/profiles'
+import type { Profile, UserType } from '../lib/types'
 
 interface AuthContextType {
+  user: User | null
+  profile: Profile | null
   isLoggedIn: boolean
-  login: () => void
-  logout: () => void
+  loading: boolean
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>
+  signUp: (email: string, password: string, name: string, userType: UserType) => Promise<{ error: string | null }>
+  signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
+  user: null,
+  profile: null,
   isLoggedIn: false,
-  login: () => {},
-  logout: () => {},
+  loading: true,
+  signIn: async () => ({ error: null }),
+  signUp: async () => ({ error: null }),
+  signOut: async () => {},
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('loggedIn') === 'true')
+  const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const login = () => {
-    localStorage.setItem('loggedIn', 'true')
-    setIsLoggedIn(true)
+  useEffect(() => {
+    authService.getSession().then(async (session) => {
+      const currentUser = session?.user ?? null
+      setUser(currentUser)
+      if (currentUser) setProfile(await getProfile(currentUser.id))
+      setLoading(false)
+    })
+
+    const { data: { subscription } } = authService.onAuthStateChange(async (u) => {
+      setUser(u)
+      setProfile(u ? await getProfile(u.id) : null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await authService.signIn(email, password)
+    return { error: error?.message ?? null }
   }
 
-  const logout = () => {
-    localStorage.removeItem('loggedIn')
-    setIsLoggedIn(false)
+  const signUp = async (email: string, password: string, name: string, userType: UserType) => {
+    const { error } = await authService.signUp(email, password, name, userType)
+    return { error: error?.message ?? null }
+  }
+
+  const signOut = async () => {
+    await authService.signOut()
+    setUser(null)
+    setProfile(null)
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ user, profile, isLoggedIn: !!user, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   )

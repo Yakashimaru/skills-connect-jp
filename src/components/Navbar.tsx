@@ -557,7 +557,7 @@ function OptionRow({ item, checked, onChange }: { item: { value: string; label: 
 export default function Navbar() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { isLoggedIn, logout } = useAuth()
+  const { isLoggedIn, signOut } = useAuth()
   const { t, i18n } = useTranslation()
   const isDiscover = pathname === '/discover'
 
@@ -735,7 +735,7 @@ export default function Navbar() {
                     </NavLink>
                   ))}
                   <hr className="my-1" style={{ borderColor: C.border }} />
-                  <button onClick={() => { logout(); setAvatarOpen(false); navigate('/') }}
+                  <button onClick={() => { signOut(); setAvatarOpen(false); navigate('/') }}
                     className="block w-full text-left px-4 py-2.5 text-sm transition-colors"
                     style={{ color: C.brand }}
                     onMouseOver={e => (e.currentTarget as HTMLElement).style.backgroundColor = C.soft}
