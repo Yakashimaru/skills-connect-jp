@@ -1,30 +1,53 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../context/AuthContext'
+import { getEvents, rsvpToEvent } from '../lib/events'
+import type { EventCategory } from '../lib/types'
 
-const events = [
-  { id: 1, title: 'English Conversation Night', description: 'A casual evening for English learners and native speakers to connect over drinks.', image: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&auto=format&fit=crop', host: { name: 'Yuki Tanaka', image: 'https://randomuser.me/api/portraits/women/44.jpg', verified: true }, date: 'Sat 29 Mar · 7:00 PM', location: 'Shibuya, Tokyo', participants: 14, maxParticipants: 20, price: 'Free', category: 'Social' },
-  { id: 2, title: 'Golf & Networking Morning', description: 'Play 9 holes with other professionals and expand your network in a relaxed setting.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=800&auto=format&fit=crop', host: { name: 'Kenji Mori', image: 'https://randomuser.me/api/portraits/men/32.jpg', verified: true }, date: 'Sun 30 Mar · 8:00 AM', location: 'Odaiba Golf Club, Tokyo', participants: 8, maxParticipants: 12, price: '¥3,000', category: 'Sports' },
-  { id: 3, title: 'Japanese Culture & Tea Ceremony', description: 'Experience an authentic tea ceremony hosted by a Kyoto local. Limited spots.', image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&auto=format&fit=crop', host: { name: 'Rin Sato', image: 'https://randomuser.me/api/portraits/women/68.jpg', verified: true }, date: 'Sat 5 Apr · 2:00 PM', location: 'Gion, Kyoto', participants: 5, maxParticipants: 8, price: '¥2,500', category: 'Culture' },
-  { id: 4, title: 'Startup Founders Dinner', description: 'Monthly dinner for early-stage founders. Share challenges, get feedback, build connections.', image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&auto=format&fit=crop', host: { name: 'Ryu Hashimoto', image: 'https://randomuser.me/api/portraits/men/41.jpg', verified: true }, date: 'Thu 3 Apr · 7:30 PM', location: 'Namba, Osaka', participants: 11, maxParticipants: 15, price: '¥5,000', category: 'Business' },
-  { id: 5, title: 'Morning Yoga in the Park', description: 'Start your weekend with a guided outdoor yoga session. All levels welcome.', image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop', host: { name: 'Mei Lin', image: 'https://randomuser.me/api/portraits/women/57.jpg', verified: false }, date: 'Sat 29 Mar · 7:30 AM', location: 'Maruyama Park, Kyoto', participants: 9, maxParticipants: 25, price: 'Free', category: 'Wellness' },
-  { id: 6, title: 'Japanese Cooking Class', description: 'Learn to make ramen from scratch with a professional chef. Hands-on and delicious.', image: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=800&auto=format&fit=crop', host: { name: 'Daiki Fujiwara', image: 'https://randomuser.me/api/portraits/men/18.jpg', verified: true }, date: 'Sun 6 Apr · 11:00 AM', location: 'Shinjuku, Tokyo', participants: 6, maxParticipants: 10, price: '¥4,000', category: 'Food' },
-]
+function formatEventDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', {
+    weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+  })
+}
 
 export default function Meetups() {
   const { t } = useTranslation()
-  const [view, setView] = useState<'list' | 'map'>('list')
+  const { user } = useAuth()
 
-  const categories = [
+  const [view, setView] = useState<'list' | 'map'>('list')
+  const [activeCategory, setActiveCategory] = useState<'All' | EventCategory>('All')
+  const [events, setEvents] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [rsvpd, setRsvpd] = useState<Set<string>>(new Set())
+
+  const categories: { key: 'All' | EventCategory; label: string }[] = [
     { key: 'All', label: t('meetups.cat_all') },
-    { key: 'Social', label: t('meetups.cat_social') },
-    { key: 'Sports', label: t('meetups.cat_sports') },
-    { key: 'Culture', label: t('meetups.cat_culture') },
-    { key: 'Business', label: t('meetups.cat_business') },
-    { key: 'Wellness', label: t('meetups.cat_wellness') },
-    { key: 'Food', label: t('meetups.cat_food') },
+    { key: 'social', label: t('meetups.cat_social') },
+    { key: 'sports', label: t('meetups.cat_sports') },
+    { key: 'culture', label: t('meetups.cat_culture') },
+    { key: 'business', label: t('meetups.cat_business') },
+    { key: 'wellness', label: t('meetups.cat_wellness') },
+    { key: 'food', label: t('meetups.cat_food') },
   ]
-  const [activeCategory, setActiveCategory] = useState('All')
-  const filtered = activeCategory === 'All' ? events : events.filter(e => e.category === activeCategory)
+
+  useEffect(() => {
+    setLoading(true)
+    getEvents({ category: activeCategory === 'All' ? undefined : activeCategory }).then(({ data }) => {
+      setEvents(data ?? [])
+      setLoading(false)
+    })
+  }, [activeCategory])
+
+  const handleRsvp = async (e: React.MouseEvent, eventId: string) => {
+    e.stopPropagation()
+    if (!user) return
+    if (rsvpd.has(eventId)) return
+    await rsvpToEvent(eventId, user.id)
+    setRsvpd(prev => new Set([...prev, eventId]))
+    setEvents(prev => prev.map(ev =>
+      ev.id === eventId ? { ...ev, participant_count: (ev.participant_count ?? 0) + 1 } : ev
+    ))
+  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
@@ -39,8 +62,7 @@ export default function Meetups() {
             {([['list', t('meetups.view_list')], ['map', t('meetups.view_map')]] as const).map(([v, label]) => (
               <button key={v} onClick={() => setView(v)}
                 className="text-sm px-4 py-1.5 rounded-full transition-colors font-medium"
-                style={view === v ? { backgroundColor: '#5C0A1E', color: '#fff' } : { color: '#aaa' }}
-              >
+                style={view === v ? { backgroundColor: '#5C0A1E', color: '#fff' } : { color: '#aaa' }}>
                 {label}
               </button>
             ))}
@@ -53,9 +75,7 @@ export default function Meetups() {
               className="text-sm px-4 py-1.5 rounded-full transition-colors"
               style={activeCategory === key
                 ? { backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }
-                : { backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }
-              }
-            >
+                : { backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
               {label}
             </button>
           ))}
@@ -64,59 +84,122 @@ export default function Meetups() {
 
       {view === 'list' ? (
         <div className="max-w-6xl mx-auto px-6 pb-16">
-          <p className="text-sm mb-6" style={{ color: '#aaa' }}>{t('meetups.events_found', { count: filtered.length })}</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {filtered.map((event) => (
-              <div key={event.id} className="rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-200 cursor-pointer"
-                style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}
-              >
-                <div className="relative h-44 overflow-hidden">
-                  <img src={event.image} alt={event.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute top-3 left-3">
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                      style={event.price === 'Free'
-                        ? { backgroundColor: '#B8860B', color: '#3A2400' }
-                        : { backgroundColor: 'rgba(255,255,255,0.92)', color: '#5C0A1E' }
-                      }>
-                      {event.price}
-                    </span>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-2xl overflow-hidden animate-pulse" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
+                  <div className="h-44" style={{ backgroundColor: '#F0E8E0' }} />
+                  <div className="p-4 flex flex-col gap-2">
+                    <div className="h-4 rounded-full w-3/4" style={{ backgroundColor: '#F0E8E0' }} />
+                    <div className="h-3 rounded-full w-full" style={{ backgroundColor: '#F0E8E0' }} />
+                    <div className="h-3 rounded-full w-1/2" style={{ backgroundColor: '#F0E8E0' }} />
                   </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="font-bold mb-1" style={{ color: '#1A0208' }}>{event.title}</h3>
-                  <p className="text-xs leading-relaxed mb-3 line-clamp-2" style={{ color: '#7A6060' }}>{event.description}</p>
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <span className="text-xs" style={{ color: '#aaa' }}>📅 {event.date}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 mb-3">
-                    <span className="text-xs" style={{ color: '#aaa' }}>📍 {event.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <img src={event.host.image} alt={event.host.name} className="w-6 h-6 rounded-full object-cover" />
-                    <span className="text-xs" style={{ color: '#7A6060' }}>
-                      {t('meetups.hosted_by')} <span className="font-medium" style={{ color: '#1A0208' }}>{event.host.name}</span>
-                    </span>
-                    {event.host.verified && <span className="text-xs" style={{ color: '#B8860B' }}>✔</span>}
-                  </div>
-                  <div className="flex items-center justify-between pt-3" style={{ borderTop: '0.5px solid #E8DDD5' }}>
-                    <div>
-                      <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#E8DDD5' }}>
-                        <div className="h-full rounded-full" style={{ width: `${(event.participants / event.maxParticipants) * 100}%`, backgroundColor: '#B8860B' }} />
+              ))}
+            </div>
+          ) : events.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-24 gap-3">
+              <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>No events found</p>
+              <p className="text-sm" style={{ color: '#aaa' }}>Try a different category</p>
+            </div>
+          ) : (
+            <>
+              <p className="text-sm mb-6" style={{ color: '#aaa' }}>{t('meetups.events_found', { count: events.length })}</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {events.map((event) => {
+                  const host = event.host
+                  const spotsLeft = event.max_participants ? event.max_participants - (event.participant_count ?? 0) : null
+                  const isFull = spotsLeft !== null && spotsLeft <= 0
+                  const hasRsvpd = rsvpd.has(event.id)
+
+                  return (
+                    <div key={event.id}
+                      className="rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                      style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
+
+                      {/* Image */}
+                      <div className="relative h-44 overflow-hidden flex items-center justify-center"
+                        style={{ backgroundColor: '#FDF0E0' }}>
+                        {event.image_url ? (
+                          <img src={event.image_url} alt={event.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <span className="text-4xl">🎉</span>
+                        )}
+                        <div className="absolute top-3 left-3">
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                            style={event.price === 0
+                              ? { backgroundColor: '#B8860B', color: '#3A2400' }
+                              : { backgroundColor: 'rgba(255,255,255,0.92)', color: '#5C0A1E' }}>
+                            {event.price === 0 ? 'Free' : `¥${event.price.toLocaleString()}`}
+                          </span>
+                        </div>
                       </div>
-                      <p className="text-xs mt-1" style={{ color: '#aaa' }}>{event.participants}/{event.maxParticipants} {t('meetups.joined')}</p>
+
+                      {/* Info */}
+                      <div className="p-4">
+                        <h3 className="font-bold mb-1" style={{ color: '#1A0208' }}>{event.title}</h3>
+                        {event.description && (
+                          <p className="text-xs leading-relaxed mb-3 line-clamp-2" style={{ color: '#7A6060' }}>{event.description}</p>
+                        )}
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span className="text-xs" style={{ color: '#aaa' }}>📅 {formatEventDate(event.start_at)}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <span className="text-xs" style={{ color: '#aaa' }}>📍 {event.location}</span>
+                        </div>
+
+                        {/* Host */}
+                        <div className="flex items-center gap-2 mb-4">
+                          <div className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center text-xs font-bold flex-shrink-0"
+                            style={{ backgroundColor: '#FDF0E0', color: '#B8860B' }}>
+                            {host?.avatar_url
+                              ? <img src={host.avatar_url} alt={host.name} className="w-full h-full object-cover" />
+                              : host?.name?.[0]?.toUpperCase() ?? '?'
+                            }
+                          </div>
+                          <span className="text-xs" style={{ color: '#7A6060' }}>
+                            {t('meetups.hosted_by')}{' '}
+                            <span className="font-medium" style={{ color: '#1A0208' }}>{host?.name ?? '—'}</span>
+                          </span>
+                          {host?.verified && <span className="text-xs" style={{ color: '#B8860B' }}>✔</span>}
+                        </div>
+
+                        {/* Capacity + RSVP */}
+                        <div className="flex items-center justify-between pt-3" style={{ borderTop: '0.5px solid #E8DDD5' }}>
+                          <div>
+                            {event.max_participants && (
+                              <>
+                                <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#E8DDD5' }}>
+                                  <div className="h-full rounded-full" style={{
+                                    width: `${Math.min(100, ((event.participant_count ?? 0) / event.max_participants) * 100)}%`,
+                                    backgroundColor: '#B8860B',
+                                  }} />
+                                </div>
+                                <p className="text-xs mt-1" style={{ color: '#aaa' }}>
+                                  {event.participant_count ?? 0}/{event.max_participants} {t('meetups.joined')}
+                                </p>
+                              </>
+                            )}
+                          </div>
+                          <button
+                            onClick={(e) => handleRsvp(e, event.id)}
+                            disabled={isFull || hasRsvpd}
+                            className="text-xs font-medium px-4 py-2 rounded-xl transition-colors disabled:opacity-60"
+                            style={hasRsvpd
+                              ? { backgroundColor: '#FDF0E0', color: '#7A4A00' }
+                              : { backgroundColor: '#5C0A1E', color: '#fff' }}
+                            onMouseEnter={e => { if (!isFull && !hasRsvpd) e.currentTarget.style.backgroundColor = '#3A0612' }}
+                            onMouseLeave={e => { if (!isFull && !hasRsvpd) e.currentTarget.style.backgroundColor = '#5C0A1E' }}>
+                            {hasRsvpd ? '✓ Going' : isFull ? 'Full' : t('meetups.rsvp')}
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <button className="text-xs font-medium px-4 py-2 rounded-xl transition-colors"
-                      style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
-                      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}
-                      onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#5C0A1E')}
-                    >
-                      {t('meetups.rsvp')}
-                    </button>
-                  </div>
-                </div>
+                  )
+                })}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       ) : (
         <div className="max-w-6xl mx-auto px-6 pb-16">
