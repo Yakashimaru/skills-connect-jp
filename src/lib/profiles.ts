@@ -26,10 +26,7 @@ export async function updateProviderProfile(id: string, updates: Partial<Provide
 }
 
 export async function searchProfiles(params: {
-  skills?: string[]
-  location?: string
-  maxRate?: number
-  minRate?: number
+  locations?: string[]
   query?: string
   limit?: number
   offset?: number
@@ -40,7 +37,7 @@ export async function searchProfiles(params: {
     .eq('privacy_mode', 'public')
     .eq('user_type', 'provider')
 
-  if (params.location) q = q.eq('location', params.location)
+  if (params.locations?.length) q = q.in('location', params.locations)
   if (params.query) q = q.ilike('name', `%${params.query}%`)
   if (params.limit) q = q.limit(params.limit)
   if (params.offset) {

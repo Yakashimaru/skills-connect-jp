@@ -575,6 +575,22 @@ export default function Navbar() {
   const [genderFilter, setGenderFilter] = useState<FilterState>({})
   const [verifiedOnly, setVerifiedOnly] = useState(false)
 
+  useEffect(() => {
+    if (!isDiscover) return
+    const params = new URLSearchParams()
+    const active = (f: FilterState) => Object.entries(f).filter(([, v]) => v).map(([k]) => k)
+    const locations = active(locationFilter)
+    const skills = active(categoryFilter)
+    const prices = active(priceFilter)
+    if (search.trim()) params.set('q', search.trim())
+    if (locations.length) params.set('location', locations.join(','))
+    if (skills.length) params.set('skills', skills.join(','))
+    if (prices.length) params.set('price', prices.join(','))
+    if (verifiedOnly) params.set('verified', '1')
+    const qs = params.toString()
+    navigate(qs ? `/discover?${qs}` : '/discover', { replace: true })
+  }, [locationFilter, categoryFilter, priceFilter, verifiedOnly, search, isDiscover, navigate])
+
   const toggle = useCallback((setter: React.Dispatch<React.SetStateAction<FilterState>>) => (val: string) => {
     setter(prev => ({ ...prev, [val]: !prev[val] }))
   }, [])
