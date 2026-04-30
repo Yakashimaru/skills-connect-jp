@@ -26,8 +26,8 @@ export async function getConversations(userId: string) {
     .from('conversations')
     .select(`
       *,
-      participant1:profiles!participant1_id(*),
-      participant2:profiles!participant2_id(*)
+      participant1:profiles!participant1_id(*, provider_profile:provider_profiles(*)),
+      participant2:profiles!participant2_id(*, provider_profile:provider_profiles(*))
     `)
     .or(`participant1_id.eq.${userId},participant2_id.eq.${userId}`)
     .order('last_message_at', { ascending: false })
