@@ -557,7 +557,7 @@ function OptionRow({ item, checked, onChange }: { item: { value: string; label: 
 export default function Navbar() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { isLoggedIn, signOut } = useAuth()
+  const { isLoggedIn, signOut, user, profile } = useAuth()
   const { t, i18n } = useTranslation()
   const isDiscover = pathname === '/discover'
 
@@ -730,16 +730,20 @@ export default function Navbar() {
           {isLoggedIn ? (
             <div className="relative" ref={avatarRef}>
               <button onClick={() => setAvatarOpen(!avatarOpen)} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar"
-                  className="w-9 h-9 rounded-full object-cover"
-                  style={{ border: `2px solid ${C.border}` }} />
+                <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-sm font-bold flex-shrink-0"
+                  style={{ border: `2px solid ${C.border}`, backgroundColor: C.cream, color: C.gold }}>
+                  {profile?.avatar_url
+                    ? <img src={profile.avatar_url} alt={profile.name ?? ''} className="w-full h-full object-cover" />
+                    : profile?.name?.[0]?.toUpperCase() ?? '?'
+                  }
+                </div>
               </button>
               {avatarOpen && (
                 <div className="absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-lg py-2 z-30"
                   style={{ border: `0.5px solid ${C.border}`, boxShadow: `0 4px 16px rgba(92,10,30,0.1)` }}>
                   {[
                     { to: '/dashboard', label: t('nav.dashboard') },
-                    { to: '/profile/1', label: t('nav.my_profile') },
+                    { to: `/profile/${user?.id}`, label: t('nav.my_profile') },
                     { to: '/chat', label: t('nav.messages') },
                   ].map(item => (
                     <NavLink key={item.to} to={item.to} onClick={() => setAvatarOpen(false)}

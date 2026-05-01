@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getProfile } from '../lib/profiles'
 import { getReviews } from '../lib/reviews'
+import { getOrCreateConversation } from '../lib/messages'
 
 const SESSION_ICONS: Record<string, string> = {
   '1-on-1 Session': '👤',
@@ -31,6 +32,7 @@ export default function ProfilePage() {
   const [reviews, setReviews] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [messageSending, setMessageSending] = useState(false)
 
   useEffect(() => {
     if (!id) { setNotFound(true); setLoading(false); return }
@@ -61,6 +63,14 @@ export default function ProfilePage() {
 
   const pp = profile.provider_profile
   const isOwnProfile = user?.id === profile.id
+
+  const handleSendMessage = async () => {
+    if (!user || messageSending) return
+    setMessageSending(true)
+    await getOrCreateConversation(user.id, profile.id)
+    setMessageSending(false)
+    navigate('/chat')
+  }
 
   return (
     <div className="pb-24 bg-white">
@@ -240,7 +250,9 @@ export default function ProfilePage() {
             </div>
             <div className="flex gap-3">
               <button
-                className="font-medium text-sm px-6 py-2.5 rounded-xl transition-colors"
+                onClick={handleSendMessage}
+                disabled={messageSending}
+                className="font-medium text-sm px-6 py-2.5 rounded-xl transition-colors disabled:opacity-60"
                 style={{ border: '1px solid #B8860B', color: '#5C0A1E', backgroundColor: 'transparent' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(184,134,11,0.06)')}
                 onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}>
