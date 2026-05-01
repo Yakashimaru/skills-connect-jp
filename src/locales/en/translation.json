@@ -237,7 +237,22 @@
     "placeholder_email": "you@example.com",
     "cta": "Log in",
     "no_account": "Don't have an account?",
-    "signup_link": "Sign up"
+    "signup_link": "Sign up",
+    "forgot_password": "Forgot password?"
+  },
+  "forgot_password": {
+    "heading": "Reset password",
+    "subheading": "Enter your email and we'll send you a reset link.",
+    "sent": "Check your inbox — a reset link is on its way.",
+    "back_to_login": "Back to login",
+    "cta": "Send reset link"
+  },
+  "reset_password": {
+    "heading": "Set new password",
+    "subheading": "Choose a strong password for your account.",
+    "label_password": "New password",
+    "label_confirm": "Confirm password",
+    "cta": "Update password"
   },
   "signup": {
     "heading": "Create an account",
