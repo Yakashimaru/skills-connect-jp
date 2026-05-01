@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
@@ -386,7 +386,7 @@ export default function Dashboard() {
   const [loadError, setLoadError] = useState<string | null>(null)
 
   // Update default view when profile loads
-  useMemo(() => {
+  useEffect(() => {
     if (profile?.user_type) setView(profile.user_type as 'provider' | 'seeker')
   }, [profile?.user_type])
 
@@ -431,7 +431,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold" style={{ color: '#1A0208' }}>{t('dashboard.title')}</h1>
-            <p className="text-sm mt-1" style={{ color: '#aaa' }}>{t('dashboard.welcome')}</p>
+            <p className="text-sm mt-1" style={{ color: '#aaa' }}>{t('dashboard.welcome', { name: profile?.name ?? '…' })}</p>
           </div>
           <div className="flex items-center p-1 rounded-full" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
             {([['provider', t('dashboard.tab_provider')], ['seeker', t('dashboard.tab_seeker')]] as const).map(([v, label]) => (

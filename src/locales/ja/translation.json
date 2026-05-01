@@ -300,7 +300,7 @@
   },
   "dashboard": {
     "title": "ダッシュボード",
-    "welcome": "おかえりなさい、Yukiさん",
+    "welcome": "おかえりなさい、{{name}}さん",
     "tab_provider": "プロバイダー",
     "tab_seeker": "シーカー",
     "stat_earnings": "総収益",

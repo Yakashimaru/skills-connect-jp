@@ -10,7 +10,7 @@ export async function getOrCreateConversation(userId1: string, userId2: string) 
     .select('*')
     .eq('participant1_id', p1)
     .eq('participant2_id', p2)
-    .single()
+    .maybeSingle()
 
   if (existing) return { data: existing, error: null }
 
