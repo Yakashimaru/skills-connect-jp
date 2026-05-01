@@ -112,8 +112,8 @@ export default function Discover() {
 
             {profiles.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3">
-                <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>No providers found</p>
-                <p className="text-sm" style={{ color: '#aaa' }}>Try adjusting your filters</p>
+                <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>{t('discover.no_results')}</p>
+                <p className="text-sm" style={{ color: '#aaa' }}>{t('discover.no_results_hint')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

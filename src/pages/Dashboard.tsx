@@ -144,7 +144,7 @@ function ProviderDashboard({ bookings, subscription, providerProfile, userId }: 
         <div style={card}>
           <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>{tr('dashboard.upcoming_sessions')}</h3>
           {upcoming.length === 0 ? (
-            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>No upcoming sessions</p>
+            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>{tr('dashboard.no_upcoming')}</p>
           ) : (
             <div className="flex flex-col gap-3">
               {upcoming.map((session: any) => (
@@ -173,7 +173,7 @@ function ProviderDashboard({ bookings, subscription, providerProfile, userId }: 
         <div style={card}>
           <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>{tr('dashboard.past_bookings')}</h3>
           {past.length === 0 ? (
-            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>No past sessions yet</p>
+            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>{tr('dashboard.no_past')}</p>
           ) : (
             <div className="flex flex-col divide-y" style={{ borderColor: '#E8DDD5' }}>
               {past.map((booking: any) => (
@@ -209,7 +209,7 @@ function SeekerDashboard({ bookings, savedProfiles, subscription, userId }: {
         <div style={card}>
           <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>{tr('dashboard.upcoming_sessions')}</h3>
           {upcoming.length === 0 ? (
-            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>No upcoming sessions</p>
+            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>{tr('dashboard.no_upcoming')}</p>
           ) : (
             <div className="flex flex-col gap-3">
               {upcoming.map((session: any) => (
@@ -237,7 +237,7 @@ function SeekerDashboard({ bookings, savedProfiles, subscription, userId }: {
         <div style={card}>
           <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>{tr('dashboard.past_bookings_seeker')}</h3>
           {past.length === 0 ? (
-            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>No past sessions yet</p>
+            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>{tr('dashboard.no_past')}</p>
           ) : (
             <div className="flex flex-col divide-y" style={{ borderColor: '#E8DDD5' }}>
               {past.map((booking: any) => (
@@ -250,7 +250,7 @@ function SeekerDashboard({ bookings, savedProfiles, subscription, userId }: {
         <div style={card}>
           <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>{tr('dashboard.saved_profiles')}</h3>
           {savedProfiles.length === 0 ? (
-            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>No saved profiles yet</p>
+            <p className="text-sm text-center py-4" style={{ color: '#aaa' }}>{tr('dashboard.no_saved')}</p>
           ) : (
             <div className="flex flex-col gap-3">
               {savedProfiles.map((entry: any) => {
@@ -336,7 +336,7 @@ function RightColumn({ plan, navigate, tr, role }: {
           </div>
         ) : (
           <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#F5F5F5' }}>
-            <p className="text-sm font-medium" style={{ color: '#aaa' }}>No active plan</p>
+            <p className="text-sm font-medium" style={{ color: '#aaa' }}>{tr('dashboard.no_plan')}</p>
           </div>
         )}
         <button className="w-full mt-3 text-sm py-2 rounded-xl transition-colors"
@@ -383,6 +383,7 @@ export default function Dashboard() {
   const [saved, setSaved] = useState<any[]>([])
   const [subscription, setSubscription] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
 
   // Update default view when profile loads
   useMemo(() => {
@@ -402,6 +403,9 @@ export default function Dashboard() {
       setSaved(sp ?? [])
       setSubscription(sub)
       setLoading(false)
+    }).catch((err: Error) => {
+      setLoadError(err.message ?? 'Failed to load dashboard')
+      setLoading(false)
     })
   }, [user])
 
@@ -409,6 +413,14 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDF8F2' }}>
         <p className="text-sm" style={{ color: '#aaa' }}>Loading...</p>
+      </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDF8F2' }}>
+        <p className="text-sm" style={{ color: '#f87171' }}>{loadError}</p>
       </div>
     )
   }

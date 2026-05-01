@@ -84,3 +84,11 @@ export async function addExperience(entry: Omit<Experience, 'id' | 'created_at'>
 export async function removeExperience(id: string) {
   return supabase.from('experience').delete().eq('id', id)
 }
+
+export async function updateEducation(id: string, updates: { degree?: string; school?: string; year?: string | null }) {
+  return supabase.from('education').update(updates).eq('id', id)
+}
+
+export async function updateExperience(id: string, updates: { role?: string; company?: string; years?: string | null }) {
+  return supabase.from('experience').update(updates).eq('id', id)
+}

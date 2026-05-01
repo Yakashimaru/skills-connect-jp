@@ -334,10 +334,16 @@
     "review_placeholder": "感想を書いてください...",
     "submit": "送信",
     "cancel": "キャンセル",
-    "book": "予約"
+    "book": "予約",
+    "no_upcoming": "予定されているセッションはありません",
+    "no_past": "過去のセッションはまだありません",
+    "no_saved": "保存したプロフィールはまだありません",
+    "no_plan": "有効なプランなし"
   },
   "discover": {
-    "profiles_found": "{{count}}件のプロフィールが見つかりました"
+    "profiles_found": "{{count}}件のプロフィールが見つかりました",
+    "no_results": "プロバイダーが見つかりません",
+    "no_results_hint": "フィルターを変更してみてください"
   },
   "meetups": {
     "eyebrow": "開催予定",
@@ -368,7 +374,10 @@
     "reviews_section": "レビュー",
     "session_options": "セッションオプション",
     "send_message": "メッセージを送る",
-    "book_session": "セッションを予約"
+    "book_session": "セッションを予約",
+    "edit_profile": "プロフィールを編集",
+    "not_found": "プロフィールが見つかりません",
+    "browse_profiles": "プロフィールを探す"
   },
   "edit_profile": {
     "title": "プロフィールを編集",
@@ -399,7 +408,9 @@
     "privacy_hidden": "最初のセッションまで名前/写真を非表示",
     "privacy_anonymous": "匿名プロフィール",
     "save": "変更を保存",
-    "saved": "✔ プロフィールを保存しました！"
+    "saved": "✔ プロフィールを保存しました！",
+    "add_education": "+ 学歴を追加",
+    "add_experience": "+ 経験を追加"
   },
   "chat": {
     "title": "メッセージ",

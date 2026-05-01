@@ -53,9 +53,9 @@ export default function ProfilePage() {
   if (notFound || !profile) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white gap-4">
-        <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>Profile not found</p>
+        <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>{t('profile.not_found')}</p>
         <button onClick={() => navigate('/discover')} className="text-sm font-medium hover:underline" style={{ color: '#B8860B' }}>
-          Browse profiles
+          {t('profile.browse_profiles')}
         </button>
       </div>
     )
@@ -100,7 +100,7 @@ export default function ProfilePage() {
               style={{ border: '0.5px solid #E8DDD5', color: '#5C0A1E' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(184,134,11,0.06)')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}>
-              Edit profile
+              {t('profile.edit_profile')}
             </button>
           )}
         </div>

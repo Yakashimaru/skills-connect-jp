@@ -334,10 +334,16 @@
     "review_placeholder": "Share your experience...",
     "submit": "Submit",
     "cancel": "Cancel",
-    "book": "Book"
+    "book": "Book",
+    "no_upcoming": "No upcoming sessions",
+    "no_past": "No past sessions yet",
+    "no_saved": "No saved profiles yet",
+    "no_plan": "No active plan"
   },
   "discover": {
-    "profiles_found": "{{count}} profiles found"
+    "profiles_found": "{{count}} profiles found",
+    "no_results": "No providers found",
+    "no_results_hint": "Try adjusting your filters"
   },
   "meetups": {
     "eyebrow": "Upcoming",
@@ -368,7 +374,10 @@
     "reviews_section": "Reviews",
     "session_options": "Session options",
     "send_message": "Send Message",
-    "book_session": "Book Session"
+    "book_session": "Book Session",
+    "edit_profile": "Edit profile",
+    "not_found": "Profile not found",
+    "browse_profiles": "Browse profiles"
   },
   "edit_profile": {
     "title": "Edit profile",
@@ -399,7 +408,9 @@
     "privacy_hidden": "Hide name/photo until first session",
     "privacy_anonymous": "Anonymous profile",
     "save": "Save changes",
-    "saved": "✔ Profile saved!"
+    "saved": "✔ Profile saved!",
+    "add_education": "+ Add Education",
+    "add_experience": "+ Add Experience"
   },
   "chat": {
     "title": "Messages",

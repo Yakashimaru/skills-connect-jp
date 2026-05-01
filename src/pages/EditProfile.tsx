@@ -7,8 +7,10 @@ import {
   updateProfile,
   updateProviderProfile,
   addEducation,
+  updateEducation,
   removeEducation,
   addExperience,
+  updateExperience,
   removeExperience,
 } from '../lib/profiles'
 
@@ -117,22 +119,31 @@ export default function EditProfile() {
     if (profileErr) { setError(profileErr.message); setSaving(false); return }
 
     if (isProvider) {
-      await updateProviderProfile(user.id, {
+      const { error: ppErr } = await updateProviderProfile(user.id, {
         title: form.title,
         skills: selectedSkills,
         hourly_rate: Number(form.price) || undefined,
         session_types: form.sessionTypes,
       })
+      if (ppErr) { setError(ppErr.message); setSaving(false); return }
     }
 
     for (const id of deletedEduIds) await removeEducation(id)
     for (const entry of educationEntries) {
-      if (!entry.id) await addEducation({ profile_id: user.id, degree: entry.degree, school: entry.school, year: entry.year || null })
+      if (entry.id) {
+        await updateEducation(entry.id, { degree: entry.degree, school: entry.school, year: entry.year || null })
+      } else {
+        await addEducation({ profile_id: user.id, degree: entry.degree, school: entry.school, year: entry.year || null })
+      }
     }
 
     for (const id of deletedExpIds) await removeExperience(id)
     for (const entry of experienceEntries) {
-      if (!entry.id) await addExperience({ profile_id: user.id, role: entry.role, company: entry.company, years: entry.years || null })
+      if (entry.id) {
+        await updateExperience(entry.id, { role: entry.role, company: entry.company, years: entry.years || null })
+      } else {
+        await addExperience({ profile_id: user.id, role: entry.role, company: entry.company, years: entry.years || null })
+      }
     }
 
     setDeletedEduIds([])
@@ -273,7 +284,7 @@ export default function EditProfile() {
                 <button type="button"
                   onClick={() => setEducationEntries((prev) => [...prev, { degree: '', school: '', year: '' }])}
                   className="text-xs px-4 py-2 rounded-xl transition-colors" style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                  + Add Education
+                  {t('edit_profile.add_education')}
                 </button>
 
                 <div className="mt-6 pt-5" style={{ borderTop: '0.5px solid #E8DDD5' }}>
@@ -306,7 +317,7 @@ export default function EditProfile() {
                   <button type="button"
                     onClick={() => setExperienceEntries((prev) => [...prev, { role: '', company: '', years: '' }])}
                     className="text-xs px-4 py-2 rounded-xl transition-colors" style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                    + Add Experience
+                    {t('edit_profile.add_experience')}
                   </button>
                 </div>
               </div>
