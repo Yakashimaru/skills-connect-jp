@@ -65,7 +65,8 @@ export default function ProfilePage() {
   const isOwnProfile = user?.id === profile.id
 
   const handleSendMessage = async () => {
-    if (!user || messageSending) return
+    if (!user) { navigate('/login'); return }
+    if (messageSending) return
     setMessageSending(true)
     await getOrCreateConversation(user.id, profile.id)
     setMessageSending(false)

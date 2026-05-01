@@ -50,7 +50,7 @@ export default function FeaturedProfiles() {
             ))
           ) : profiles.length === 0 ? (
             <div className="col-span-4 py-12 text-center">
-              <p className="text-sm" style={{ color: '#aaa' }}>No providers yet</p>
+              <p className="text-sm" style={{ color: '#aaa' }}>{t('featured.no_providers')}</p>
             </div>
           ) : profiles.map((profile) => {
             const pp = profile.provider_profile

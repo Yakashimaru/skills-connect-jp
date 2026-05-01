@@ -138,7 +138,8 @@
   "featured": {
     "eyebrow": "コミュニティに参加",
     "heading": "注目のプロフィール",
-    "view_all": "すべて見る"
+    "view_all": "すべて見る",
+    "no_providers": "プロバイダーはまだいません"
   },
   "how_it_works_section": {
     "eyebrow": "シンプルなプロセス",
@@ -252,7 +253,9 @@
     "subheading": "アカウントに強力なパスワードを設定してください。",
     "label_password": "新しいパスワード",
     "label_confirm": "パスワードの確認",
-    "cta": "パスワードを更新"
+    "cta": "パスワードを更新",
+    "password_too_short": "パスワードは8文字以上で入力してください。",
+    "passwords_dont_match": "パスワードが一致しません。"
   },
   "signup": {
     "heading": "アカウントを作成",
@@ -362,7 +365,9 @@
     "joined": "参加済み",
     "rsvp": "参加する",
     "map_coming_soon": "マップビュー 近日公開",
-    "map_pending": "Google Maps / Mapbox 連携予定"
+    "map_pending": "Google Maps / Mapbox 連携予定",
+    "no_events_found": "イベントが見つかりません",
+    "try_different_category": "別のカテゴリをお試しください"
   },
   "profile": {
     "verified": "✔ 認証済み",
@@ -418,7 +423,10 @@
     "online": "オンライン",
     "last_seen": "最近オンライン",
     "book_session": "セッションを予約",
-    "input_placeholder": "メッセージを入力..."
+    "input_placeholder": "メッセージを入力...",
+    "no_conversations": "会話はまだありません",
+    "select_conversation": "会話を選択してください",
+    "no_messages": "メッセージはまだありません — 挨拶してみましょう！"
   },
   "how_it_works_page": {
     "eyebrow": "シンプルなプロセス",

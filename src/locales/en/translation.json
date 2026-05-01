@@ -138,7 +138,8 @@
   "featured": {
     "eyebrow": "Meet the community",
     "heading": "Featured profiles",
-    "view_all": "View all"
+    "view_all": "View all",
+    "no_providers": "No providers yet"
   },
   "how_it_works_section": {
     "eyebrow": "Simple process",
@@ -252,7 +253,9 @@
     "subheading": "Choose a strong password for your account.",
     "label_password": "New password",
     "label_confirm": "Confirm password",
-    "cta": "Update password"
+    "cta": "Update password",
+    "password_too_short": "Password must be at least 8 characters.",
+    "passwords_dont_match": "Passwords do not match."
   },
   "signup": {
     "heading": "Create an account",
@@ -362,7 +365,9 @@
     "joined": "joined",
     "rsvp": "RSVP",
     "map_coming_soon": "Map view coming soon",
-    "map_pending": "Google Maps / Mapbox integration pending"
+    "map_pending": "Google Maps / Mapbox integration pending",
+    "no_events_found": "No events found",
+    "try_different_category": "Try a different category"
   },
   "profile": {
     "verified": "✔ Verified",
@@ -418,7 +423,10 @@
     "online": "Online now",
     "last_seen": "Last seen recently",
     "book_session": "Book Session",
-    "input_placeholder": "Type a message..."
+    "input_placeholder": "Type a message...",
+    "no_conversations": "No conversations yet",
+    "select_conversation": "Select a conversation",
+    "no_messages": "No messages yet — say hello!"
   },
   "how_it_works_page": {
     "eyebrow": "Simple process",

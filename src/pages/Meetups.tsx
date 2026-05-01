@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getEvents, rsvpToEvent } from '../lib/events'
@@ -13,6 +14,7 @@ function formatEventDate(iso: string) {
 export default function Meetups() {
   const { t } = useTranslation()
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   const [view, setView] = useState<'list' | 'map'>('list')
   const [activeCategory, setActiveCategory] = useState<'All' | EventCategory>('All')
@@ -40,7 +42,7 @@ export default function Meetups() {
 
   const handleRsvp = async (e: React.MouseEvent, eventId: string) => {
     e.stopPropagation()
-    if (!user) return
+    if (!user) { navigate('/login'); return }
     if (rsvpd.has(eventId)) return
     await rsvpToEvent(eventId, user.id)
     setRsvpd(prev => new Set([...prev, eventId]))
@@ -99,8 +101,8 @@ export default function Meetups() {
             </div>
           ) : events.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 gap-3">
-              <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>No events found</p>
-              <p className="text-sm" style={{ color: '#aaa' }}>Try a different category</p>
+              <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>{t('meetups.no_events_found')}</p>
+              <p className="text-sm" style={{ color: '#aaa' }}>{t('meetups.try_different_category')}</p>
             </div>
           ) : (
             <>

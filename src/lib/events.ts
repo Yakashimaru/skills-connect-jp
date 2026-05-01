@@ -29,7 +29,7 @@ export async function getEvent(id: string) {
     .from('events')
     .select('*, host:profiles!host_id(*)')
     .eq('id', id)
-    .single()
+    .maybeSingle()
 }
 
 export async function createEvent(

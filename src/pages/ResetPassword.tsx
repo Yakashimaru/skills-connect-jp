@@ -16,11 +16,11 @@ export default function ResetPassword() {
     setError(null)
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters.')
+      setError(t('reset_password.password_too_short'))
       return
     }
     if (password !== confirm) {
-      setError('Passwords do not match.')
+      setError(t('reset_password.passwords_dont_match'))
       return
     }
 

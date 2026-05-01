@@ -130,7 +130,7 @@ export default function Chat() {
 
         <div className="overflow-y-auto flex-1">
           {convList.length === 0 ? (
-            <p className="text-sm text-center py-10" style={{ color: '#aaa' }}>No conversations yet</p>
+            <p className="text-sm text-center py-10" style={{ color: '#aaa' }}>{t('chat.no_conversations')}</p>
           ) : convList.map((conv) => {
             const person = getOther(conv)
             const isActive = activeConv?.id === conv.id
@@ -163,7 +163,7 @@ export default function Chat() {
       <div className={`${mobileView === 'list' ? 'hidden' : 'flex'} md:flex flex-1 flex-col`} style={{ backgroundColor: '#fff' }}>
         {!activeConv ? (
           <div className="flex-1 flex items-center justify-center">
-            <p className="text-sm" style={{ color: '#aaa' }}>Select a conversation</p>
+            <p className="text-sm" style={{ color: '#aaa' }}>{t('chat.select_conversation')}</p>
           </div>
         ) : (
           <>
@@ -194,7 +194,7 @@ export default function Chat() {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-3" style={{ backgroundColor: '#FDF8F2' }}>
               {messages.length === 0 && (
-                <p className="text-sm text-center py-10" style={{ color: '#aaa' }}>No messages yet. Say hello!</p>
+                <p className="text-sm text-center py-10" style={{ color: '#aaa' }}>{t('chat.no_messages')}</p>
               )}
               {messages.map((msg) => {
                 const isMe = msg.sender_id === user?.id
