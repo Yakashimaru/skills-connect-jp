@@ -278,6 +278,7 @@
     "subject_technical": "Technical issue",
     "subject_other": "Other",
     "submit": "Send message",
+    "sending": "Sending...",
     "success_heading": "Message sent!",
     "success_body": "We'll get back to you within 1–2 business days.",
     "send_another": "Send another message"

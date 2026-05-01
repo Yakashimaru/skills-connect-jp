@@ -278,6 +278,7 @@
     "subject_technical": "技術的な問題",
     "subject_other": "その他",
     "submit": "送信する",
+    "sending": "送信中...",
     "success_heading": "メッセージを送信しました！",
     "success_body": "1〜2営業日以内にご返信いたします。",
     "send_another": "別のメッセージを送る"
