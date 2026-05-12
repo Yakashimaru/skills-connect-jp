@@ -9,6 +9,28 @@ import { createReview } from '../lib/reviews'
 
 const card = { backgroundColor: '#fff', borderRadius: '16px', border: '0.5px solid #E8DDD5', padding: '20px' }
 
+const SESSION_ICONS: Record<string, string> = {
+  '1-on-1 Session':   '👤',
+  'Group Meetup':     '👥',
+  'Online Call':      '💻',
+  'Social Experience':'🌸',
+  'online':           '💻',
+  'in-person':        '👤',
+  'group':            '👥',
+}
+
+const SESSION_DESCS: Record<string, string> = {
+  '1-on-1 Session':   'Private coaching or tutoring, online or in-person',
+  'Group Meetup':     'Small group sessions (3–6 people)',
+  'Online Call':      'Video or voice call via Zoom or Google Meet',
+  'Social Experience':'Casual meetup — café, walk, or cultural outing',
+  'online':           'Video or voice call via Zoom or Google Meet',
+  'in-person':        'Private coaching or tutoring, in-person',
+  'group':            'Small group sessions (3–6 people)',
+}
+
+const ALL_SESSION_TYPES = ['1-on-1 Session', 'Group Meetup', 'Online Call', 'Social Experience']
+
 const PLAN_LABELS: Record<string, { label: string; price: string; bg: string }> = {
   standard: { label: 'Standard', price: '¥5,000 / month', bg: '#F5F5F5' },
   premium:  { label: 'Premium',  price: '¥10,000 / month', bg: '#5C0A1E' },
@@ -288,6 +310,58 @@ function SeekerDashboard({ bookings, savedProfiles, subscription, userId }: {
   )
 }
 
+// ─── Settings menu ───────────────────────────────────────────────────────────
+
+function SettingsMenu({ navigate, signOut, tr }: {
+  navigate: ReturnType<typeof useNavigate>; signOut: () => void; tr: any
+}) {
+  const [comingSoon, setComingSoon] = useState<string | null>(null)
+
+  const items = [
+    {
+      key: 'setting_notifications',
+      label: tr('dashboard.setting_notifications'),
+      action: () => { setComingSoon('Notifications'); setTimeout(() => setComingSoon(null), 2500) },
+    },
+    {
+      key: 'setting_privacy',
+      label: tr('dashboard.setting_privacy'),
+      action: () => navigate('/edit-profile'),
+    },
+    {
+      key: 'setting_payment',
+      label: tr('dashboard.setting_payment'),
+      action: () => { setComingSoon('Payment methods'); setTimeout(() => setComingSoon(null), 2500) },
+    },
+    {
+      key: 'setting_help',
+      label: tr('dashboard.setting_help'),
+      action: () => navigate('/contact'),
+    },
+    {
+      key: 'setting_logout',
+      label: tr('dashboard.setting_logout'),
+      action: () => { signOut(); navigate('/') },
+    },
+  ]
+
+  return (
+    <div className="flex flex-col gap-2">
+      {comingSoon && (
+        <p className="text-xs px-3 py-2 rounded-lg mb-1" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>
+          {comingSoon} — coming soon
+        </p>
+      )}
+      {items.map(({ key, label, action }) => (
+        <button key={key} onClick={action} className="text-left text-sm py-1.5 transition-colors hover:opacity-70"
+          style={{ color: key === 'setting_logout' ? '#DC2626' : '#5C0A1E' }}>
+          {label} →
+        </button>
+      ))}
+    </div>
+  )
+}
+
 // ─── Shared right column ──────────────────────────────────────────────────────
 
 function RightColumn({ plan, navigate, tr, role }: {
@@ -347,23 +421,30 @@ function RightColumn({ plan, navigate, tr, role }: {
         </button>
       </div>
 
+      {/* Session options */}
+      <div style={card}>
+        <h3 className="font-semibold mb-3" style={{ color: '#1A0208' }}>Session options</h3>
+        <div className="flex flex-col gap-2">
+          {(role === 'provider' && pp?.session_types?.length > 0 ? pp.session_types : ALL_SESSION_TYPES).map((type: string) => (
+            <div key={type}
+              className="rounded-xl p-3 cursor-pointer transition-all hover:-translate-y-0.5"
+              style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = '#B8860B')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = '#E8DDD5')}>
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-base">{SESSION_ICONS[type] ?? '📌'}</span>
+                <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{type}</span>
+              </div>
+              <p className="text-xs leading-relaxed ml-6" style={{ color: '#7A6060' }}>{SESSION_DESCS[type] ?? ''}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Settings */}
       <div style={card}>
         <h3 className="font-semibold mb-3" style={{ color: '#1A0208' }}>{tr('dashboard.settings')}</h3>
-        <div className="flex flex-col gap-2">
-          {[
-            { key: 'setting_notifications', label: tr('dashboard.setting_notifications'), action: undefined },
-            { key: 'setting_privacy', label: tr('dashboard.setting_privacy'), action: undefined },
-            { key: 'setting_payment', label: tr('dashboard.setting_payment'), action: undefined },
-            { key: 'setting_help', label: tr('dashboard.setting_help'), action: undefined },
-            { key: 'setting_logout', label: tr('dashboard.setting_logout'), action: () => { signOut(); navigate('/') } },
-          ].map(({ key, label, action }) => (
-            <button key={key} onClick={action} className="text-left text-sm py-1.5 transition-colors hover:opacity-70"
-              style={{ color: key === 'setting_logout' ? '#DC2626' : '#5C0A1E' }}>
-              {label} →
-            </button>
-          ))}
-        </div>
+        <SettingsMenu navigate={navigate} signOut={signOut} tr={tr} />
       </div>
     </div>
   )

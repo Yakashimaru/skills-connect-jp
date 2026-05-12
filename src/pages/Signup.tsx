@@ -13,15 +13,20 @@ export default function Signup() {
   const [role, setRole] = useState<'provider' | 'seeker'>('seeker')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [confirmationSent, setConfirmationSent] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
-    const { error: authError } = await signUp(email, password, name, role)
+    const { error: authError, needsConfirmation } = await signUp(email, password, name, role)
     setLoading(false)
     if (authError) {
       setError(authError)
+      return
+    }
+    if (needsConfirmation) {
+      setConfirmationSent(true)
       return
     }
     navigate(role === 'provider' ? '/edit-profile' : '/dashboard')
@@ -32,6 +37,26 @@ export default function Signup() {
     { label: t('signup.label_email'), type: 'email', value: email, set: setEmail, placeholder: t('signup.placeholder_email') },
     { label: t('signup.label_password'), type: 'password', value: password, set: setPassword, placeholder: '••••••••' },
   ]
+
+  if (confirmationSent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#0A0A0A' }}>
+        <div className="w-full max-w-md p-8 rounded-3xl text-center" style={{ backgroundColor: '#1A0208', border: '0.5px solid rgba(184,134,11,0.3)' }}>
+          <Link to="/" className="text-xl font-semibold tracking-tight block text-center mb-8" style={{ color: '#fff' }}>
+            skillconnect
+          </Link>
+          <div className="text-4xl mb-4">📧</div>
+          <h1 className="text-2xl font-bold text-white mb-3">Check your email</h1>
+          <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            We sent a confirmation link to <span style={{ color: '#B8860B' }}>{email}</span>. Click it to activate your account, then log in.
+          </p>
+          <Link to="/login" className="inline-block font-medium py-3 px-6 rounded-xl" style={{ backgroundColor: '#B8860B', color: '#3A2400' }}>
+            Go to login
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#0A0A0A' }}>

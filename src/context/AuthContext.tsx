@@ -10,7 +10,7 @@ interface AuthContextType {
   isLoggedIn: boolean
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
-  signUp: (email: string, password: string, name: string, userType: UserType) => Promise<{ error: string | null }>
+  signUp: (email: string, password: string, name: string, userType: UserType) => Promise<{ error: string | null; needsConfirmation: boolean }>
   signOut: () => Promise<void>
 }
 
@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoggedIn: false,
   loading: true,
   signIn: async () => ({ error: null }),
-  signUp: async () => ({ error: null }),
+  signUp: async () => ({ error: null, needsConfirmation: false }),
   signOut: async () => {},
 })
 
@@ -51,8 +51,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signUp = async (email: string, password: string, name: string, userType: UserType) => {
-    const { error } = await authService.signUp(email, password, name, userType)
-    return { error: error?.message ?? null }
+    const { data, error } = await authService.signUp(email, password, name, userType)
+    return { error: error?.message ?? null, needsConfirmation: !error && !data?.session }
   }
 
   const signOut = async () => {
