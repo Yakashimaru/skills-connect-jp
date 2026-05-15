@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import {
-  getProfile,
   updateProfile,
   updateProviderProfile,
   addEducation,
@@ -40,53 +39,56 @@ type ExpEntry = { id?: string; role: string; company: string; years: string }
 export default function EditProfile() {
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const { user } = useAuth()
+  const { user, profile: cachedProfile, refreshProfile } = useAuth()
 
-  const [pageLoading, setPageLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [isProvider, setIsProvider] = useState(false)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const p = cachedProfile as any
+  const pp = p?.provider_profile
+  const isProvider = p?.user_type === 'provider'
 
   const [form, setForm] = useState({
-    name: '',
-    title: '',
-    bio: '',
-    location: 'Tokyo',
-    price: '',
-    sessionTypes: [] as string[],
-    privacy: 'public',
+    name: p?.name ?? '',
+    title: pp?.title ?? '',
+    bio: p?.bio ?? '',
+    location: p?.location ?? 'Tokyo',
+    price: String(pp?.hourly_rate ?? ''),
+    sessionTypes: pp?.session_types ?? [],
+    privacy: p?.privacy_mode ?? 'public',
   })
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-  const [educationEntries, setEducationEntries] = useState<EduEntry[]>([])
-  const [experienceEntries, setExperienceEntries] = useState<ExpEntry[]>([])
+  const [selectedSkills, setSelectedSkills] = useState<string[]>(pp?.skills ?? [])
+  const [educationEntries, setEducationEntries] = useState<EduEntry[]>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (p?.education ?? []).map((e: any) => ({ id: e.id, degree: e.degree, school: e.school, year: e.year ?? '' }))
+  )
+  const [experienceEntries, setExperienceEntries] = useState<ExpEntry[]>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (p?.experience ?? []).map((e: any) => ({ id: e.id, role: e.role, company: e.company, years: e.years ?? '' }))
+  )
   const [deletedEduIds, setDeletedEduIds] = useState<string[]>([])
   const [deletedExpIds, setDeletedExpIds] = useState<string[]>([])
 
+  // Sync form if cached profile loads after initial render
   useEffect(() => {
-    if (!user) return
-    getProfile(user.id).then((p) => {
-      if (!p) { setPageLoading(false); return }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pp = (p as any).provider_profile
-      setIsProvider(p.user_type === 'provider')
-      setForm({
-        name: p.name ?? '',
-        title: pp?.title ?? '',
-        bio: p.bio ?? '',
-        location: p.location ?? 'Tokyo',
-        price: String(pp?.hourly_rate ?? ''),
-        sessionTypes: pp?.session_types ?? [],
-        privacy: p.privacy_mode ?? 'public',
-      })
-      setSelectedSkills(pp?.skills ?? [])
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setEducationEntries(((p as any).education ?? []).map((e: any) => ({ id: e.id, degree: e.degree, school: e.school, year: e.year ?? '' })))
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setExperienceEntries(((p as any).experience ?? []).map((e: any) => ({ id: e.id, role: e.role, company: e.company, years: e.years ?? '' })))
-      setPageLoading(false)
+    if (!p) return
+    setForm({
+      name: p.name ?? '',
+      title: pp?.title ?? '',
+      bio: p.bio ?? '',
+      location: p.location ?? 'Tokyo',
+      price: String(pp?.hourly_rate ?? ''),
+      sessionTypes: pp?.session_types ?? [],
+      privacy: p.privacy_mode ?? 'public',
     })
-  }, [user])
+    setSelectedSkills(pp?.skills ?? [])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setEducationEntries((p.education ?? []).map((e: any) => ({ id: e.id, degree: e.degree, school: e.school, year: e.year ?? '' })))
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setExperienceEntries((p.experience ?? []).map((e: any) => ({ id: e.id, role: e.role, company: e.company, years: e.years ?? '' })))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cachedProfile])
 
   const toggleSkill = (skill: string) =>
     setSelectedSkills((prev) => prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill])
@@ -115,48 +117,43 @@ export default function EditProfile() {
       location: form.location,
       privacy_mode: form.privacy as 'public' | 'hidden' | 'anonymous',
     })
-
     if (profileErr) { setError(profileErr.message); setSaving(false); return }
 
+    // Run all remaining saves in parallel
+    const saves: Promise<unknown>[] = []
+
     if (isProvider) {
-      const { error: ppErr } = await updateProviderProfile(user.id, {
+      saves.push(updateProviderProfile(user.id, {
         title: form.title,
         skills: selectedSkills,
         hourly_rate: Number(form.price) || undefined,
         session_types: form.sessionTypes,
-      })
-      if (ppErr) { setError(ppErr.message); setSaving(false); return }
+      }))
     }
 
-    for (const id of deletedEduIds) await removeEducation(id)
-    for (const entry of educationEntries) {
-      if (entry.id) {
-        await updateEducation(entry.id, { degree: entry.degree, school: entry.school, year: entry.year || null })
-      } else {
-        await addEducation({ profile_id: user.id, degree: entry.degree, school: entry.school, year: entry.year || null })
-      }
-    }
+    deletedEduIds.forEach(id => saves.push(removeEducation(id)))
+    educationEntries.forEach(entry => saves.push(
+      entry.id
+        ? updateEducation(entry.id, { degree: entry.degree, school: entry.school, year: entry.year || null })
+        : addEducation({ profile_id: user.id, degree: entry.degree, school: entry.school, year: entry.year || null })
+    ))
 
-    for (const id of deletedExpIds) await removeExperience(id)
-    for (const entry of experienceEntries) {
-      if (entry.id) {
-        await updateExperience(entry.id, { role: entry.role, company: entry.company, years: entry.years || null })
-      } else {
-        await addExperience({ profile_id: user.id, role: entry.role, company: entry.company, years: entry.years || null })
-      }
-    }
+    deletedExpIds.forEach(id => saves.push(removeExperience(id)))
+    experienceEntries.forEach(entry => saves.push(
+      entry.id
+        ? updateExperience(entry.id, { role: entry.role, company: entry.company, years: entry.years || null })
+        : addExperience({ profile_id: user.id, role: entry.role, company: entry.company, years: entry.years || null })
+    ))
 
-    setDeletedEduIds([])
-    setDeletedExpIds([])
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    await Promise.all(saves)
+    await refreshProfile()
+    navigate(`/profile/${user.id}`)
   }
 
   const labelStyle = { fontSize: '12px', fontWeight: 500, color: '#5C0A1E', display: 'block', marginBottom: '6px' }
   const sectionTitle = { fontWeight: 600, color: '#1A0208', marginBottom: '16px', fontSize: '15px' }
 
-  if (pageLoading) {
+  if (!cachedProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDF8F2' }}>
         <p className="text-sm" style={{ color: '#aaa' }}>Loading...</p>
@@ -256,6 +253,11 @@ export default function EditProfile() {
                 <p style={sectionTitle}>{t('edit_profile.section_edu_exp')}</p>
 
                 <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>{t('edit_profile.label_education')}</p>
+                <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
+                  {['Degree / Qualification', 'School / Institution', 'Year'].map(h => (
+                    <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
+                  ))}
+                </div>
                 <div className="flex flex-col gap-3 mb-3">
                   {educationEntries.map((entry, i) => (
                     <div key={i} className="grid grid-cols-3 gap-2 items-start">
@@ -270,7 +272,8 @@ export default function EditProfile() {
                         onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                         onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
                       <div className="flex gap-2">
-                        <input placeholder="Year" value={entry.year}
+                        <input type="number" placeholder="Year" min={1970} max={new Date().getFullYear()}
+                          value={entry.year}
                           onChange={(e) => setEducationEntries((prev) => prev.map((x, j) => j === i ? { ...x, year: e.target.value } : x))}
                           style={{ ...inputStyle, fontSize: '13px' }}
                           onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
@@ -289,6 +292,11 @@ export default function EditProfile() {
 
                 <div className="mt-6 pt-5" style={{ borderTop: '0.5px solid #E8DDD5' }}>
                   <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>{t('edit_profile.label_experience')}</p>
+                  <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
+                    {['Role / Title', 'Company', 'Years exp.'].map(h => (
+                      <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
+                    ))}
+                  </div>
                   <div className="flex flex-col gap-3 mb-3">
                     {experienceEntries.map((entry, i) => (
                       <div key={i} className="grid grid-cols-3 gap-2 items-start">
@@ -303,7 +311,7 @@ export default function EditProfile() {
                           onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                           onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
                         <div className="flex gap-2">
-                          <input placeholder="Years" value={entry.years}
+                          <input type="number" placeholder="Years" min={0} max={60} value={entry.years}
                             onChange={(e) => setExperienceEntries((prev) => prev.map((x, j) => j === i ? { ...x, years: e.target.value } : x))}
                             style={{ ...inputStyle, fontSize: '13px' }}
                             onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
@@ -327,7 +335,9 @@ export default function EditProfile() {
                 <p style={sectionTitle}>{t('edit_profile.section_pricing')}</p>
                 <div className="flex items-center gap-3">
                   <span className="text-sm" style={{ color: '#5C0A1E', fontWeight: 500 }}>¥</span>
-                  <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })}
+                  <input type="number" value={form.price} min={0} step={1}
+                    onKeyDown={(e) => ['e', 'E', '+', '-', '.'].includes(e.key) && e.preventDefault()}
+                    onChange={(e) => setForm({ ...form, price: String(Math.max(0, Math.floor(Number(e.target.value)))) })}
                     style={{ ...inputStyle, width: '160px' }}
                     onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                     onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
@@ -350,7 +360,7 @@ export default function EditProfile() {
                         onChange={() => setForm((prev) => ({
                           ...prev,
                           sessionTypes: prev.sessionTypes.includes(type)
-                            ? prev.sessionTypes.filter((t) => t !== type)
+                            ? prev.sessionTypes.filter((st: string) => st !== type)
                             : [...prev.sessionTypes, type],
                         }))}
                         className="w-4 h-4" style={{ accentColor: '#B8860B' }} />
@@ -392,7 +402,6 @@ export default function EditProfile() {
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#B8860B')}>
               {saving ? '...' : t('edit_profile.save')}
             </button>
-            {saved && <p className="text-sm font-medium" style={{ color: '#B8860B' }}>{t('edit_profile.saved')}</p>}
           </div>
 
         </form>

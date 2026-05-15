@@ -149,14 +149,19 @@ export default function ProfilePage() {
             {profile.experience?.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.experience')}</h2>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {profile.experience.map((exp: any) => (
-                    <div key={exp.id} className="flex items-start gap-3">
-                      <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#B8860B' }} />
-                      <div>
-                        <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{exp.role}</p>
-                        <p className="text-xs" style={{ color: '#aaa' }}>{exp.company}{exp.years ? ` · ${exp.years}` : ''}</p>
+                    <div key={exp.id} className="rounded-xl p-3" style={{ backgroundColor: '#FAFAF8', border: '0.5px solid #F0E8E0' }}>
+                      <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{exp.role}</p>
+                      <div className="flex items-center gap-1.5 text-xs mt-0.5" style={{ color: '#7A6060' }}>
+                        <span>{exp.company}</span>
+                        {exp.years && (
+                          <>
+                            <span>·</span>
+                            <span style={{ color: '#B8860B' }}>{exp.years} {Number(exp.years) === 1 ? 'yr' : 'yrs'}</span>
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -167,15 +172,14 @@ export default function ProfilePage() {
             {profile.education?.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.education')}</h2>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {profile.education.map((edu: any) => (
-                    <div key={edu.id} className="flex items-start gap-3">
-                      <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#B8860B' }} />
-                      <div>
-                        <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{edu.degree}</p>
-                        <p className="text-xs" style={{ color: '#aaa' }}>{edu.school}{edu.year ? ` · ${edu.year}` : ''}</p>
-                      </div>
+                    <div key={edu.id} className="rounded-xl p-3" style={{ backgroundColor: '#FAFAF8', border: '0.5px solid #F0E8E0' }}>
+                      <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{edu.school}</p>
+                      <p className="text-xs mt-0.5" style={{ color: '#7A6060' }}>
+                        {edu.degree}{edu.year ? <span style={{ color: '#aaa' }}> · Class of {edu.year}</span> : ''}
+                      </p>
                     </div>
                   ))}
                 </div>

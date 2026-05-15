@@ -12,6 +12,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
   signUp: (email: string, password: string, name: string, userType: UserType) => Promise<{ error: string | null; needsConfirmation: boolean }>
   signOut: () => Promise<void>
+  refreshProfile: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType>({
   signIn: async () => ({ error: null }),
   signUp: async () => ({ error: null, needsConfirmation: false }),
   signOut: async () => {},
+  refreshProfile: async () => {},
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -55,6 +57,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error: error?.message ?? null, needsConfirmation: !error && !data?.session }
   }
 
+  const refreshProfile = async () => {
+    if (user) setProfile(await getProfile(user.id))
+  }
+
   const signOut = async () => {
     await authService.signOut()
     setUser(null)
@@ -62,7 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, profile, isLoggedIn: !!user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, profile, isLoggedIn: !!user, loading, signIn, signUp, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   )
