@@ -172,6 +172,18 @@ const JA_CITY: Record<string, string> = {
 
 const LOCATION_OPTIONS: OptionGroup[] = [
   { group: '🌐', items: [{ value: 'online', label: 'nav.loc_online' }] },
+  { group: '⭐ Major Cities', items: [
+    { value: 'tokyo', label: 'Tokyo' },
+    { value: 'osaka', label: 'Osaka' },
+    { value: 'kyoto', label: 'Kyoto' },
+    { value: 'nagoya', label: 'Nagoya' },
+    { value: 'fukuoka', label: 'Fukuoka' },
+    { value: 'sapporo', label: 'Sapporo' },
+    { value: 'yokohama', label: 'Yokohama' },
+    { value: 'sendai', label: 'Sendai' },
+    { value: 'hiroshima', label: 'Hiroshima' },
+    { value: 'kobe', label: 'Kobe' },
+  ]},
   { group: 'Hokkaido', groupKey: 'nav.loc_hokkaido', items: [
     { value: 'sapporo', label: 'Sapporo' }, { value: 'asahikawa', label: 'Asahikawa' },
     { value: 'hakodate', label: 'Hakodate' }, { value: 'kushiro', label: 'Kushiro' },
@@ -577,18 +589,21 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!isDiscover) return
-    const params = new URLSearchParams()
-    const active = (f: FilterState) => Object.entries(f).filter(([, v]) => v).map(([k]) => k)
-    const locations = active(locationFilter)
-    const skills = active(categoryFilter)
-    const prices = active(priceFilter)
-    if (search.trim()) params.set('q', search.trim())
-    if (locations.length) params.set('location', locations.join(','))
-    if (skills.length) params.set('skills', skills.join(','))
-    if (prices.length) params.set('price', prices.join(','))
-    if (verifiedOnly) params.set('verified', '1')
-    const qs = params.toString()
-    navigate(qs ? `/discover?${qs}` : '/discover', { replace: true })
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams()
+      const active = (f: FilterState) => Object.entries(f).filter(([, v]) => v).map(([k]) => k)
+      const locations = active(locationFilter)
+      const skills = active(categoryFilter)
+      const prices = active(priceFilter)
+      if (search.trim()) params.set('q', search.trim())
+      if (locations.length) params.set('location', locations.join(','))
+      if (skills.length) params.set('skills', skills.join(','))
+      if (prices.length) params.set('price', prices.join(','))
+      if (verifiedOnly) params.set('verified', '1')
+      const qs = params.toString()
+      navigate(qs ? `/discover?${qs}` : '/discover', { replace: true })
+    }, search !== '' ? 250 : 0)
+    return () => clearTimeout(timer)
   }, [locationFilter, categoryFilter, priceFilter, verifiedOnly, search, isDiscover, navigate])
 
   const toggle = useCallback((setter: React.Dispatch<React.SetStateAction<FilterState>>) => (val: string) => {
@@ -840,9 +855,7 @@ export default function Navbar() {
 
             <FilterDropdown label={t('nav.filter_category')} options={categoryOptions} selected={categoryFilter} onChange={toggle(setCategoryFilter)} onClear={clear(setCategoryFilter)} searchable />
             <FilterDropdown label={t('nav.filter_location')} options={LOCATION_OPTIONS} selected={locationFilter} onChange={toggle(setLocationFilter)} onClear={clear(setLocationFilter)} searchable wide />
-            <FilterDropdown label={t('nav.filter_age')} flatOptions={ageOptions} selected={ageFilter} onChange={toggle(setAgeFilter)} onClear={clear(setAgeFilter)} />
             <FilterDropdown label={t('nav.filter_price')} flatOptions={priceOptions} selected={priceFilter} onChange={toggle(setPriceFilter)} onClear={clear(setPriceFilter)} />
-            <FilterDropdown label={t('nav.filter_gender')} flatOptions={genderOptions} selected={genderFilter} onChange={toggle(setGenderFilter)} onClear={clear(setGenderFilter)} />
 
             <label className="flex items-center gap-2 cursor-pointer ml-1">
               <input type="checkbox" checked={verifiedOnly} onChange={e => setVerifiedOnly(e.target.checked)}

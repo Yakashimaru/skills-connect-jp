@@ -3,23 +3,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { searchProfiles } from '../lib/profiles'
 
-// Maps Navbar location values (lowercase) to DB stored values
-const LOCATION_MAP: Record<string, string> = {
-  tokyo: 'Tokyo',
-  osaka: 'Osaka',
-  kyoto: 'Kyoto',
-  online: 'Online only',
-}
-
-// Maps Navbar category values to skill labels stored in DB
-const SKILL_MAP: Record<string, string> = {
-  english: 'English', japanese: 'Japanese', chinese: 'Chinese',
-  spanish: 'Spanish', french: 'French', korean: 'Korean',
-  golf: 'Golf', fitness: 'Fitness', yoga: 'Yoga',
-  cooking: 'Cooking', music: 'Music', piano: 'Piano',
-  business: 'Business', finance: 'Finance', startups: 'Startups',
-  coaching: 'Coaching', mentorship: 'Mentorship', travel: 'Travel',
-  mindfulness: 'Mindfulness', nutrition: 'Nutrition',
+// Convert Navbar filter value (e.g. 'okinawa-city', 'online') to a matchable label
+const toLabel = (value: string): string => {
+  if (value === 'online') return 'online only'
+  return value.replace(/-/g, ' ')
 }
 
 const PRICE_RANGES: Record<string, { min?: number; max?: number }> = {
@@ -38,40 +25,52 @@ export default function Discover() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Fetch all profiles once — every filter runs client-side after that
+  useEffect(() => {
+    searchProfiles({}).then(({ data, error: err }) => {
+      if (err) setError(err.message)
+      else setAllProfiles(data ?? [])
+      setLoading(false)
+    })
+  }, [])
+
   const query = searchParams.get('q') ?? ''
   const locationParam = searchParams.get('location') ?? ''
   const skillsParam = searchParams.get('skills') ?? ''
   const priceParam = searchParams.get('price') ?? ''
   const verifiedOnly = searchParams.get('verified') === '1'
 
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-
-    const locations = locationParam
-      ? locationParam.split(',').map(l => LOCATION_MAP[l]).filter(Boolean)
-      : []
-
-    searchProfiles({ locations, query: query || undefined }).then(({ data, error: err }) => {
-      if (err) { setError(err.message); setLoading(false); return }
-      setAllProfiles(data ?? [])
-      setLoading(false)
-    })
-  }, [query, locationParam])
-
   const profiles = useMemo(() => {
     let result = allProfiles
 
-    // Skills filter (client-side — skills live in nested provider_profile)
-    if (skillsParam) {
-      const wantedSkills = skillsParam.split(',').map(s => SKILL_MAP[s]).filter(Boolean).map(s => s.toLowerCase())
+    // Name / title search
+    if (query.trim()) {
+      const q = query.toLowerCase()
+      result = result.filter(p =>
+        p.name?.toLowerCase().includes(q) ||
+        p.provider_profile?.title?.toLowerCase().includes(q)
+      )
+    }
+
+    // Location filter — substring match so 'shinjuku' matches 'Shinjuku, Tokyo' etc.
+    if (locationParam) {
+      const wanted = locationParam.split(',').map(toLabel)
       result = result.filter(p => {
-        const pSkills: string[] = (p.provider_profile?.skills ?? []).map((s: string) => s.toLowerCase())
-        return wantedSkills.some(s => pSkills.includes(s))
+        const loc = (p.location ?? '').toLowerCase()
+        return wanted.some(l => loc.includes(l))
       })
     }
 
-    // Price filter (client-side)
+    // Skills / category filter — case-insensitive label match
+    if (skillsParam) {
+      const wanted = skillsParam.split(',').map(toLabel)
+      result = result.filter(p => {
+        const skills: string[] = (p.provider_profile?.skills ?? []).map((s: string) => s.toLowerCase())
+        return wanted.some(w => skills.some(s => s.includes(w)))
+      })
+    }
+
+    // Price filter
     if (priceParam) {
       const ranges = priceParam.split(',').map(k => PRICE_RANGES[k]).filter(Boolean)
       result = result.filter(p => {
@@ -84,7 +83,7 @@ export default function Discover() {
     if (verifiedOnly) result = result.filter(p => p.verified)
 
     return result
-  }, [allProfiles, skillsParam, priceParam, verifiedOnly])
+  }, [allProfiles, query, locationParam, skillsParam, priceParam, verifiedOnly])
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
