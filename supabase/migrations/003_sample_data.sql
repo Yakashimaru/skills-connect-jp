@@ -1,28 +1,43 @@
+-- NOTE: Create test users manually via Supabase Dashboard → Authentication → Users
+-- with "Auto Confirm User" checked. The handle_new_user trigger will create
+-- their profile rows automatically. Then run this file to fill in the data.
+--
+-- Test accounts (password: test1234):
+--   yuki.tanaka@example.com    — Provider
+--   hiroshi.sato@example.com   — Provider
+--   aiko.yamamoto@example.com  — Provider
+--   kenji.watanabe@example.com — Provider
+--   alex.johnson@example.com   — Seeker
+--   sarah.kim@example.com      — Seeker
+
 DO $$ BEGIN
 
-INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_user_meta_data, raw_app_meta_data, aud, role)
-VALUES
-  ('aaaaaaaa-0000-0000-0000-000000000001', 'yuki.tanaka@example.com',    crypt('test1234', gen_salt('bf')), now(), now(), now(), '{"name":"Yuki Tanaka","user_type":"provider"}'::jsonb,    '{"provider":"email","providers":["email"]}'::jsonb, 'authenticated', 'authenticated'),
-  ('aaaaaaaa-0000-0000-0000-000000000002', 'hiroshi.sato@example.com',   crypt('test1234', gen_salt('bf')), now(), now(), now(), '{"name":"Hiroshi Sato","user_type":"provider"}'::jsonb,   '{"provider":"email","providers":["email"]}'::jsonb, 'authenticated', 'authenticated'),
-  ('aaaaaaaa-0000-0000-0000-000000000003', 'aiko.yamamoto@example.com',  crypt('test1234', gen_salt('bf')), now(), now(), now(), '{"name":"Aiko Yamamoto","user_type":"provider"}'::jsonb,  '{"provider":"email","providers":["email"]}'::jsonb, 'authenticated', 'authenticated'),
-  ('aaaaaaaa-0000-0000-0000-000000000004', 'kenji.watanabe@example.com', crypt('test1234', gen_salt('bf')), now(), now(), now(), '{"name":"Kenji Watanabe","user_type":"provider"}'::jsonb, '{"provider":"email","providers":["email"]}'::jsonb, 'authenticated', 'authenticated'),
-  ('bbbbbbbb-0000-0000-0000-000000000001', 'alex.johnson@example.com',   crypt('test1234', gen_salt('bf')), now(), now(), now(), '{"name":"Alex Johnson","user_type":"seeker"}'::jsonb,     '{"provider":"email","providers":["email"]}'::jsonb, 'authenticated', 'authenticated'),
-  ('bbbbbbbb-0000-0000-0000-000000000002', 'sarah.kim@example.com',      crypt('test1234', gen_salt('bf')), now(), now(), now(), '{"name":"Sarah Kim","user_type":"seeker"}'::jsonb,        '{"provider":"email","providers":["email"]}'::jsonb, 'authenticated', 'authenticated')
-ON CONFLICT (id) DO NOTHING;
+UPDATE public.profiles SET name='Yuki Tanaka',    user_type='provider', location='Tokyo', verified=true,  bio='Native English teacher with 8 years experience in Japan. Specialising in business English, TOEIC prep, and daily conversation.' WHERE id=(SELECT id FROM auth.users WHERE email='yuki.tanaka@example.com');
+UPDATE public.profiles SET name='Hiroshi Sato',   user_type='provider', location='Osaka', verified=true,  bio='Business consultant helping foreign professionals navigate Japanese corporate culture. Former Toyota strategy team.'              WHERE id=(SELECT id FROM auth.users WHERE email='hiroshi.sato@example.com');
+UPDATE public.profiles SET name='Aiko Yamamoto',  user_type='provider', location='Tokyo', verified=false, bio='Certified yoga instructor and wellness coach. Bilingual sessions available in English and Japanese.'                            WHERE id=(SELECT id FROM auth.users WHERE email='aiko.yamamoto@example.com');
+UPDATE public.profiles SET name='Kenji Watanabe', user_type='provider', location='Tokyo', verified=true,  bio='Senior software engineer at a Tokyo startup. Mentoring foreigners breaking into Japanese tech.'                               WHERE id=(SELECT id FROM auth.users WHERE email='kenji.watanabe@example.com');
+UPDATE public.profiles SET name='Alex Johnson',   user_type='seeker',   location='Tokyo', bio='Canadian living in Tokyo for 2 years. Looking to improve Japanese and connect with the local community.'                                      WHERE id=(SELECT id FROM auth.users WHERE email='alex.johnson@example.com');
+UPDATE public.profiles SET name='Sarah Kim',      user_type='seeker',   location='Osaka', bio='Korean-American marketing professional. Expanding my network in the Kansai region.'                                                          WHERE id=(SELECT id FROM auth.users WHERE email='sarah.kim@example.com');
 
-UPDATE public.profiles SET location='Tokyo, Japan',   bio='Native English teacher with 8 years experience in Japan. Specialising in business English, TOEIC prep, and daily conversation.', mbti='ENFJ', verified=true  WHERE id='aaaaaaaa-0000-0000-0000-000000000001';
-UPDATE public.profiles SET location='Osaka, Japan',   bio='Business consultant helping foreign professionals navigate Japanese corporate culture. Former Toyota strategy team.',               mbti='ENTJ', verified=true  WHERE id='aaaaaaaa-0000-0000-0000-000000000002';
-UPDATE public.profiles SET location='Tokyo, Japan',   bio='Certified yoga instructor and wellness coach. Bilingual sessions available in English and Japanese.',                             mbti='INFP', verified=false WHERE id='aaaaaaaa-0000-0000-0000-000000000003';
-UPDATE public.profiles SET location='Fukuoka, Japan', bio='Senior software engineer at a Tokyo startup. Mentoring foreigners breaking into Japanese tech.',                                 mbti='INTP', verified=true  WHERE id='aaaaaaaa-0000-0000-0000-000000000004';
-UPDATE public.profiles SET location='Tokyo, Japan',   bio='Canadian living in Tokyo for 2 years. Looking to improve Japanese and connect with the local community.',                        mbti='ENFP'                WHERE id='bbbbbbbb-0000-0000-0000-000000000001';
-UPDATE public.profiles SET location='Osaka, Japan',   bio='Korean-American marketing professional. Expanding my network in the Kansai region.',                                            mbti='ESTJ'                WHERE id='bbbbbbbb-0000-0000-0000-000000000002';
+INSERT INTO public.provider_profiles (id, title, skills, hourly_rate, session_types, rating, review_count)
+SELECT id, 'English Teacher & TOEIC Coach', ARRAY['English Teaching','TOEIC Prep','Business English','Conversation'], 5000, ARRAY['1-on-1 Session','Online Call'], 4.9, 47
+FROM auth.users WHERE email='yuki.tanaka@example.com'
+ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, skills=EXCLUDED.skills, hourly_rate=EXCLUDED.hourly_rate, session_types=EXCLUDED.session_types, rating=EXCLUDED.rating, review_count=EXCLUDED.review_count;
 
-INSERT INTO public.provider_profiles (id, title, skills, hourly_rate, session_types, rating, review_count) VALUES
-  ('aaaaaaaa-0000-0000-0000-000000000001', 'English Teacher & TOEIC Coach',    ARRAY['English Teaching','TOEIC Prep','Business English','Conversation'],       5000,  ARRAY['online','in-person'],        4.9, 47),
-  ('aaaaaaaa-0000-0000-0000-000000000002', 'Japanese Business Culture Advisor', ARRAY['Business Strategy','Cross-cultural Communication','Networking','HR'],    15000, ARRAY['online','in-person'],        4.7, 23),
-  ('aaaaaaaa-0000-0000-0000-000000000003', 'Yoga & Wellness Coach',             ARRAY['Yoga','Meditation','Mindfulness','Wellness Coaching'],                    8000,  ARRAY['online','in-person','group'],4.8, 31),
-  ('aaaaaaaa-0000-0000-0000-000000000004', 'Tech Mentor & Career Coach',        ARRAY['Software Engineering','System Design','Career Coaching','Japanese Tech'],12000, ARRAY['online'],                    4.6, 18)
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO public.provider_profiles (id, title, skills, hourly_rate, session_types, rating, review_count)
+SELECT id, 'Japanese Business Culture Advisor', ARRAY['Business Strategy','Cross-cultural Communication','Networking','HR'], 15000, ARRAY['1-on-1 Session','Online Call'], 4.7, 23
+FROM auth.users WHERE email='hiroshi.sato@example.com'
+ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, skills=EXCLUDED.skills, hourly_rate=EXCLUDED.hourly_rate, session_types=EXCLUDED.session_types, rating=EXCLUDED.rating, review_count=EXCLUDED.review_count;
+
+INSERT INTO public.provider_profiles (id, title, skills, hourly_rate, session_types, rating, review_count)
+SELECT id, 'Yoga & Wellness Coach', ARRAY['Yoga','Meditation','Mindfulness','Wellness Coaching'], 8000, ARRAY['1-on-1 Session','Online Call','Group Meetup'], 4.8, 31
+FROM auth.users WHERE email='aiko.yamamoto@example.com'
+ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, skills=EXCLUDED.skills, hourly_rate=EXCLUDED.hourly_rate, session_types=EXCLUDED.session_types, rating=EXCLUDED.rating, review_count=EXCLUDED.review_count;
+
+INSERT INTO public.provider_profiles (id, title, skills, hourly_rate, session_types, rating, review_count)
+SELECT id, 'Tech Mentor & Career Coach', ARRAY['Software Engineering','System Design','Career Coaching','Japanese Tech'], 12000, ARRAY['Online Call'], 4.6, 18
+FROM auth.users WHERE email='kenji.watanabe@example.com'
+ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, skills=EXCLUDED.skills, hourly_rate=EXCLUDED.hourly_rate, session_types=EXCLUDED.session_types, rating=EXCLUDED.rating, review_count=EXCLUDED.review_count;
 
 INSERT INTO public.education (profile_id, degree, school, year) VALUES
   ('aaaaaaaa-0000-0000-0000-000000000001', 'BA English Literature',         'University of Edinburgh',       '2015'),
@@ -43,10 +58,10 @@ INSERT INTO public.experience (profile_id, role, company, years) VALUES
   ('aaaaaaaa-0000-0000-0000-000000000004', 'Senior Engineer & Mentor',     'LayerX',                   '2021–present');
 
 INSERT INTO public.bookings (id, provider_id, seeker_id, session_type, scheduled_at, duration_minutes, rate, status) VALUES
-  (uuid_generate_v4(), 'aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000001', 'online',    now() + interval '3 days',  60, 5000,  'confirmed'),
-  (uuid_generate_v4(), 'aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000001', 'in-person', now() - interval '10 days', 60, 5000,  'completed'),
-  (uuid_generate_v4(), 'aaaaaaaa-0000-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-000000000002', 'online',    now() + interval '7 days',  90, 15000, 'pending'),
-  (uuid_generate_v4(), 'aaaaaaaa-0000-0000-0000-000000000004', 'bbbbbbbb-0000-0000-0000-000000000001', 'online',    now() - interval '20 days', 60, 12000, 'completed');
+  (uuid_generate_v4(), 'aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000001', 'Online Call',     now() + interval '3 days',  60, 5000,  'confirmed'),
+  (uuid_generate_v4(), 'aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000001', '1-on-1 Session',  now() - interval '10 days', 60, 5000,  'completed'),
+  (uuid_generate_v4(), 'aaaaaaaa-0000-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-000000000002', 'Online Call',     now() + interval '7 days',  90, 15000, 'pending'),
+  (uuid_generate_v4(), 'aaaaaaaa-0000-0000-0000-000000000004', 'bbbbbbbb-0000-0000-0000-000000000001', 'Online Call',     now() - interval '20 days', 60, 12000, 'completed');
 
 INSERT INTO public.reviews (reviewer_id, provider_id, rating, text) VALUES
   ('bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 5, 'Yuki is an amazing teacher. My TOEIC score jumped 80 points after just 6 sessions!'),

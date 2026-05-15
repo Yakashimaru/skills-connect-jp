@@ -349,7 +349,7 @@ function SettingsMenu({ navigate, signOut, tr }: {
     <div className="flex flex-col gap-2">
       {comingSoon && (
         <p className="text-xs px-3 py-2 rounded-lg mb-1" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>
-          {comingSoon} — coming soon
+          {comingSoon} — {tr('dashboard.coming_soon')}
         </p>
       )}
       {items.map(({ key, label, action }) => (
@@ -423,7 +423,7 @@ function RightColumn({ plan, navigate, tr, role }: {
 
       {/* Session options */}
       <div style={card}>
-        <h3 className="font-semibold mb-3" style={{ color: '#1A0208' }}>Session options</h3>
+        <h3 className="font-semibold mb-3" style={{ color: '#1A0208' }}>{tr('dashboard.session_options')}</h3>
         <div className="flex flex-col gap-2">
           {(role === 'provider' && pp?.session_types?.length > 0 ? pp.session_types : ALL_SESSION_TYPES).map((type: string) => (
             <div key={type}

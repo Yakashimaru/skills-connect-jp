@@ -341,7 +341,9 @@
     "no_upcoming": "予定されているセッションはありません",
     "no_past": "過去のセッションはまだありません",
     "no_saved": "保存したプロフィールはまだありません",
-    "no_plan": "有効なプランなし"
+    "no_plan": "有効なプランなし",
+    "session_options": "セッションオプション",
+    "coming_soon": "近日公開"
   },
   "discover": {
     "profiles_found": "{{count}}件のプロフィールが見つかりました",

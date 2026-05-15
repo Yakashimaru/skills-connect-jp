@@ -341,7 +341,9 @@
     "no_upcoming": "No upcoming sessions",
     "no_past": "No past sessions yet",
     "no_saved": "No saved profiles yet",
-    "no_plan": "No active plan"
+    "no_plan": "No active plan",
+    "session_options": "Session options",
+    "coming_soon": "coming soon"
   },
   "discover": {
     "profiles_found": "{{count}} profiles found",
