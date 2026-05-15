@@ -45,7 +45,10 @@ export async function rsvpToEvent(
 ) {
   return supabase
     .from('event_rsvps')
-    .upsert({ event_id: eventId, user_id: userId, status })
+    .upsert(
+      { event_id: eventId, user_id: userId, status },
+      { onConflict: 'event_id,user_id' }
+    )
     .select()
     .single()
 }
