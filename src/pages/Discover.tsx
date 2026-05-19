@@ -38,6 +38,8 @@ export default function Discover() {
   const locationParam = searchParams.get('location') ?? ''
   const skillsParam = searchParams.get('skills') ?? ''
   const priceParam = searchParams.get('price') ?? ''
+  const ageParam = searchParams.get('age') ?? ''
+  const genderParam = searchParams.get('gender') ?? ''
   const verifiedOnly = searchParams.get('verified') === '1'
 
   const profiles = useMemo(() => {
@@ -79,11 +81,32 @@ export default function Discover() {
       })
     }
 
+    // Age range filter (uses birth_year)
+    if (ageParam) {
+      const year = new Date().getFullYear()
+      const ranges = ageParam.split(',').map(a => {
+        if (a === '20s')   return { min: year - 29, max: year - 20 }
+        if (a === '30s')   return { min: year - 39, max: year - 30 }
+        if (a === '40s')   return { min: year - 49, max: year - 40 }
+        if (a === '50plus') return { min: 0, max: year - 50 }
+        return null
+      }).filter(Boolean) as { min: number; max: number }[]
+      result = result.filter(p =>
+        p.birth_year && ranges.some((r: { min: number; max: number }) => p.birth_year >= r.min && p.birth_year <= r.max)
+      )
+    }
+
+    // Gender filter
+    if (genderParam) {
+      const wanted = genderParam.split(',').filter(g => g !== 'any')
+      if (wanted.length) result = result.filter(p => wanted.includes(p.gender))
+    }
+
     // Verified filter
     if (verifiedOnly) result = result.filter(p => p.verified)
 
     return result
-  }, [allProfiles, query, locationParam, skillsParam, priceParam, verifiedOnly])
+  }, [allProfiles, query, locationParam, skillsParam, priceParam, ageParam, genderParam, verifiedOnly])
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>

@@ -22,9 +22,11 @@ export default function HowItWorksPage() {
         <div className="py-16 text-center" style={{ backgroundColor: '#FDF8F2' }}>
           <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: '#5C0A1E' }}>{t('how_it_works_page.eyebrow')}</p>
           <h1 className="text-4xl font-bold mb-4" style={{ color: '#1A0208' }}>{t('how_it_works_page.heading')}</h1>
-          <p className="text-sm max-w-md mx-auto leading-relaxed" style={{ color: '#7A6060' }}>
-            {t('how_it_works_page.intro')}
-          </p>
+          {t('how_it_works_page.intro') && (
+            <p className="text-sm max-w-md mx-auto leading-relaxed" style={{ color: '#7A6060' }}>
+              {t('how_it_works_page.intro')}
+            </p>
+          )}
         </div>
 
         <div className="max-w-4xl mx-auto px-6 py-16 flex flex-col gap-16">

@@ -7,7 +7,7 @@
     "fees": "Fees",
     "faq": "FAQ",
     "contact": "Contact",
-    "dashboard": "Dashboard",
+    "dashboard": "Profile",
     "my_profile": "My profile",
     "messages": "Messages",
     "logout": "Log out",
@@ -46,7 +46,9 @@
     "cat_group_fitness": "Fitness",
     "cat_group_education": "Education",
     "cat_group_travel": "Travel",
-    "cat_group_online": "Online",
+    "cat_group_creative": "Creative",
+    "cat_group_lifestyle": "Lifestyle",
+    "cat_group_online": "Tech & Online",
     "cat_group_other": "Other",
     "cat_english": "English",
     "cat_chinese": "Chinese",
@@ -64,13 +66,21 @@
     "cat_advisory": "Advisory",
     "cat_assistance": "Assistance",
     "cat_personal_training": "Personal training",
-    "cat_instructor": "Instructor",
+    "cat_instructor": "Instructor (sports / music)",
     "cat_tutoring": "Tutoring",
     "cat_mentorship": "Mentorship",
     "cat_tour_guide": "Tour guide",
-    "cat_local_guide": "Local guide",
     "cat_communication_support": "Communication support",
     "cat_online": "Online",
+    "cat_private_hire": "Private hire",
+    "cat_videographer": "Videographer",
+    "cat_photographer": "Photographer",
+    "cat_musician": "Musician",
+    "cat_designer": "Designer",
+    "cat_dog_walker": "Dog walker",
+    "cat_personal_shopper": "Personal shopper",
+    "cat_marketer": "Marketer",
+    "cat_coder": "Coder",
     "cat_others": "Others",
     "loc_online": "🌐 Online",
     "loc_hokkaido": "Hokkaido",
@@ -129,11 +139,16 @@
     "headline_3": "Build real connections.",
     "cta_start": "Get started",
     "cta_browse": "Browse profiles",
-    "subtext": "Connect through who you are and what you know — find language partners, coaches, guides and more across all of Japan.",
+    "subtext": "Japan's No.1 personal matching and community platform.",
     "stat_hosts": "Verified hosts",
     "stat_prefectures": "Prefectures",
     "stat_sessions": "Sessions done",
-    "stat_rating": "Avg. rating"
+    "stat_rating": "Avg. rating",
+    "tag_boss": "Be your own boss",
+    "tag_flexibility": "Time flexibility",
+    "tag_travel": "Work while travelling",
+    "tag_anytime": "Work anytime",
+    "tag_anywhere": "Work anywhere"
   },
   "featured": {
     "eyebrow": "Meet the community",
@@ -191,8 +206,10 @@
   "plans": {
     "eyebrow": "Pricing",
     "heading": "Find the right plan for you",
-    "subheading": "Start free, upgrade when you're ready. All plans include access to our verified community.",
+    "subheading": "Start free, upgrade when you're ready.",
     "period": "/month",
+    "trial_badge": "50% off — trial",
+    "trial_note": "First month only, then full price applies",
     "standard": {
       "name": "Standard",
       "description": "Great for getting started and exploring the platform.",
@@ -302,7 +319,7 @@
     "send_another": "Send another message"
   },
   "dashboard": {
-    "title": "Dashboard",
+    "title": "My Profile",
     "welcome": "Welcome back, {{name}}",
     "tab_provider": "Provider",
     "tab_seeker": "Seeker",
@@ -389,7 +406,7 @@
   "edit_profile": {
     "title": "Edit profile",
     "subtitle": "Update your public profile information",
-    "back": "← Back to dashboard",
+    "back": "← Back to profile",
     "section_photo": "Profile photo",
     "upload_photo": "Upload new photo",
     "photo_hint": "JPG, PNG or WEBP. Max 5MB.",
@@ -397,6 +414,8 @@
     "label_name": "Full name",
     "label_title": "Title / Role",
     "label_location": "Location",
+    "label_birth_year": "Birth year",
+    "label_gender": "Gender",
     "label_bio": "Bio",
     "section_skills": "Skills",
     "skills_hint": "Select all that apply",
@@ -409,7 +428,7 @@
     "session_1on1": "1-on-1 Session",
     "session_group": "Group Meetup",
     "session_online": "Online Call",
-    "session_social": "Social Experience",
+    "session_social": "Social",
     "section_privacy": "Privacy",
     "privacy_public": "Show full profile publicly",
     "privacy_hidden": "Hide name/photo until first session",
@@ -417,7 +436,24 @@
     "save": "Save changes",
     "saved": "✔ Profile saved!",
     "add_education": "+ Add Education",
-    "add_experience": "+ Add Experience"
+    "add_experience": "+ Add Experience",
+    "section_personality": "Personality traits",
+    "personality_traits_hint": "Select traits that describe you — optional",
+    "section_personality_insights": "Personality insights",
+    "label_personality_insights": "About your personality",
+    "personality_insights_placeholder": "Describe your personality in your own words...",
+    "section_interests": "Interests & hobbies",
+    "interests_hint": "Select all that apply — optional",
+    "section_qualifications": "Qualifications",
+    "add_qualification": "+ Add Qualification",
+    "section_achievements": "Achievements",
+    "achievement_placeholder": "e.g. Published author, National champion...",
+    "add_achievement": "+ Add Achievement",
+    "section_schedule": "Schedule & availability",
+    "schedule_days": "Days available",
+    "schedule_locations": "Available in (countries / cities)",
+    "schedule_location_placeholder": "e.g. Japan, Thailand, Remote",
+    "add_location": "Add"
   },
   "chat": {
     "title": "Messages",
@@ -433,7 +469,7 @@
   "how_it_works_page": {
     "eyebrow": "Simple process",
     "heading": "How it works",
-    "intro": "From creating your profile to building real connections — here's how SkillConnect works.",
+    "intro": "",
     "steps": [
       {
         "title": "Create your profile",
@@ -505,11 +541,11 @@
       },
       {
         "q": "What if I do not have adequate skills, experience, or education?",
-        "a": "No problem — you can still connect based on personality and shared interests, whether for social companionship or making friends."
+        "a": "No problem. You can still connect based on personality and shared interests, whether for social companionship or making friends."
       },
       {
         "q": "Can I be both a provider and a seeker?",
-        "a": "Yes. Your profile has two layers — a social layer and a skills layer. You can offer services and seek connections at the same time."
+        "a": "Yes. Your profile has two layers: a social layer and a skills layer. You can offer services and seek connections at the same time."
       },
       {
         "q": "How are profiles verified?",

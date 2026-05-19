@@ -20,13 +20,13 @@ const SESSION_ICONS: Record<string, string> = {
 }
 
 const SESSION_DESCS: Record<string, string> = {
-  '1-on-1 Session':   'Private coaching or tutoring, online or in-person',
-  'Group Meetup':     'Small group sessions (3–6 people)',
+  '1-on-1 Session':   'Private session, online or in-person',
+  'Group Meetup':     'Small group sessions',
   'Online Call':      'Video or voice call via Zoom or Google Meet',
-  'Social Experience':'Casual meetup — café, walk, or cultural outing',
+  'Social Experience':'Casual meetup, café or walk',
   'online':           'Video or voice call via Zoom or Google Meet',
-  'in-person':        'Private coaching or tutoring, in-person',
-  'group':            'Small group sessions (3–6 people)',
+  'in-person':        'Private session, in-person',
+  'group':            'Small group sessions',
 }
 
 const ALL_SESSION_TYPES = ['1-on-1 Session', 'Group Meetup', 'Online Call', 'Social Experience']
@@ -364,12 +364,39 @@ function SettingsMenu({ navigate, signOut, tr }: {
 
 // ─── Shared right column ──────────────────────────────────────────────────────
 
+function Chip({ label }: { label: string }) {
+  return (
+    <span className="text-xs px-2.5 py-0.5 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{label}</span>
+  )
+}
+
+function SectionRow({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-4 last:mb-0">
+      <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>{title}</p>
+      {children}
+    </div>
+  )
+}
+
 function RightColumn({ plan, navigate, tr, role }: {
   profile: any; providerProfile: any; plan: typeof PLAN_LABELS[string] | null;
   navigate: ReturnType<typeof useNavigate>; tr: any; role: 'provider' | 'seeker'
 }) {
   const { profile, signOut } = useAuth()
   const pp = (profile as any)?.provider_profile
+  const p = profile as any
+
+  const hasTraits      = p?.personality_traits?.length > 0
+  const hasInsights    = !!p?.personality_insights
+  const hasInterests   = p?.interests?.length > 0
+  const hasSkills      = role === 'provider' && pp?.skills?.length > 0
+  const hasExperience  = role === 'provider' && p?.experience?.length > 0
+  const hasEducation   = p?.education?.length > 0
+  const hasQuals       = p?.qualifications?.length > 0
+  const hasAchieve     = p?.achievements?.length > 0
+  const hasAvail       = role === 'provider' && (pp?.availability?.days?.length > 0 || pp?.availability?.locations?.length > 0)
+  const hasAnyDetail   = hasTraits || hasInsights || hasInterests || hasSkills || hasExperience || hasEducation || hasQuals || hasAchieve || hasAvail
 
   return (
     <div className="flex flex-col gap-6">
@@ -398,6 +425,111 @@ function RightColumn({ plan, navigate, tr, role }: {
           {tr('dashboard.edit_profile')}
         </button>
       </div>
+
+      {/* Profile details */}
+      {hasAnyDetail && (
+        <div style={card}>
+          <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>Profile</h3>
+
+          {hasTraits && (
+            <SectionRow title="Personality traits">
+              <div className="flex flex-wrap gap-1.5">
+                {p.personality_traits.map((t: string) => <Chip key={t} label={t} />)}
+              </div>
+            </SectionRow>
+          )}
+
+          {hasInsights && (
+            <SectionRow title="Personality insights">
+              <p className="text-xs italic leading-relaxed" style={{ color: '#7A6060' }}>{p.personality_insights}</p>
+            </SectionRow>
+          )}
+
+          {hasInterests && (
+            <SectionRow title="Interests & hobbies">
+              <div className="flex flex-wrap gap-1.5">
+                {p.interests.map((i: string) => <Chip key={i} label={i} />)}
+              </div>
+            </SectionRow>
+          )}
+
+          {hasSkills && (
+            <SectionRow title="Skills">
+              <div className="flex flex-wrap gap-1.5">
+                {pp.skills.map((s: string) => <Chip key={s} label={s} />)}
+              </div>
+            </SectionRow>
+          )}
+
+          {hasExperience && (
+            <SectionRow title="Experience">
+              <div className="flex flex-col gap-1.5">
+                {p.experience.map((e: any, i: number) => (
+                  <div key={i}>
+                    <p className="text-xs font-medium" style={{ color: '#1A0208' }}>{e.role} · {e.company}</p>
+                    {e.years && <p className="text-xs" style={{ color: '#aaa' }}>{e.years} yrs</p>}
+                  </div>
+                ))}
+              </div>
+            </SectionRow>
+          )}
+
+          {hasEducation && (
+            <SectionRow title="Education">
+              <div className="flex flex-col gap-1.5">
+                {p.education.map((e: any, i: number) => (
+                  <div key={i}>
+                    <p className="text-xs font-medium" style={{ color: '#1A0208' }}>{e.degree} · {e.school}</p>
+                    {e.year && <p className="text-xs" style={{ color: '#aaa' }}>{e.year}</p>}
+                  </div>
+                ))}
+              </div>
+            </SectionRow>
+          )}
+
+          {hasQuals && (
+            <SectionRow title="Qualifications">
+              <div className="flex flex-col gap-1.5">
+                {p.qualifications.map((q: any, i: number) => (
+                  <div key={i}>
+                    <p className="text-xs font-medium" style={{ color: '#1A0208' }}>{q.title}</p>
+                    <p className="text-xs" style={{ color: '#aaa' }}>{q.issuer}{q.year ? ` · ${q.year}` : ''}</p>
+                  </div>
+                ))}
+              </div>
+            </SectionRow>
+          )}
+
+          {hasAchieve && (
+            <SectionRow title="Achievements">
+              <ul className="flex flex-col gap-1">
+                {p.achievements.map((a: string, i: number) => (
+                  <li key={i} className="text-xs flex gap-1.5" style={{ color: '#1A0208' }}>
+                    <span style={{ color: '#B8860B' }}>·</span>{a}
+                  </li>
+                ))}
+              </ul>
+            </SectionRow>
+          )}
+
+          {hasAvail && (
+            <SectionRow title="Availability">
+              {pp.availability?.days?.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {pp.availability.days.map((d: string) => (
+                    <span key={d} className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{d}</span>
+                  ))}
+                </div>
+              )}
+              {pp.availability?.locations?.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {pp.availability.locations.map((l: string) => <Chip key={l} label={l} />)}
+                </div>
+              )}
+            </SectionRow>
+          )}
+        </div>
+      )}
 
       {/* Subscription */}
       <div style={card}>

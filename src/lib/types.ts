@@ -15,6 +15,13 @@ export interface Profile {
   location: string | null
   bio: string | null
   mbti: string | null
+  birth_year: number | null
+  gender: 'male' | 'female' | 'non-binary' | 'prefer-not-to-say' | null
+  personality_traits: string[]
+  interests: string[]
+  personality_insights: string | null
+  qualifications: { title: string; issuer: string; year: string }[]
+  achievements: string[]
   privacy_mode: PrivacyMode
   verified: boolean
   created_at: string
@@ -29,6 +36,7 @@ export interface ProviderProfile {
   session_types: string[]
   rating: number
   review_count: number
+  availability: { days: string[]; locations: string[] } | null
 }
 
 export interface Education {

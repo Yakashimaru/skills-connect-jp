@@ -13,7 +13,7 @@ export async function getProfile(id: string) {
     .eq('id', id)
     .single()
 
-  if (error || !data) return null
+  if (error || !data) { console.error('[getProfile]', error); return null }
   return data
 }
 

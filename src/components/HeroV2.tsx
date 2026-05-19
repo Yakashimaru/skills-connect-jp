@@ -1,6 +1,7 @@
-// HeroV2.tsx — clean hero; personality & skills moved to own section below
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
+
+const TAGS = ['tag_boss', 'tag_flexibility', 'tag_travel', 'tag_anytime', 'tag_anywhere'] as const
 
 export default function HeroV2() {
   const { t } = useTranslation()
@@ -44,7 +45,7 @@ export default function HeroV2() {
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 mb-6">
           <NavLink
             to="/discover"
             className="px-8 py-3 rounded-full font-semibold text-sm transition-all text-white"
@@ -65,9 +66,27 @@ export default function HeroV2() {
           </NavLink>
         </div>
 
+        {/* Tagline pills */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {TAGS.map(key => (
+            <span
+              key={key}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium"
+              style={{
+                backgroundColor: 'rgba(184,134,11,0.15)',
+                border: '1px solid rgba(184,134,11,0.35)',
+                color: '#E8C96A',
+              }}
+            >
+              <span style={{ color: '#B8860B' }}>✦</span>
+              {t(`hero.${key}`)}
+            </span>
+          ))}
+        </div>
+
         {/* Stats row */}
         <div
-          className="flex flex-wrap items-center gap-6 mt-10 pt-8"
+          className="flex flex-wrap items-center gap-6 pt-6"
           style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}
         >
           {[

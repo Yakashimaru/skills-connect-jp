@@ -14,10 +14,10 @@ const SESSION_ICONS: Record<string, string> = {
 }
 
 const SESSION_DESCS: Record<string, string> = {
-  '1-on-1 Session': 'Private coaching or tutoring, online or in-person',
-  'Group Meetup': 'Small group sessions (3–6 people)',
+  '1-on-1 Session': 'Private session, online or in-person',
+  'Group Meetup': 'Small group sessions',
   'Online Call': 'Video or voice call via Zoom or Google Meet',
-  'Social Experience': 'Casual meetup — café, walk, or cultural outing',
+  'Social Experience': 'Casual meetup, café or walk',
 }
 
 export default function ProfilePage() {
@@ -135,6 +135,31 @@ export default function ProfilePage() {
               </section>
             )}
 
+            {profile.personality_traits?.length > 0 && (
+              <section>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Personality</h2>
+                <div className="flex flex-wrap gap-2">
+                  {profile.personality_traits.map((trait: string) => (
+                    <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{trait}</span>
+                  ))}
+                </div>
+                {profile.personality_insights && (
+                  <p className="text-sm italic mt-3 leading-relaxed" style={{ color: '#7A6060' }}>{profile.personality_insights}</p>
+                )}
+              </section>
+            )}
+
+            {profile.interests?.length > 0 && (
+              <section>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Interests & hobbies</h2>
+                <div className="flex flex-wrap gap-2">
+                  {profile.interests.map((interest: string) => (
+                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{interest}</span>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {pp?.skills?.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.skills')}</h2>
@@ -186,6 +211,36 @@ export default function ProfilePage() {
               </section>
             )}
 
+            {profile.qualifications?.length > 0 && (
+              <section>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Qualifications</h2>
+                <div className="flex flex-col gap-2">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {profile.qualifications.map((q: any, i: number) => (
+                    <div key={i} className="rounded-xl p-3" style={{ backgroundColor: '#FAFAF8', border: '0.5px solid #F0E8E0' }}>
+                      <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{q.title}</p>
+                      <p className="text-xs mt-0.5" style={{ color: '#7A6060' }}>
+                        {q.issuer}{q.year ? <span style={{ color: '#aaa' }}> · {q.year}</span> : ''}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {profile.achievements?.length > 0 && (
+              <section>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Achievements</h2>
+                <ul className="flex flex-col gap-2">
+                  {profile.achievements.map((a: string, i: number) => (
+                    <li key={i} className="flex gap-2 text-sm" style={{ color: '#5A4040' }}>
+                      <span style={{ color: '#B8860B' }}>·</span>{a}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
             {reviews.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>{t('profile.reviews_section')}</h2>
@@ -219,26 +274,58 @@ export default function ProfilePage() {
             )}
           </div>
 
-          {/* Right column — session options */}
-          {pp?.session_types?.length > 0 && (
+          {/* Right column — session options + availability */}
+          {pp && (pp?.session_types?.length > 0 || pp?.availability?.days?.length > 0 || pp?.availability?.locations?.length > 0) && (
             <div className="col-span-1">
-              <div className="sticky top-24">
-                <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>{t('profile.session_options')}</h2>
-                <div className="flex flex-col gap-3">
-                  {pp.session_types.map((type: string) => (
-                    <div key={type}
-                      className="rounded-2xl p-4 transition-all cursor-pointer hover:-translate-y-0.5"
-                      style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}
-                      onMouseEnter={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                      onMouseLeave={e => (e.currentTarget.style.borderColor = '#E8DDD5')}>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg">{SESSION_ICONS[type] ?? '📌'}</span>
-                        <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{type}</span>
-                      </div>
-                      <p className="text-xs leading-relaxed" style={{ color: '#7A6060' }}>{SESSION_DESCS[type] ?? ''}</p>
+              <div className="sticky top-24 flex flex-col gap-6">
+
+                {pp?.session_types?.length > 0 && (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>{t('profile.session_options')}</h2>
+                    <div className="flex flex-col gap-3">
+                      {pp.session_types.map((type: string) => (
+                        <div key={type}
+                          className="rounded-2xl p-4 transition-all cursor-pointer hover:-translate-y-0.5"
+                          style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}
+                          onMouseEnter={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                          onMouseLeave={e => (e.currentTarget.style.borderColor = '#E8DDD5')}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-lg">{SESSION_ICONS[type] ?? '📌'}</span>
+                            <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{type}</span>
+                          </div>
+                          <p className="text-xs leading-relaxed" style={{ color: '#7A6060' }}>{SESSION_DESCS[type] ?? ''}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
+
+                {(pp?.availability?.days?.length > 0 || pp?.availability?.locations?.length > 0) && (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>Availability</h2>
+                    {pp.availability?.days?.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>Days</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {pp.availability.days.map((d: string) => (
+                            <span key={d} className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{d}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {pp.availability?.locations?.length > 0 && (
+                      <div>
+                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>Locations</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {pp.availability.locations.map((l: string) => (
+                            <span key={l} className="text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{l}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
               </div>
             </div>
           )}

@@ -595,16 +595,20 @@ export default function Navbar() {
       const locations = active(locationFilter)
       const skills = active(categoryFilter)
       const prices = active(priceFilter)
+      const ages = active(ageFilter)
+      const genders = active(genderFilter)
       if (search.trim()) params.set('q', search.trim())
       if (locations.length) params.set('location', locations.join(','))
       if (skills.length) params.set('skills', skills.join(','))
       if (prices.length) params.set('price', prices.join(','))
+      if (ages.length) params.set('age', ages.join(','))
+      if (genders.length) params.set('gender', genders.join(','))
       if (verifiedOnly) params.set('verified', '1')
       const qs = params.toString()
       navigate(qs ? `/discover?${qs}` : '/discover', { replace: true })
     }, search !== '' ? 250 : 0)
     return () => clearTimeout(timer)
-  }, [locationFilter, categoryFilter, priceFilter, verifiedOnly, search, isDiscover, navigate])
+  }, [locationFilter, categoryFilter, priceFilter, ageFilter, genderFilter, verifiedOnly, search, isDiscover, navigate])
 
   const toggle = useCallback((setter: React.Dispatch<React.SetStateAction<FilterState>>) => (val: string) => {
     setter(prev => ({ ...prev, [val]: !prev[val] }))
@@ -625,6 +629,7 @@ export default function Navbar() {
     { group: `💼 ${t('nav.cat_group_business')}`, items: [
       { value: 'coaching', label: t('nav.cat_coaching') }, { value: 'presentation', label: t('nav.cat_presentation') },
       { value: 'advisory', label: t('nav.cat_advisory') }, { value: 'assistance', label: t('nav.cat_assistance') },
+      { value: 'marketer', label: t('nav.cat_marketer') },
     ]},
     { group: `🏋️ ${t('nav.cat_group_fitness')}`, items: [
       { value: 'personal-training', label: t('nav.cat_personal_training') }, { value: 'instructor', label: t('nav.cat_instructor') },
@@ -633,10 +638,24 @@ export default function Navbar() {
       { value: 'tutoring', label: t('nav.cat_tutoring') }, { value: 'mentorship', label: t('nav.cat_mentorship') },
     ]},
     { group: `✈️ ${t('nav.cat_group_travel')}`, items: [
-      { value: 'tour-guide', label: t('nav.cat_tour_guide') }, { value: 'local-guide', label: t('nav.cat_local_guide') },
+      { value: 'tour-guide', label: t('nav.cat_tour_guide') },
       { value: 'communication-support', label: t('nav.cat_communication_support') },
     ]},
-    { group: `💻 ${t('nav.cat_group_online')}`, items: [{ value: 'online', label: t('nav.cat_online') }] },
+    { group: `🎨 ${t('nav.cat_group_creative')}`, items: [
+      { value: 'videographer', label: t('nav.cat_videographer') },
+      { value: 'photographer', label: t('nav.cat_photographer') },
+      { value: 'musician', label: t('nav.cat_musician') },
+      { value: 'designer', label: t('nav.cat_designer') },
+    ]},
+    { group: `🌿 ${t('nav.cat_group_lifestyle')}`, items: [
+      { value: 'private-hire', label: t('nav.cat_private_hire') },
+      { value: 'dog-walker', label: t('nav.cat_dog_walker') },
+      { value: 'personal-shopper', label: t('nav.cat_personal_shopper') },
+    ]},
+    { group: `💻 ${t('nav.cat_group_online')}`, items: [
+      { value: 'online', label: t('nav.cat_online') },
+      { value: 'coder', label: t('nav.cat_coder') },
+    ]},
     { group: `➕ ${t('nav.cat_group_other')}`, items: [{ value: 'others', label: t('nav.cat_others') }] },
   ], [t])
 
@@ -856,6 +875,8 @@ export default function Navbar() {
             <FilterDropdown label={t('nav.filter_category')} options={categoryOptions} selected={categoryFilter} onChange={toggle(setCategoryFilter)} onClear={clear(setCategoryFilter)} searchable />
             <FilterDropdown label={t('nav.filter_location')} options={LOCATION_OPTIONS} selected={locationFilter} onChange={toggle(setLocationFilter)} onClear={clear(setLocationFilter)} searchable wide />
             <FilterDropdown label={t('nav.filter_price')} flatOptions={priceOptions} selected={priceFilter} onChange={toggle(setPriceFilter)} onClear={clear(setPriceFilter)} />
+            <FilterDropdown label={t('nav.filter_age')} flatOptions={ageOptions} selected={ageFilter} onChange={toggle(setAgeFilter)} onClear={clear(setAgeFilter)} />
+            <FilterDropdown label={t('nav.filter_gender')} flatOptions={genderOptions} selected={genderFilter} onChange={toggle(setGenderFilter)} onClear={clear(setGenderFilter)} />
 
             <label className="flex items-center gap-2 cursor-pointer ml-1">
               <input type="checkbox" checked={verifiedOnly} onChange={e => setVerifiedOnly(e.target.checked)}
