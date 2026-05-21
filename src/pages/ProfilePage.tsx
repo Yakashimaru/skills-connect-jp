@@ -149,6 +149,32 @@ export default function ProfilePage() {
               </section>
             )}
 
+            {(profile.mbti || profile.love_language || profile.star_sign) && (
+              <section>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>About me</h2>
+                <div className="flex flex-wrap gap-3">
+                  {profile.mbti && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
+                      <span className="text-xs" style={{ color: '#aaa' }}>MBTI</span>
+                      <span className="text-sm font-semibold" style={{ color: '#5C0A1E' }}>{profile.mbti}</span>
+                    </div>
+                  )}
+                  {profile.love_language && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
+                      <span className="text-xs" style={{ color: '#aaa' }}>Love language</span>
+                      <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>{profile.love_language.replace(/-/g, ' ')}</span>
+                    </div>
+                  )}
+                  {profile.star_sign && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
+                      <span className="text-xs" style={{ color: '#aaa' }}>Star sign</span>
+                      <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>{profile.star_sign}</span>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+
             {profile.interests?.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Interests & hobbies</h2>
@@ -285,19 +311,32 @@ export default function ProfilePage() {
                   <div>
                     <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>{t('profile.session_options')}</h2>
                     <div className="flex flex-col gap-3">
-                      {pp.session_types.map((type: string) => (
-                        <div key={type}
-                          className="rounded-2xl p-4 transition-all cursor-pointer hover:-translate-y-0.5"
-                          style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}
-                          onMouseEnter={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                          onMouseLeave={e => (e.currentTarget.style.borderColor = '#E8DDD5')}>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-lg">{SESSION_ICONS[type] ?? '📌'}</span>
-                            <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{type}</span>
+                      {pp.session_types.map((type: string) => {
+                        const rateForType =
+                          type === 'Online Call'       ? pp.online_rate :
+                          type === '1-on-1 Session'    ? pp.inperson_rate :
+                          type === 'Social Experience' ? pp.trial_rate :
+                          null
+                        const displayRate = rateForType ?? pp.hourly_rate
+                        return (
+                          <div key={type}
+                            className="rounded-2xl p-4 transition-all cursor-pointer hover:-translate-y-0.5"
+                            style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}
+                            onMouseEnter={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = '#E8DDD5')}>
+                            <div className="flex items-center justify-between mb-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">{SESSION_ICONS[type] ?? '📌'}</span>
+                                <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{type}</span>
+                              </div>
+                              {displayRate && (
+                                <span className="text-xs font-semibold" style={{ color: '#5C0A1E' }}>¥{displayRate.toLocaleString()}/hr</span>
+                              )}
+                            </div>
+                            <p className="text-xs leading-relaxed" style={{ color: '#7A6060' }}>{SESSION_DESCS[type] ?? ''}</p>
                           </div>
-                          <p className="text-xs leading-relaxed" style={{ color: '#7A6060' }}>{SESSION_DESCS[type] ?? ''}</p>
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   </div>
                 )}
@@ -340,7 +379,11 @@ export default function ProfilePage() {
           <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{profile.name}</p>
-              {pp.hourly_rate && <p className="text-xs" style={{ color: '#aaa' }}>¥{pp.hourly_rate.toLocaleString()}/hr</p>}
+              {(pp.online_rate || pp.inperson_rate || pp.trial_rate || pp.hourly_rate) && (
+                <p className="text-xs" style={{ color: '#aaa' }}>
+                  from ¥{Math.min(...[pp.online_rate, pp.inperson_rate, pp.trial_rate, pp.hourly_rate].filter(Boolean)).toLocaleString()}/hr
+                </p>
+              )}
             </div>
             <div className="flex gap-3">
               <button

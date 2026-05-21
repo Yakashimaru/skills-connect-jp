@@ -85,9 +85,9 @@ export default function Chat() {
     setInput('')
     setSending(true)
 
-    // Optimistic update
+    const tempId = `temp-${Date.now()}`
     setMessages(prev => [...prev, {
-      id: `temp-${Date.now()}`,
+      id: tempId,
       conversation_id: activeConv.id,
       sender_id: user.id,
       text,
@@ -95,7 +95,9 @@ export default function Chat() {
       created_at: new Date().toISOString(),
     }])
 
-    await sendMessage({ conversation_id: activeConv.id, sender_id: user.id, text, attachment_url: null })
+    const { data } = await sendMessage({ conversation_id: activeConv.id, sender_id: user.id, text, attachment_url: null })
+    // Replace temp message with real one so the realtime event (same ID) deduplicates correctly
+    if (data) setMessages(prev => prev.map(m => m.id === tempId ? data : m))
     setSending(false)
   }
 

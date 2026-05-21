@@ -43,7 +43,7 @@ export default function Discover() {
   const verifiedOnly = searchParams.get('verified') === '1'
 
   const profiles = useMemo(() => {
-    let result = allProfiles
+    let result = allProfiles.filter(p => !p.vacation_mode)
 
     // Name / title search
     if (query.trim()) {
