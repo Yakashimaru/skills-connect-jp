@@ -37,6 +37,8 @@ type FilterState = Record<string, boolean>
 
 // ─── Japanese city name lookup (keyed by the romaji label stored in LOCATION_OPTIONS) ──
 const JA_CITY: Record<string, string> = {
+  // 'Tokyo' only appears as a top-level label (not in region groups), so add it explicitly
+  Tokyo:'東京',
   // Hokkaido
   Sapporo:'札幌市', Asahikawa:'旭川市', Hakodate:'函館市', Kushiro:'釧路市',
   Obihiro:'帯広市', Kitami:'北見市', Tomakomai:'苫小牧市', Otaru:'小樽市',
@@ -691,8 +693,9 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <NavLink to="/" className="text-xl font-semibold tracking-tight" style={{ color: C.brand }}>
-          skillconnect
+        <NavLink to="/" className="flex items-baseline gap-0 tracking-tight leading-none">
+          <span className="text-lg font-black" style={{ color: C.brand, letterSpacing: '-0.02em' }}>JAP</span>
+          <span className="text-lg font-black" style={{ color: '#B8860B', letterSpacing: '-0.02em' }}>MATCH</span>
         </NavLink>
 
         {/* Nav links */}
@@ -758,7 +761,7 @@ export default function Navbar() {
             onMouseOver={e => { (e.currentTarget as HTMLElement).style.borderColor = C.brand; (e.currentTarget as HTMLElement).style.color = C.brand }}
             onMouseOut={e => { (e.currentTarget as HTMLElement).style.borderColor = C.border; (e.currentTarget as HTMLElement).style.color = C.muted }}
           >
-            {i18n.language === 'ja' ? 'EN' : 'JA'}
+            {i18n.language === 'ja' ? 'EN' : '日本'}
           </button>
 
           {isLoggedIn ? (

@@ -10,28 +10,163 @@ import {
 } from '../lib/profiles'
 
 const PERSONALITY_TRAITS = [
-  'Introvert', 'Extrovert', 'Analytical', 'Creative', 'Calm', 'Energetic',
-  'Empathetic', 'Ambitious', 'Adventurous', 'Nurturing', 'Logical', 'Intuitive',
-  'Organised', 'Spontaneous', 'Patient', 'Direct', 'Thoughtful', 'Humorous',
-  'Reliable', 'Adaptable',
+  'Adaptable', 'Adventurous', 'Ambitious', 'Ambivert', 'Analytical',
+  'Calm', 'Caring', 'Cheerful', 'Compassionate', 'Confident', 'Considerate', 'Curious',
+  'Detail-oriented', 'Diligent', 'Direct', 'Disciplined',
+  'Easygoing', 'Emotional', 'Empathetic', 'Energetic', 'Extrovert',
+  'Friendly',
+  'Honest', 'Humble', 'Humorous',
+  'Independent', 'Introvert',
+  'Logical', 'Loyal',
+  'Open-minded', 'Optimistic', 'Organised',
+  'Passionate', 'Patient', 'Perfectionist', 'Persistent',
+  'Reliable', 'Reserved', 'Responsible',
+  'Sensitive', 'Spontaneous', 'Supportive',
+  'Thoughtful',
+]
+
+const PERSONALITY_TRAITS_JA = [
+  '適応力がある', '冒険好き', '向上心がある', '両向的', '分析的',
+  '穏やか', '思いやり', '明るい', '慈悲深い', '自信がある', '気遣いができる', '好奇心旺盛',
+  '細部重視', '勤勉', '率直', '自律している',
+  'おおらか', '感情的', '共感力が高い', 'エネルギッシュ', '外向的',
+  '友好的',
+  '正直', '謙虚', 'ユーモアがある',
+  '自立している', '内向的',
+  '論理的', '誠実',
+  'オープンマインド', '楽観的', '几帳面',
+  '情熱的', '辛抱強い', '完璧主義', '粘り強い',
+  '頼りになる', '控えめ', '責任感がある',
+  '感受性豊か', '自発的', 'サポーティブ',
+  '思慮深い',
 ]
 
 const INTEREST_OPTIONS = [
-  'Music', 'Reading', 'Travel', 'Cooking', 'Sports', 'Gaming', 'Art', 'Photography',
-  'Film', 'Yoga', 'Meditation', 'Hiking', 'Dancing', 'Writing', 'Tech', 'Nature',
-  'Fashion', 'Foodie', 'Volunteering', 'Languages', 'Fitness', 'Cycling', 'Coffee',
-  'Anime & Manga', 'Business', 'Startups', 'DIY', 'Pets', 'Theatre', 'Wine & Dining',
+  'Anime & Manga', 'Art',
+  'Baking', 'Business',
+  'Cooking', 'Cycling',
+  'Dancing', 'Diving', 'DIY',
+  'Economics',
+  'Fashion', 'Finance', 'Fitness', 'Food',
+  'Gaming', 'Gardening', 'Golf',
+  'Hiking', 'History', 'Horse riding',
+  'Investing',
+  'Journaling',
+  'Languages',
+  'Martial arts', 'Meditation', 'Music',
+  'Nature', 'Networking',
+  'Painting', 'Pets', 'Philosophy', 'Photography', 'Poetry', 'Psychology',
+  'Reading', 'Rock climbing', 'Running',
+  'Science', 'Singing', 'Skiing', 'Socialising', 'Spirituality', 'Sports', 'Startups', 'Surfing', 'Swimming',
+  'Tech', 'Tennis', 'Travel',
+  'Volunteering',
+  'Wellness', 'Wine & Dining', 'Writing',
+  'Yoga',
+]
+
+const INTEREST_OPTIONS_JA = [
+  'アニメ・マンガ', 'アート',
+  'お菓子作り', 'ビジネス',
+  '料理', 'サイクリング',
+  'ダンス', 'ダイビング', 'DIY',
+  '経済',
+  'ファッション', 'ファイナンス', 'フィットネス', '食',
+  'ゲーム', 'ガーデニング', 'ゴルフ',
+  'ハイキング', '歴史', '乗馬',
+  '投資',
+  'ジャーナリング',
+  '語学',
+  '武道', '瞑想', '音楽',
+  '自然', 'ネットワーキング',
+  '絵画', 'ペット', '哲学', '写真', '詩', '心理学',
+  '読書', 'ロッククライミング', 'ランニング',
+  '科学', '歌', 'スキー', '社交', 'スピリチュアリティ', 'スポーツ', 'スタートアップ', 'サーフィン', '水泳',
+  'テクノロジー', 'テニス', '旅行',
+  'ボランティア',
+  'ウェルネス', 'ワイン・グルメ', 'ライティング',
+  'ヨガ',
 ]
 
 const SKILL_OPTIONS = [
-  'Coaching', 'English', 'Japanese', 'Golf', 'Business', 'Fitness', 'Nutrition',
-  'Music', 'Piano', 'Cooking', 'Travel', 'Mindfulness', 'Yoga', 'Startups',
-  'Finance', 'Mentorship', 'Private Hire', 'Videographer', 'Photographer',
-  'Dog Walker', 'Personal Shopper', 'Musician', 'Marketer', 'Designer', 'Coder',
-  'Instructor (Sports / Music)',
+  'Advisory', 'App development', 'Assistance',
+  'Business',
+  'Coaching', 'Coder', 'Communication support', 'Companion', 'Conversation', 'Cooking', 'Copywriting',
+  'Data analysis', 'Designer', 'Dog Walker',
+  'English', 'Event planning',
+  'Finance', 'Fitness', 'French',
+  'Golf', 'Graphic design',
+  'Investing', 'IT support',
+  'Japanese',
+  'Korean',
+  'Mandarin', 'Marketer', 'Marketing', 'Martial arts', 'Mentorship', 'Music instructor', 'Musician',
+  'Personal Shopper', 'Personal training', 'Photographer', 'Presentation', 'Private Hire',
+  'Spanish', 'Sports instructor',
+  'Tour guide', 'Travel assistance', 'Tutor',
+  'Video editing', 'Videographer',
+  'Web development',
 ]
 
+const SKILL_OPTIONS_JA = [
+  'アドバイザリー', 'アプリ開発', 'アシスタンス',
+  'ビジネス',
+  'コーチング', 'コーダー', 'コミュニケーションサポート', 'コンパニオン', '会話', '料理', 'コピーライティング',
+  'データ分析', 'デザイナー', 'ドッグウォーカー',
+  '英語', 'イベント企画',
+  'ファイナンス', 'フィットネス', 'フランス語',
+  'ゴルフ', 'グラフィックデザイン',
+  '投資', 'ITサポート',
+  '日本語',
+  '韓国語',
+  '中国語', 'マーケター', 'マーケティング', '武道', 'メンタリング', '音楽インストラクター', 'ミュージシャン',
+  'パーソナルショッパー', 'パーソナルトレーニング', 'フォトグラファー', 'プレゼンテーション', 'プライベートハイヤー',
+  'スペイン語', 'スポーツインストラクター',
+  'ツアーガイド', '旅行サポート', '個別指導',
+  '動画編集', 'ビデオグラファー',
+  'ウェブ開発',
+]
+
+const LOCATION_EN_TO_JA: Record<string, string> = {
+  'Online only': 'オンラインのみ',
+  'Tokyo': '東京', 'Osaka': '大阪', 'Kyoto': '京都',
+  'Yokohama': '横浜', 'Nagoya': '名古屋', 'Sapporo': '札幌',
+  'Fukuoka': '福岡', 'Kobe': '神戸', 'Hiroshima': '広島',
+  'Sendai': '仙台', 'Nara': '奈良', 'Kanazawa': '金沢',
+  'Nagano': '長野', 'Okinawa': '沖縄', 'Naha': '那覇',
+  'Kawasaki': '川崎', 'Saitama': 'さいたま', 'Chiba': '千葉',
+  'Hamamatsu': '浜松', 'Kumamoto': '熊本', 'Niigata': '新潟',
+  'Shizuoka': '静岡', 'Okayama': '岡山', 'Kagoshima': '鹿児島',
+  'Matsuyama': '松山', 'Takamatsu': '高松', 'Tokushima': '徳島',
+  'Kochi': '高知', 'Nagasaki': '長崎', 'Oita': '大分',
+  'Miyazaki': '宮崎', 'Saga': '佐賀', 'Fukushima': '福島',
+  'Mito': '水戸', 'Utsunomiya': '宇都宮', 'Maebashi': '前橋',
+  'Gifu': '岐阜', 'Tsu': '津', 'Otsu': '大津',
+  'Wakayama': '和歌山', 'Tottori': '鳥取', 'Matsue': '松江',
+  'Yamaguchi': '山口', 'Akita': '秋田', 'Yamagata': '山形',
+  'Morioka': '盛岡', 'Aomori': '青森', 'Hakodate': '函館',
+  'Asahikawa': '旭川',
+}
+const LOCATION_JA_TO_EN: Record<string, string> = Object.fromEntries(
+  Object.entries(LOCATION_EN_TO_JA).map(([en, ja]) => [ja, en])
+)
+
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+const FROM_TIMES = [
+  '6:00 AM','6:30 AM','7:00 AM','7:30 AM','8:00 AM','8:30 AM',
+  '9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM',
+  '12:00 PM','12:30 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM',
+  '3:00 PM','3:30 PM','4:00 PM','4:30 PM','5:00 PM','5:30 PM',
+  '6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM',
+  '9:00 PM','9:30 PM','10:00 PM',
+]
+const TO_TIMES = [
+  '6:30 AM','7:00 AM','7:30 AM','8:00 AM','8:30 AM','9:00 AM',
+  '9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM',
+  '12:30 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM',
+  '3:30 PM','4:00 PM','4:30 PM','5:00 PM','5:30 PM','6:00 PM',
+  '6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM','9:00 PM',
+  '9:30 PM','10:00 PM','10:30 PM','11:00 PM','11:30 PM','Midnight',
+]
 
 const inputStyle = {
   width: '100%', border: '0.5px solid #E8DDD5', borderRadius: '12px',
@@ -52,20 +187,81 @@ type EduEntry  = { id?: string; degree: string; school: string; year: string }
 type ExpEntry  = { id?: string; role: string; company: string; years: string }
 type QualEntry = { title: string; issuer: string; year: string }
 
-function ChipPicker({ options, selected, onToggle }: {
-  options: string[]; selected: string[]; onToggle: (v: string) => void
+function TopPicker({ pool, selected, onToggle, max = 5 }: {
+  pool: string[]; selected: string[]; onToggle: (v: string) => void; max?: number
 }) {
+  if (pool.length === 0) return (
+    <p className="text-xs" style={{ color: '#aaa' }}>Select some options above first.</p>
+  )
   return (
     <div className="flex flex-wrap gap-2">
-      {options.map(opt => (
-        <button key={opt} type="button" onClick={() => onToggle(opt)}
-          className="text-sm px-3.5 py-1.5 rounded-full transition-colors"
-          style={selected.includes(opt)
-            ? { backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }
-            : { backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-          {opt}
+      {pool.map(opt => {
+        const active = selected.includes(opt)
+        const disabled = !active && selected.length >= max
+        return (
+          <button key={opt} type="button" onClick={() => !disabled && onToggle(opt)}
+            className="text-sm px-3.5 py-1.5 rounded-full transition-colors"
+            style={active
+              ? { backgroundColor: '#5C0A1E', color: '#fff', border: '1px solid #5C0A1E' }
+              : disabled
+                ? { backgroundColor: 'transparent', color: '#ccc', border: '0.5px solid #eee', cursor: 'not-allowed' }
+                : { backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+            {opt}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+function ChipPicker({ options, selected, onToggle, labels }: {
+  options: string[]; selected: string[]; onToggle: (v: string) => void; labels?: string[]
+}) {
+  const [custom, setCustom] = useState('')
+
+  const addCustom = () => {
+    const val = custom.trim()
+    if (!val) return
+    onToggle(val)
+    setCustom('')
+  }
+
+  // custom chips = selected values not in the preset list
+  const customChips = selected.filter(s => !options.includes(s))
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap gap-2">
+        {options.map((opt, idx) => (
+          <button key={opt} type="button" onClick={() => onToggle(opt)}
+            className="text-sm px-3.5 py-1.5 rounded-full transition-colors"
+            style={selected.includes(opt)
+              ? { backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }
+              : { backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+            {labels ? labels[idx] : opt}
+          </button>
+        ))}
+        {customChips.map(opt => (
+          <button key={opt} type="button" onClick={() => onToggle(opt)}
+            className="text-sm px-3.5 py-1.5 rounded-full transition-colors"
+            style={{ backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }}>
+            {opt} ✕
+          </button>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <input value={custom} onChange={e => setCustom(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustom() } }}
+          placeholder="Add your own…"
+          style={{ flex: 1, border: '0.5px solid #E8DDD5', borderRadius: '20px', padding: '6px 14px', fontSize: '13px', outline: 'none', color: '#1A0208', backgroundColor: '#fff' }}
+          onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+          onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+        <button type="button" onClick={addCustom}
+          className="text-sm px-4 py-1.5 rounded-full font-medium"
+          style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>
+          + Add
         </button>
-      ))}
+      </div>
     </div>
   )
 }
@@ -79,9 +275,68 @@ function SectionHeader({ title, hint }: { title: string; hint?: string }) {
   )
 }
 
+function DeleteAccountSection() {
+  const { t } = useTranslation()
+  const { signOut } = useAuth()
+  const navigate = useNavigate()
+  const [confirming, setConfirming] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    const { error } = await supabase.rpc('delete_user')
+    if (error) {
+      setDeleting(false)
+      alert(error.message)
+      return
+    }
+    await signOut()
+    navigate('/')
+  }
+
+  return (
+    <div className="border-t pt-6 pb-8 mt-2" style={{ borderColor: '#E8DDD5' }}>
+      {!confirming ? (
+        <button
+          type="button"
+          onClick={() => setConfirming(true)}
+          className="text-sm underline"
+          style={{ color: '#aaa' }}
+        >
+          {t('edit_profile.delete_account')}
+        </button>
+      ) : (
+        <div className="rounded-xl p-4 flex flex-col gap-3" style={{ backgroundColor: '#fff5f5', border: '1px solid #fca5a5' }}>
+          <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{t('edit_profile.delete_account_confirm')}</p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="text-sm px-4 py-2 rounded-lg font-medium disabled:opacity-60"
+              style={{ backgroundColor: '#dc2626', color: '#fff' }}
+            >
+              {deleting ? '...' : t('edit_profile.delete_account_confirm_yes')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirming(false)}
+              className="text-sm px-4 py-2 rounded-lg"
+              style={{ color: '#7A6060' }}
+            >
+              {t('edit_profile.delete_account_confirm_cancel')}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function EditProfile() {
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isJa = i18n.language.startsWith('ja')
   const { user, profile: cachedProfile, refreshProfile, loading: authLoading } = useAuth()
 
   const [saving, setSaving] = useState(false)
@@ -90,18 +345,23 @@ export default function EditProfile() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const p = cachedProfile as any
   const pp = p?.provider_profile
-  const isProvider = p?.user_type === 'provider'
+  const [userType, setUserType] = useState<'seeker' | 'provider' | 'both'>(p?.user_type ?? 'seeker')
+  const isProvider = userType === 'provider' || userType === 'both'
 
   const [form, setForm] = useState({
-    name:         p?.name ?? '',
-    title:        pp?.title ?? '',
-    bio:          p?.bio ?? '',
-    location:     p?.location ?? 'Tokyo',
-    birthYear:    String(p?.birth_year ?? ''),
-    gender:       p?.gender ?? '',
-    price:        String(pp?.hourly_rate ?? ''),
+    name:            p?.name ?? '',
+    title:           pp?.title ?? '',
+    bio:             p?.bio ?? '',
+    location:        p?.location ?? '',
+    birthYear:       String(p?.birth_year ?? ''),
+    gender:          p?.gender ?? '',
+    price:           String(pp?.hourly_rate ?? ''),
+    priceOnline:     String(pp?.online_rate ?? ''),
+    priceInPerson:   String(pp?.inperson_rate ?? ''),
+    priceTrial:      String(pp?.trial_rate ?? ''),
     sessionTypes: (pp?.session_types ?? []) as string[],
     privacy:      p?.privacy_mode ?? 'public',
+    vacationMode: p?.vacation_mode ?? false,
   })
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -109,9 +369,15 @@ export default function EditProfile() {
   const [uploadingAvatar,      setUploadingAvatar]      = useState(false)
 
   const [personalityTraits,    setPersonalityTraits]    = useState<string[]>(p?.personality_traits ?? [])
+  const [topTraits,            setTopTraits]            = useState<string[]>(p?.top_traits ?? [])
   const [personalityInsights,  setPersonalityInsights]  = useState<string>(p?.personality_insights ?? '')
+  const [mbti,                 setMbti]                 = useState<string>(p?.mbti ?? '')
+  const [loveLanguage,         setLoveLanguage]         = useState<string>(p?.love_language ?? '')
+  const [starSign,             setStarSign]             = useState<string>(p?.star_sign ?? '')
   const [interests,            setInterests]            = useState<string[]>(p?.interests ?? [])
+  const [topInterests,         setTopInterests]         = useState<string[]>(p?.top_interests ?? [])
   const [selectedSkills,       setSelectedSkills]       = useState<string[]>(pp?.skills ?? [])
+  const [topSkills,            setTopSkills]            = useState<string[]>(pp?.top_skills ?? [])
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [educationEntries,     setEducationEntries]     = useState<EduEntry[]>((p?.education ?? []).map((e: any) => ({ id: e.id, degree: e.degree, school: e.school, year: e.year ?? '' })))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,30 +385,53 @@ export default function EditProfile() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [qualifications,       setQualifications]       = useState<QualEntry[]>((p?.qualifications ?? []).map((q: any) => ({ title: q.title ?? '', issuer: q.issuer ?? '', year: q.year ?? '' })))
   const [achievements,         setAchievements]         = useState<string[]>(p?.achievements ?? [])
-  const [availDays,            setAvailDays]            = useState<string[]>(pp?.availability?.days ?? [])
   const [availLocations,       setAvailLocations]       = useState<string[]>(pp?.availability?.locations ?? [])
+  const [availLocationDates,   setAvailLocationDates]   = useState<{ location: string; from: string; to: string }[]>(pp?.availability?.location_dates ?? [])
+  const [availDaySchedule,     setAvailDaySchedule]     = useState<Record<string, { from: string; to: string }[]>>(() => {
+    const av = pp?.availability
+    if (av?.day_schedule) return av.day_schedule
+    const oldDays: string[] = av?.days ?? []
+    const slot = { from: av?.time_from ?? '', to: av?.time_to ?? '' }
+    const result: Record<string, { from: string; to: string }[]> = {}
+    oldDays.forEach(day => { result[day] = [{ ...slot }] })
+    return result
+  })
   const [newLocation,          setNewLocation]          = useState('')
   const [deletedEduIds,        setDeletedEduIds]        = useState<string[]>([])
   const [deletedExpIds,        setDeletedExpIds]        = useState<string[]>([])
+  const [bioTone,              setBioTone]              = useState('friendly')
+  const [bioLang,              setBioLang]              = useState(() => i18n.language.startsWith('ja') ? 'ja' : 'en')
+  const [generatingBio,        setGeneratingBio]        = useState(false)
 
   useEffect(() => {
     if (!p) return
     const pp2 = p.provider_profile
+    setUserType(p.user_type ?? 'seeker')
     setForm({
-      name:         p.name ?? '',
-      title:        pp2?.title ?? '',
-      bio:          p.bio ?? '',
-      location:     p.location ?? 'Tokyo',
-      birthYear:    String(p.birth_year ?? ''),
-      gender:       p.gender ?? '',
-      price:        String(pp2?.hourly_rate ?? ''),
+      name:            p.name ?? '',
+      title:           pp2?.title ?? '',
+      bio:             p.bio ?? '',
+      location:        p.location ?? '',
+      birthYear:       String(p.birth_year ?? ''),
+      gender:          p.gender ?? '',
+      price:           String(pp2?.hourly_rate ?? ''),
+      priceOnline:     String(pp2?.online_rate ?? ''),
+      priceInPerson:   String(pp2?.inperson_rate ?? ''),
+      priceTrial:      String(pp2?.trial_rate ?? ''),
       sessionTypes: pp2?.session_types ?? [],
       privacy:      p.privacy_mode ?? 'public',
+      vacationMode: p.vacation_mode ?? false,
     })
     setPersonalityTraits(p.personality_traits ?? [])
+    setTopTraits(p.top_traits ?? [])
     setPersonalityInsights(p.personality_insights ?? '')
+    setMbti(p.mbti ?? '')
+    setLoveLanguage(p.love_language ?? '')
+    setStarSign(p.star_sign ?? '')
     setInterests(p.interests ?? [])
+    setTopInterests(p.top_interests ?? [])
     setSelectedSkills(pp2?.skills ?? [])
+    setTopSkills(pp2?.top_skills ?? [])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setEducationEntries((p.education ?? []).map((e: any) => ({ id: e.id, degree: e.degree, school: e.school, year: e.year ?? '' })))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -150,8 +439,18 @@ export default function EditProfile() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setQualifications((p.qualifications ?? []).map((q: any) => ({ title: q.title ?? '', issuer: q.issuer ?? '', year: q.year ?? '' })))
     setAchievements(p.achievements ?? [])
-    setAvailDays(pp2?.availability?.days ?? [])
     setAvailLocations(pp2?.availability?.locations ?? [])
+    setAvailLocationDates(pp2?.availability?.location_dates ?? [])
+    const av2 = pp2?.availability
+    if (av2?.day_schedule) {
+      setAvailDaySchedule(av2.day_schedule)
+    } else {
+      const oldDays2: string[] = av2?.days ?? []
+      const slot2 = { from: av2?.time_from ?? '', to: av2?.time_to ?? '' }
+      const result2: Record<string, { from: string; to: string }[]> = {}
+      oldDays2.forEach((day: string) => { result2[day] = [{ ...slot2 }] })
+      setAvailDaySchedule(result2)
+    }
     setAvatarPreview(p.avatar_url ?? '')
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cachedProfile])
@@ -186,6 +485,39 @@ export default function EditProfile() {
 
   const toggle = (arr: string[], val: string, set: (v: string[]) => void) =>
     set(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
+
+  const generateBio = async () => {
+    setGeneratingBio(true)
+    const { data, error } = await supabase.functions.invoke('generate-bio', {
+      body: {
+        name:         form.name,
+        role:         isProvider ? 'provider' : 'seeker',
+        tone:         bioTone,
+        language:     bioLang,
+        location:     form.location,
+        traits:       personalityTraits,
+        interests,
+        skills:       isProvider ? selectedSkills : [],
+        mbti,
+        loveLanguage,
+        starSign,
+      },
+    })
+    setGeneratingBio(false)
+    if (!error && data?.bio) setForm(prev => ({ ...prev, bio: data.bio }))
+  }
+  useEffect(() => {
+    setForm(prev => {
+      const loc = prev.location
+      if (!loc) return prev
+      const translated = isJa
+        ? (LOCATION_EN_TO_JA[loc] ?? loc)
+        : (LOCATION_JA_TO_EN[loc] ?? loc)
+      return translated !== loc ? { ...prev, location: translated } : prev
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isJa])
+
   const addLoc = () => {
     const loc = newLocation.trim()
     if (loc && !availLocations.includes(loc)) { setAvailLocations(prev => [...prev, loc]); setNewLocation('') }
@@ -199,11 +531,13 @@ export default function EditProfile() {
 
     // Base fields — always exist in the original schema
     const { error: profileErr } = await updateProfile(user.id, {
-      name:       form.name,
-      bio:        form.bio,
-      location:   form.location,
-      privacy_mode: form.privacy as 'public' | 'hidden' | 'anonymous',
-    })
+      name:             form.name,
+      bio:              form.bio,
+      location:         form.location,
+      user_type:     userType,
+      privacy_mode:  form.privacy as 'public' | 'hidden' | 'anonymous',
+      vacation_mode: form.vacationMode,
+    } as any)
     if (profileErr) { setError(profileErr.message); setSaving(false); return }
 
     // Extended fields — added by migrations 005 & 007; silently skip if columns not yet applied
@@ -211,8 +545,13 @@ export default function EditProfile() {
       birth_year:           form.birthYear ? Number(form.birthYear) : null,
       gender:               form.gender || null,
       personality_traits:   personalityTraits,
+      top_traits:           topTraits,
       interests,
+      top_interests:        topInterests,
       personality_insights: personalityInsights || null,
+      mbti:                 mbti || null,
+      love_language:        loveLanguage || null,
+      star_sign:            starSign || null,
       qualifications,
       achievements,
     } as any).catch(() => {})
@@ -223,12 +562,16 @@ export default function EditProfile() {
       saves.push(updateProviderProfile(user.id, {
         title:        form.title,
         skills:       selectedSkills,
-        hourly_rate:  Number(form.price) || undefined,
+        top_skills:   topSkills,
+        hourly_rate:   Number(form.price) || undefined,
+        online_rate:   Number(form.priceOnline) || undefined,
+        inperson_rate: Number(form.priceInPerson) || undefined,
+        trial_rate:    Number(form.priceTrial) || undefined,
         session_types: form.sessionTypes,
       }))
       // availability column added by migration 005 — silently skip if not yet applied
       saves.push(
-        updateProviderProfile(user.id, { availability: { days: availDays, locations: availLocations } } as any)
+        updateProviderProfile(user.id, { availability: { days: Object.keys(availDaySchedule), day_schedule: availDaySchedule, locations: availLocations, location_dates: availLocationDates } } as any)
           .catch(() => {})
       )
     }
@@ -249,7 +592,7 @@ export default function EditProfile() {
 
     await Promise.all(saves)
     await refreshProfile()
-    navigate(`/profile/${user.id}`)
+    navigate('/dashboard')
   }
 
   if (!cachedProfile) {
@@ -277,6 +620,37 @@ export default function EditProfile() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+
+          {/* ── Account type ── */}
+          <div style={cardStyle}>
+            <SectionHeader title={t('edit_profile.section_account')} />
+            <p className="text-sm font-medium mb-3" style={{ color: '#1A0208' }}>{t('edit_profile.account_type_label')}</p>
+            <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
+              {(['seeker', 'both', 'provider'] as const).map((type, i) => {
+                const isActive = userType === type
+                const isDisabled = (userType === 'provider' && type === 'seeker') ||
+                                   (userType === 'seeker' && type === 'provider')
+                return (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => !isDisabled && setUserType(type)}
+                    disabled={isDisabled}
+                    className="flex-1 text-sm py-2.5 transition-colors"
+                    style={{
+                      backgroundColor: isActive ? '#5C0A1E' : '#fff',
+                      color: isActive ? '#fff' : isDisabled ? '#D5C8C0' : '#7A6060',
+                      fontWeight: isActive ? 600 : 400,
+                      borderRight: i < 2 ? '0.5px solid #E8DDD5' : undefined,
+                      cursor: isDisabled ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {t(`edit_profile.account_type_${type}`)}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
 
           {/* ── Photo ── */}
           <div style={cardStyle}>
@@ -322,10 +696,17 @@ export default function EditProfile() {
               )}
               <div className="col-span-2">
                 <label style={labelStyle}>{t('edit_profile.label_location')}</label>
-                <select value={form.location} onChange={e => setForm({ ...form, location: e.target.value })}
-                  style={{ ...inputStyle, cursor: 'pointer' }}>
-                  <option>Tokyo</option><option>Osaka</option><option>Kyoto</option><option>Online only</option>
-                </select>
+                <input list="location-list" value={form.location}
+                  onChange={e => setForm({ ...form, location: e.target.value })}
+                  placeholder="e.g. Tokyo, Osaka, or type your own…"
+                  style={inputStyle}
+                  onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                  onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                <datalist id="location-list">
+                  {Object.entries(LOCATION_EN_TO_JA).map(([en, ja]) => (
+                    <option key={en} value={isJa ? ja : en} />
+                  ))}
+                </datalist>
               </div>
               <div>
                 <label style={labelStyle}>{t('edit_profile.label_birth_year')}</label>
@@ -353,6 +734,34 @@ export default function EditProfile() {
                   style={{ ...inputStyle, resize: 'none' }}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+
+                {/* AI generate */}
+                <div className="mt-3 rounded-xl p-3 flex flex-wrap items-center gap-2" style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5' }}>
+                  <span className="text-xs font-medium" style={{ color: '#5C0A1E' }}>✨ {t('edit_profile.generate_with_ai')}</span>
+                  {(personalityTraits.length === 0 && interests.length === 0 && selectedSkills.length === 0) ? (
+                    <span className="text-xs" style={{ color: '#aaa' }}>— {t('edit_profile.generate_select_first')}</span>
+                  ) : (
+                    <>
+                      <select value={bioTone} onChange={e => setBioTone(e.target.value)}
+                        style={{ fontSize: '12px', border: '0.5px solid #E8DDD5', borderRadius: '8px', padding: '4px 8px', color: '#1A0208', backgroundColor: '#fff', outline: 'none', cursor: 'pointer' }}>
+                        <option value="friendly">{t('edit_profile.generate_tone_friendly')}</option>
+                        <option value="professional">{t('edit_profile.generate_tone_professional')}</option>
+                        <option value="casual">{t('edit_profile.generate_tone_casual')}</option>
+                        <option value="creative">{t('edit_profile.generate_tone_creative')}</option>
+                      </select>
+                      <select value={bioLang} onChange={e => setBioLang(e.target.value)}
+                        style={{ fontSize: '12px', border: '0.5px solid #E8DDD5', borderRadius: '8px', padding: '4px 8px', color: '#1A0208', backgroundColor: '#fff', outline: 'none', cursor: 'pointer' }}>
+                        <option value="en">English</option>
+                        <option value="ja">日本語</option>
+                      </select>
+                      <button type="button" onClick={generateBio} disabled={generatingBio}
+                        className="text-xs px-4 py-1.5 rounded-full font-medium disabled:opacity-50 ml-auto"
+                        style={{ backgroundColor: '#B8860B', color: '#3A2400' }}>
+                        {generatingBio ? t('edit_profile.generate_generating') : t('edit_profile.generate_button')}
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -361,12 +770,56 @@ export default function EditProfile() {
           <div style={cardStyle}>
             <SectionHeader title={t('edit_profile.section_personality')} hint={t('edit_profile.personality_traits_hint')} />
             <ChipPicker options={PERSONALITY_TRAITS} selected={personalityTraits}
-              onToggle={v => toggle(personalityTraits, v, setPersonalityTraits)} />
+              onToggle={v => toggle(personalityTraits, v, setPersonalityTraits)}
+              labels={isJa ? PERSONALITY_TRAITS_JA : undefined} />
           </div>
 
           {/* ── Personality insights ── */}
           <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_personality_insights')} />
+            <SectionHeader title={t('edit_profile.section_personality_insights')} hint={t('edit_profile.optional')} />
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              {/* MBTI */}
+              <div>
+                <label style={labelStyle}>MBTI type</label>
+                <select value={mbti} onChange={e => setMbti(e.target.value)}
+                  style={{ ...inputStyle, cursor: 'pointer' }}>
+                  <option value="">— select —</option>
+                  {['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP',
+                    'ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Love language */}
+              <div>
+                <label style={labelStyle}>Love language</label>
+                <select value={loveLanguage} onChange={e => setLoveLanguage(e.target.value)}
+                  style={{ ...inputStyle, cursor: 'pointer' }}>
+                  <option value="">— select —</option>
+                  <option value="words-of-affirmation">Words of Affirmation</option>
+                  <option value="acts-of-service">Acts of Service</option>
+                  <option value="receiving-gifts">Receiving Gifts</option>
+                  <option value="quality-time">Quality Time</option>
+                  <option value="physical-touch">Physical Touch</option>
+                </select>
+              </div>
+
+              {/* Star sign */}
+              <div>
+                <label style={labelStyle}>Star sign</label>
+                <select value={starSign} onChange={e => setStarSign(e.target.value)}
+                  style={{ ...inputStyle, cursor: 'pointer' }}>
+                  <option value="">— select —</option>
+                  {['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+                    'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'].map(s => (
+                    <option key={s} value={s.toLowerCase()}>{s}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <label style={labelStyle}>{t('edit_profile.label_personality_insights')}</label>
             <textarea value={personalityInsights} onChange={e => setPersonalityInsights(e.target.value)} rows={3}
               placeholder={t('edit_profile.personality_insights_placeholder')}
@@ -379,7 +832,8 @@ export default function EditProfile() {
           <div style={cardStyle}>
             <SectionHeader title={t('edit_profile.section_interests')} hint={t('edit_profile.interests_hint')} />
             <ChipPicker options={INTEREST_OPTIONS} selected={interests}
-              onToggle={v => toggle(interests, v, setInterests)} />
+              onToggle={v => toggle(interests, v, setInterests)}
+              labels={isJa ? INTEREST_OPTIONS_JA : undefined} />
           </div>
 
           {/* ── Skills (provider only) ── */}
@@ -387,14 +841,15 @@ export default function EditProfile() {
             <div style={cardStyle}>
               <SectionHeader title={t('edit_profile.section_skills')} hint={t('edit_profile.skills_hint')} />
               <ChipPicker options={SKILL_OPTIONS} selected={selectedSkills}
-                onToggle={v => toggle(selectedSkills, v, setSelectedSkills)} />
+                onToggle={v => toggle(selectedSkills, v, setSelectedSkills)}
+                labels={isJa ? SKILL_OPTIONS_JA : undefined} />
             </div>
           )}
 
           {/* ── Experience (provider only) ── */}
           {isProvider && (
             <div style={cardStyle}>
-              <SectionHeader title={t('edit_profile.label_experience')} />
+              <SectionHeader title={t('edit_profile.label_experience')} hint={t('edit_profile.optional')} />
               <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
                 {['Role / Title', 'Company', 'Years exp.'].map(h => (
                   <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
@@ -437,7 +892,7 @@ export default function EditProfile() {
 
           {/* ── Education ── */}
           <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.label_education')} />
+            <SectionHeader title={t('edit_profile.label_education')} hint={t('edit_profile.optional')} />
             <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
               {['Degree / Qualification', 'School / Institution', 'Year'].map(h => (
                 <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
@@ -479,7 +934,7 @@ export default function EditProfile() {
 
           {/* ── Qualifications ── */}
           <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_qualifications')} />
+            <SectionHeader title={t('edit_profile.section_qualifications')} hint={t('edit_profile.optional')} />
             <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
               {['Certification / Qualification', 'Issued by', 'Year'].map(h => (
                 <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
@@ -521,7 +976,7 @@ export default function EditProfile() {
 
           {/* ── Achievements ── */}
           <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_achievements')} />
+            <SectionHeader title={t('edit_profile.section_achievements')} hint={t('edit_profile.optional')} />
             <div className="flex flex-col gap-3 mb-3">
               {achievements.map((ach, i) => (
                 <div key={i} className="flex gap-2 items-start">
@@ -549,17 +1004,27 @@ export default function EditProfile() {
             <>
               {/* Pricing */}
               <div style={cardStyle}>
-                <SectionHeader title={t('edit_profile.section_pricing')} />
-                <div className="flex items-center gap-3">
-                  <span className="text-sm" style={{ color: '#5C0A1E', fontWeight: 500 }}>¥</span>
-                  <input type="number" value={form.price} min={0} step={1}
-                    onKeyDown={e => ['e', 'E', '+', '-', '.'].includes(e.key) && e.preventDefault()}
-                    onChange={e => setForm({ ...form, price: String(Math.max(0, Math.floor(Number(e.target.value)))) })}
-                    style={{ ...inputStyle, width: '160px' }}
-                    onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                    onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                  <span className="text-sm" style={{ color: '#aaa' }}>{t('edit_profile.per_hour')}</span>
-                </div>
+                <SectionHeader title={t('edit_profile.section_pricing')} hint="Leave blank any rates that don't apply." />
+                {([
+                  ['Online',     'priceOnline',   'Online sessions (video / call)'],
+                  ['In-person',  'priceInPerson', 'Face-to-face sessions'],
+                  ['Trial',      'priceTrial',    'First-session intro price'],
+                ] as const).map(([label, key, hint]) => (
+                  <div key={key} className="flex items-center gap-3 mb-4 last:mb-0">
+                    <div style={{ width: '90px' }}>
+                      <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{label}</p>
+                      <p className="text-xs" style={{ color: '#aaa' }}>{hint}</p>
+                    </div>
+                    <span className="text-sm font-medium" style={{ color: '#5C0A1E' }}>¥</span>
+                    <input type="number" value={form[key]} min={0} step={1} placeholder="—"
+                      onKeyDown={e => ['e', 'E', '+', '-', '.'].includes(e.key) && e.preventDefault()}
+                      onChange={e => setForm({ ...form, [key]: e.target.value === '' ? '' : String(Math.max(0, Math.floor(Number(e.target.value)))) })}
+                      style={{ ...inputStyle, width: '140px' }}
+                      onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                      onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                    <span className="text-sm" style={{ color: '#aaa' }}>/hr</span>
+                  </div>
+                ))}
               </div>
 
               {/* Session types */}
@@ -594,18 +1059,111 @@ export default function EditProfile() {
                 <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
                   {t('edit_profile.schedule_days')}
                 </p>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {DAYS.map(day => (
-                    <button key={day} type="button"
-                      onClick={() => toggle(availDays, day, setAvailDays)}
-                      className="text-sm px-4 py-2 rounded-full transition-colors"
-                      style={availDays.includes(day)
-                        ? { backgroundColor: '#5C0A1E', color: '#fff', border: '1px solid #5C0A1E' }
-                        : { backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                      {day}
-                    </button>
+                <div className="flex flex-col gap-2 mb-6">
+                  {DAYS.map(day => {
+                    const slots = availDaySchedule[day] ?? []
+                    const enabled = slots.length > 0
+                    return (
+                      <div key={day} className="rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
+                        <label className="flex items-center gap-3 px-4 py-3 cursor-pointer"
+                          style={{ backgroundColor: enabled ? '#FDF0E0' : '#fff' }}>
+                          <input type="checkbox" checked={enabled}
+                            onChange={() => {
+                              if (enabled) {
+                                setAvailDaySchedule(prev => { const n = { ...prev }; delete n[day]; return n })
+                              } else {
+                                setAvailDaySchedule(prev => ({ ...prev, [day]: [{ from: '', to: '' }] }))
+                              }
+                            }}
+                            className="w-4 h-4 flex-shrink-0" style={{ accentColor: '#5C0A1E' }} />
+                          <span className="text-sm font-medium w-10 flex-shrink-0"
+                            style={{ color: enabled ? '#1A0208' : '#aaa' }}>{day}</span>
+                          {!enabled && <span className="text-xs" style={{ color: '#ccc' }}>Unavailable</span>}
+                        </label>
+                        {enabled && (
+                          <div className="px-4 pb-3 flex flex-col gap-2" style={{ borderTop: '0.5px solid #E8DDD5' }}>
+                            {slots.map((slot, si) => (
+                              <div key={si} className="flex items-center gap-2 pt-2">
+                                <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>From</span>
+                                <select value={slot.from}
+                                  onChange={e => setAvailDaySchedule(prev => ({
+                                    ...prev,
+                                    [day]: prev[day].map((s, i) => i === si ? { ...s, from: e.target.value } : s)
+                                  }))}
+                                  style={{ ...inputStyle, fontSize: '13px', cursor: 'pointer' }}>
+                                  <option value="">—</option>
+                                  {FROM_TIMES.map(ft => <option key={ft} value={ft}>{ft}</option>)}
+                                </select>
+                                <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>To</span>
+                                <select value={slot.to}
+                                  onChange={e => setAvailDaySchedule(prev => ({
+                                    ...prev,
+                                    [day]: prev[day].map((s, i) => i === si ? { ...s, to: e.target.value } : s)
+                                  }))}
+                                  style={{ ...inputStyle, fontSize: '13px', cursor: 'pointer' }}>
+                                  <option value="">—</option>
+                                  {TO_TIMES.map(tt => <option key={tt} value={tt}>{tt}</option>)}
+                                </select>
+                                {slots.length > 1 && (
+                                  <button type="button"
+                                    onClick={() => setAvailDaySchedule(prev => ({
+                                      ...prev,
+                                      [day]: prev[day].filter((_, i) => i !== si)
+                                    }))}
+                                    className="text-xs px-2 py-2 rounded-lg flex-shrink-0"
+                                    style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
+                                )}
+                              </div>
+                            ))}
+                            <button type="button"
+                              onClick={() => setAvailDaySchedule(prev => ({
+                                ...prev,
+                                [day]: [...prev[day], { from: '', to: '' }]
+                              }))}
+                              className="text-xs px-3 py-1 rounded-full mt-1 self-start"
+                              style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                              + Add slot
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
+                  {t('edit_profile.schedule_location_dates')}
+                </p>
+                <div className="flex flex-col gap-3 mb-3">
+                  {availLocationDates.map((entry, idx) => (
+                    <div key={idx} className="flex items-center gap-2 flex-wrap">
+                      <input placeholder={t('edit_profile.schedule_location_dates_placeholder')} value={entry.location}
+                        onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, location: e.target.value } : s))}
+                        style={{ ...inputStyle, fontSize: '13px', flex: '2 1 120px' }}
+                        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                      <input type="date" value={entry.from}
+                        onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, from: e.target.value } : s))}
+                        style={{ ...inputStyle, fontSize: '13px', flex: '1 1 130px' }}
+                        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                      <span className="text-xs flex-shrink-0" style={{ color: '#aaa' }}>–</span>
+                      <input type="date" value={entry.to}
+                        onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, to: e.target.value } : s))}
+                        style={{ ...inputStyle, fontSize: '13px', flex: '1 1 130px' }}
+                        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                      <button type="button" onClick={() => setAvailLocationDates(prev => prev.filter((_, i) => i !== idx))}
+                        className="text-xs px-2 py-2 rounded-lg flex-shrink-0"
+                        style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
+                    </div>
                   ))}
                 </div>
+                <button type="button" onClick={() => setAvailLocationDates(prev => [...prev, { location: '', from: '', to: '' }])}
+                  className="text-xs px-4 py-2 rounded-xl mb-6"
+                  style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                  + {t('edit_profile.add_location_date')}
+                </button>
 
                 <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
                   {t('edit_profile.schedule_locations')}
@@ -656,6 +1214,16 @@ export default function EditProfile() {
                 </label>
               ))}
             </div>
+            <hr className="my-4" style={{ borderColor: '#E8DDD5' }} />
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" checked={form.vacationMode}
+                onChange={e => setForm({ ...form, vacationMode: e.target.checked })}
+                className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ accentColor: '#B8860B' }} />
+              <div>
+                <p className="text-sm font-medium" style={{ color: '#1A0208' }}>🏖️ {t('edit_profile.vacation_mode')}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#aaa' }}>{t('edit_profile.vacation_mode_hint')}</p>
+              </div>
+            </label>
           </div>
 
           {error && <p className="text-sm text-center" style={{ color: '#f87171' }}>{error}</p>}
@@ -669,6 +1237,8 @@ export default function EditProfile() {
               {saving ? '...' : t('edit_profile.save')}
             </button>
           </div>
+
+          <DeleteAccountSection />
 
         </form>
       </div>

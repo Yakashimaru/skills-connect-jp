@@ -1,4 +1,4 @@
-export type UserType = 'provider' | 'seeker'
+export type UserType = 'provider' | 'seeker' | 'both'
 export type PrivacyMode = 'public' | 'hidden' | 'anonymous'
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
 export type SubscriptionPlan = 'standard' | 'premium' | 'elite'
@@ -15,6 +15,8 @@ export interface Profile {
   location: string | null
   bio: string | null
   mbti: string | null
+  love_language: 'words-of-affirmation' | 'acts-of-service' | 'receiving-gifts' | 'quality-time' | 'physical-touch' | null
+  star_sign: 'aries' | 'taurus' | 'gemini' | 'cancer' | 'leo' | 'virgo' | 'libra' | 'scorpio' | 'sagittarius' | 'capricorn' | 'aquarius' | 'pisces' | null
   birth_year: number | null
   gender: 'male' | 'female' | 'non-binary' | 'prefer-not-to-say' | null
   personality_traits: string[]
@@ -23,6 +25,7 @@ export interface Profile {
   qualifications: { title: string; issuer: string; year: string }[]
   achievements: string[]
   privacy_mode: PrivacyMode
+  vacation_mode: boolean
   verified: boolean
   created_at: string
   updated_at: string
@@ -33,6 +36,9 @@ export interface ProviderProfile {
   title: string | null
   skills: string[]
   hourly_rate: number | null
+  online_rate: number | null
+  inperson_rate: number | null
+  trial_rate: number | null
   session_types: string[]
   rating: number
   review_count: number
