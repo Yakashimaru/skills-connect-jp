@@ -35,6 +35,7 @@ export interface ProviderProfile {
   id: string
   title: string | null
   skills: string[]
+  top_skills: string[]
   hourly_rate: number | null
   online_rate: number | null
   inperson_rate: number | null

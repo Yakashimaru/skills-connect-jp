@@ -187,33 +187,6 @@ type EduEntry  = { id?: string; degree: string; school: string; year: string }
 type ExpEntry  = { id?: string; role: string; company: string; years: string }
 type QualEntry = { title: string; issuer: string; year: string }
 
-function TopPicker({ pool, selected, onToggle, max = 5 }: {
-  pool: string[]; selected: string[]; onToggle: (v: string) => void; max?: number
-}) {
-  if (pool.length === 0) return (
-    <p className="text-xs" style={{ color: '#aaa' }}>Select some options above first.</p>
-  )
-  return (
-    <div className="flex flex-wrap gap-2">
-      {pool.map(opt => {
-        const active = selected.includes(opt)
-        const disabled = !active && selected.length >= max
-        return (
-          <button key={opt} type="button" onClick={() => !disabled && onToggle(opt)}
-            className="text-sm px-3.5 py-1.5 rounded-full transition-colors"
-            style={active
-              ? { backgroundColor: '#5C0A1E', color: '#fff', border: '1px solid #5C0A1E' }
-              : disabled
-                ? { backgroundColor: 'transparent', color: '#ccc', border: '0.5px solid #eee', cursor: 'not-allowed' }
-                : { backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-            {opt}
-          </button>
-        )
-      })}
-    </div>
-  )
-}
-
 function ChipPicker({ options, selected, onToggle, labels }: {
   options: string[]; selected: string[]; onToggle: (v: string) => void; labels?: string[]
 }) {
