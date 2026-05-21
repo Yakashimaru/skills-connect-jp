@@ -35,7 +35,7 @@ export async function searchProfiles(params: {
     .from('profiles')
     .select('*, provider_profile:provider_profiles(*)')
     .eq('privacy_mode', 'public')
-    .eq('user_type', 'provider')
+    .in('user_type', ['provider', 'both'])
 
   if (params.locations?.length) q = q.in('location', params.locations)
   if (params.query) q = q.ilike('name', `%${params.query}%`)

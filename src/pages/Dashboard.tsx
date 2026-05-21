@@ -467,7 +467,11 @@ function RightColumn({ plan, navigate, tr, role }: {
                 {p.experience.map((e: any, i: number) => (
                   <div key={i}>
                     <p className="text-xs font-medium" style={{ color: '#1A0208' }}>{e.role} · {e.company}</p>
-                    {e.years && <p className="text-xs" style={{ color: '#aaa' }}>{e.years} yrs</p>}
+                    {e.years && (
+                      <p className="text-xs" style={{ color: '#aaa' }}>
+                        {isNaN(Number(e.years)) ? e.years : `${e.years} ${Number(e.years) === 1 ? 'yr' : 'yrs'}`}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -588,8 +592,10 @@ export default function Dashboard() {
   const { t } = useTranslation()
   const { user, profile } = useAuth()
 
-  const defaultView = (profile?.user_type ?? 'seeker') as 'provider' | 'seeker'
-  const [view, setView] = useState<'provider' | 'seeker'>(defaultView)
+  const resolveView = (t: string | undefined): 'provider' | 'seeker' =>
+    t === 'provider' || t === 'both' ? 'provider' : 'seeker'
+
+  const [view, setView] = useState<'provider' | 'seeker'>(() => resolveView(profile?.user_type))
 
   const [providerBookings, setProviderBookings] = useState<any[]>([])
   const [seekerBookings, setSeekerBookings] = useState<any[]>([])
@@ -600,7 +606,8 @@ export default function Dashboard() {
 
   // Update default view when profile loads
   useEffect(() => {
-    if (profile?.user_type) setView(profile.user_type as 'provider' | 'seeker')
+    if (profile?.user_type) setView(resolveView(profile.user_type))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.user_type])
 
   useEffect(() => {
@@ -641,9 +648,34 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen py-10" style={{ backgroundColor: '#FDF8F2' }}>
       <div className="max-w-6xl mx-auto px-6">
+        {(profile as any)?.privacy_mode !== 'public' && (
+          <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl mb-6"
+            style={{ backgroundColor: '#FEF9C3', border: '0.5px solid #FDE047' }}>
+            <p className="text-sm" style={{ color: '#854D0E' }}>
+              Your profile is <strong>hidden from Discover</strong>. Other users cannot find you.
+            </p>
+            <button onClick={() => navigate('/edit-profile')}
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors"
+              style={{ backgroundColor: '#854D0E', color: '#fff' }}
+              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#6B3A08')}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#854D0E')}>
+              Fix in settings →
+            </button>
+          </div>
+        )}
+
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold" style={{ color: '#1A0208' }}>{t('dashboard.title')}</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold" style={{ color: '#1A0208' }}>{t('dashboard.title')}</h1>
+              <button onClick={() => navigate('/edit-profile')}
+                className="text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+                style={{ border: '0.5px solid #E8DDD5', color: '#5C0A1E' }}
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(184,134,11,0.06)')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}>
+                {t('dashboard.edit_profile')}
+              </button>
+            </div>
             <p className="text-sm mt-1" style={{ color: '#aaa' }}>{t('dashboard.welcome', { name: profile?.name ?? '…' })}</p>
           </div>
           <div className="flex items-center p-1 rounded-full" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>

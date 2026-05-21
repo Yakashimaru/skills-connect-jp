@@ -319,7 +319,7 @@
     "send_another": "別のメッセージを送る"
   },
   "dashboard": {
-    "title": "マイプロフィール",
+    "title": "ダッシュボード",
     "welcome": "おかえりなさい、{{name}}さん",
     "tab_provider": "プロバイダー",
     "tab_seeker": "シーカー",

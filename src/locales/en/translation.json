@@ -319,7 +319,7 @@
     "send_another": "Send another message"
   },
   "dashboard": {
-    "title": "My Profile",
+    "title": "Dashboard",
     "welcome": "Welcome back, {{name}}",
     "tab_provider": "Provider",
     "tab_seeker": "Seeker",

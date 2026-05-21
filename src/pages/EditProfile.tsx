@@ -637,21 +637,17 @@ export default function EditProfile() {
             <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
               {(['seeker', 'both', 'provider'] as const).map((type, i) => {
                 const isActive = userType === type
-                const isDisabled = (userType === 'provider' && type === 'seeker') ||
-                                   (userType === 'seeker' && type === 'provider')
                 return (
                   <button
                     key={type}
                     type="button"
-                    onClick={() => !isDisabled && setUserType(type)}
-                    disabled={isDisabled}
+                    onClick={() => setUserType(type)}
                     className="flex-1 text-sm py-2.5 transition-colors"
                     style={{
                       backgroundColor: isActive ? '#5C0A1E' : '#fff',
-                      color: isActive ? '#fff' : isDisabled ? '#D5C8C0' : '#7A6060',
+                      color: isActive ? '#fff' : '#7A6060',
                       fontWeight: isActive ? 600 : 400,
                       borderRight: i < 2 ? '0.5px solid #E8DDD5' : undefined,
-                      cursor: isDisabled ? 'not-allowed' : 'pointer',
                     }}
                   >
                     {t(`edit_profile.account_type_${type}`)}
