@@ -341,19 +341,41 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                {(pp?.availability?.days?.length > 0 || pp?.availability?.locations?.length > 0) && (
+                {(pp?.availability?.day_schedule || pp?.availability?.days?.length > 0 || pp?.availability?.locations?.length > 0) && (
                   <div>
                     <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>Availability</h2>
-                    {pp.availability?.days?.length > 0 && (
-                      <div className="mb-3">
-                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>Days</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {pp.availability.days.map((d: string) => (
-                            <span key={d} className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{d}</span>
-                          ))}
+                    {(() => {
+                      const ds = pp.availability?.day_schedule as Record<string, { from: string; to: string }[]> | undefined
+                      const days: string[] = ds ? Object.keys(ds) : (pp.availability?.days ?? [])
+                      if (!days.length) return null
+                      return (
+                        <div className="mb-3 flex flex-col gap-2">
+                          {days.map((d: string) => {
+                            const parseTime = (t: string) => {
+                              const [time, period] = t.split(' ')
+                              const [h, m] = time.split(':').map(Number)
+                              return (period === 'PM' && h !== 12 ? h + 12 : period === 'AM' && h === 12 ? 0 : h) * 60 + m
+                            }
+                            const slots: { from: string; to: string }[] = [...(ds?.[d] ?? [])].sort((a, b) => parseTime(a.from) - parseTime(b.from))
+                            return (
+                              <div key={d} className="flex items-start gap-2">
+                                <span className="text-xs font-semibold w-8 pt-0.5 flex-shrink-0" style={{ color: '#5C0A1E' }}>{d}</span>
+                                <div className="flex flex-col gap-1">
+                                  {slots.filter(s => s.from && s.to).length > 0
+                                    ? slots.filter(s => s.from && s.to).map((s, i) => (
+                                        <span key={i} className="text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>
+                                          {s.from} – {s.to}
+                                        </span>
+                                      ))
+                                    : <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{d}</span>
+                                  }
+                                </div>
+                              </div>
+                            )
+                          })}
                         </div>
-                      </div>
-                    )}
+                      )
+                    })()}
                     {pp.availability?.locations?.length > 0 && (
                       <div>
                         <p className="text-xs mb-2" style={{ color: '#aaa' }}>Locations</p>

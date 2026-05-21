@@ -217,6 +217,7 @@ function TopPicker({ pool, selected, onToggle, max = 5 }: {
 function ChipPicker({ options, selected, onToggle, labels }: {
   options: string[]; selected: string[]; onToggle: (v: string) => void; labels?: string[]
 }) {
+  const [search, setSearch] = useState('')
   const [custom, setCustom] = useState('')
 
   const addCustom = () => {
@@ -226,29 +227,65 @@ function ChipPicker({ options, selected, onToggle, labels }: {
     setCustom('')
   }
 
-  // custom chips = selected values not in the preset list
   const customChips = selected.filter(s => !options.includes(s))
+  const q = search.toLowerCase()
+  const unselected = options.filter(opt =>
+    !selected.includes(opt) && (!q || opt.toLowerCase().includes(q))
+  )
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap gap-2">
-        {options.map((opt, idx) => (
-          <button key={opt} type="button" onClick={() => onToggle(opt)}
-            className="text-sm px-3.5 py-1.5 rounded-full transition-colors"
-            style={selected.includes(opt)
-              ? { backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }
-              : { backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-            {labels ? labels[idx] : opt}
-          </button>
-        ))}
-        {customChips.map(opt => (
-          <button key={opt} type="button" onClick={() => onToggle(opt)}
-            className="text-sm px-3.5 py-1.5 rounded-full transition-colors"
-            style={{ backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }}>
-            {opt} ✕
-          </button>
-        ))}
+      {/* Selected chips — always visible */}
+      {(selected.length > 0 || customChips.length > 0) && (
+        <div className="flex flex-wrap gap-2">
+          {selected.filter(s => options.includes(s)).map(opt => {
+            const idx = options.indexOf(opt)
+            return (
+              <button key={opt} type="button" onClick={() => onToggle(opt)}
+                className="text-sm px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-colors"
+                style={{ backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }}>
+                {labels ? labels[idx] : opt} <span className="opacity-60 text-xs">✕</span>
+              </button>
+            )
+          })}
+          {customChips.map(opt => (
+            <button key={opt} type="button" onClick={() => onToggle(opt)}
+              className="text-sm px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-colors"
+              style={{ backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }}>
+              {opt} <span className="opacity-60 text-xs">✕</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Search */}
+      <input
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        placeholder="Search…"
+        style={{ border: '0.5px solid #E8DDD5', borderRadius: '20px', padding: '7px 14px', fontSize: '13px', outline: 'none', color: '#1A0208', backgroundColor: '#fff' }}
+        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
+      />
+
+      {/* Unselected options — scrollable */}
+      <div className="flex flex-wrap gap-2 overflow-y-auto pr-1" style={{ maxHeight: '160px' }}>
+        {unselected.length > 0
+          ? unselected.map((opt) => {
+              const idx = options.indexOf(opt)
+              return (
+                <button key={opt} type="button" onClick={() => onToggle(opt)}
+                  className="text-sm px-3.5 py-1.5 rounded-full transition-colors flex-shrink-0"
+                  style={{ backgroundColor: 'transparent', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                  {labels ? labels[idx] : opt}
+                </button>
+              )
+            })
+          : <p className="text-xs" style={{ color: '#aaa' }}>{q ? 'No matches.' : 'All options selected.'}</p>
+        }
       </div>
+
+      {/* Add custom */}
       <div className="flex gap-2">
         <input value={custom} onChange={e => setCustom(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustom() } }}
@@ -624,8 +661,7 @@ export default function EditProfile() {
 
           {/* ── Account type ── */}
           <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_account')} />
-            <p className="text-sm font-medium mb-3" style={{ color: '#1A0208' }}>{t('edit_profile.account_type_label')}</p>
+            <SectionHeader title={t('edit_profile.account_type_label')} />
             <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
               {(['seeker', 'both', 'provider'] as const).map((type, i) => {
                 const isActive = userType === type

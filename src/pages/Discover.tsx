@@ -81,14 +81,14 @@ export default function Discover() {
       })
     }
 
-    // Age range filter (uses birth_year)
+    // Age range filter — only profiles with birth_year set are matched
     if (ageParam) {
       const year = new Date().getFullYear()
       const ranges = ageParam.split(',').map(a => {
-        if (a === '20s')   return { min: year - 29, max: year - 20 }
-        if (a === '30s')   return { min: year - 39, max: year - 30 }
-        if (a === '40s')   return { min: year - 49, max: year - 40 }
-        if (a === '50plus') return { min: 0, max: year - 50 }
+        if (a === '20s')    return { min: year - 29, max: year - 20 }
+        if (a === '30s')    return { min: year - 39, max: year - 30 }
+        if (a === '40s')    return { min: year - 49, max: year - 40 }
+        if (a === '50plus') return { min: 0,         max: year - 50 }
         return null
       }).filter(Boolean) as { min: number; max: number }[]
       result = result.filter(p =>
@@ -96,10 +96,10 @@ export default function Discover() {
       )
     }
 
-    // Gender filter
+    // Gender filter — only profiles with gender set are matched
     if (genderParam) {
       const wanted = genderParam.split(',').filter(g => g !== 'any')
-      if (wanted.length) result = result.filter(p => wanted.includes(p.gender))
+      if (wanted.length) result = result.filter(p => p.gender && wanted.includes(p.gender))
     }
 
     // Verified filter

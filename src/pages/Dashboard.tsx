@@ -660,7 +660,7 @@ export default function Dashboard() {
               style={{ backgroundColor: '#854D0E', color: '#fff' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#6B3A08')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#854D0E')}>
-              Fix in settings →
+              Update settings →
             </button>
           </div>
         )}
