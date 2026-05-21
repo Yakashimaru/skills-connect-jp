@@ -184,7 +184,9 @@ export default function ProfilePage() {
                         {exp.years && (
                           <>
                             <span>·</span>
-                            <span style={{ color: '#B8860B' }}>{exp.years} {Number(exp.years) === 1 ? 'yr' : 'yrs'}</span>
+                            <span style={{ color: '#B8860B' }}>
+                              {isNaN(Number(exp.years)) ? exp.years : `${exp.years} ${Number(exp.years) === 1 ? 'yr' : 'yrs'}`}
+                            </span>
                           </>
                         )}
                       </div>

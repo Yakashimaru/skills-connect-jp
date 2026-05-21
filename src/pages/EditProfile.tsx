@@ -295,34 +295,38 @@ function DeleteAccountSection() {
   }
 
   return (
-    <div className="border-t pt-6 pb-8 mt-2" style={{ borderColor: '#E8DDD5' }}>
+    <div className="rounded-2xl p-5 mt-2" style={{ border: '0.5px solid #fca5a5', backgroundColor: '#fff9f9' }}>
+      <p className="text-sm font-semibold mb-1" style={{ color: '#7f1d1d' }}>Danger zone</p>
+      <p className="text-xs mb-4" style={{ color: '#aaa' }}>Once deleted, your account and all data cannot be recovered.</p>
       {!confirming ? (
         <button
           type="button"
           onClick={() => setConfirming(true)}
-          className="text-sm underline"
-          style={{ color: '#aaa' }}
+          className="text-sm font-medium px-4 py-2 rounded-xl transition-colors"
+          style={{ border: '1px solid #fca5a5', color: '#dc2626', backgroundColor: 'transparent' }}
+          onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff5f5')}
+          onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
         >
           {t('edit_profile.delete_account')}
         </button>
       ) : (
-        <div className="rounded-xl p-4 flex flex-col gap-3" style={{ backgroundColor: '#fff5f5', border: '1px solid #fca5a5' }}>
+        <div className="flex flex-col gap-3">
           <p className="text-sm font-medium" style={{ color: '#1A0208' }}>{t('edit_profile.delete_account_confirm')}</p>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={handleDelete}
               disabled={deleting}
-              className="text-sm px-4 py-2 rounded-lg font-medium disabled:opacity-60"
+              className="text-sm px-4 py-2 rounded-xl font-medium disabled:opacity-60"
               style={{ backgroundColor: '#dc2626', color: '#fff' }}
             >
-              {deleting ? '...' : t('edit_profile.delete_account_confirm_yes')}
+              {deleting ? 'Deleting...' : t('edit_profile.delete_account_confirm_yes')}
             </button>
             <button
               type="button"
               onClick={() => setConfirming(false)}
-              className="text-sm px-4 py-2 rounded-lg"
-              style={{ color: '#7A6060' }}
+              className="text-sm px-4 py-2 rounded-xl"
+              style={{ color: '#7A6060', border: '0.5px solid #E8DDD5' }}
             >
               {t('edit_profile.delete_account_confirm_cancel')}
             </button>
@@ -472,6 +476,11 @@ export default function EditProfile() {
     if (file.size > 5 * 1024 * 1024) { setError('Image must be under 5 MB'); return }
     setUploadingAvatar(true)
     setError(null)
+    // TODO: move cleanup to server-side (R2 Worker) when switching away from Supabase storage
+    const { data: existing } = await supabase.storage.from('avatars').list(user.id)
+    if (existing?.length) {
+      await supabase.storage.from('avatars').remove(existing.map(f => `${user.id}/${f.name}`))
+    }
     const ext = file.name.split('.').pop() ?? 'jpg'
     const path = `${user.id}/avatar.${ext}`
     const { error: upErr } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
