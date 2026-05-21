@@ -409,6 +409,7 @@
     "back": "← ダッシュボードへ戻る",
     "section_photo": "プロフィール写真",
     "upload_photo": "新しい写真をアップロード",
+    "photo_selected": "写真を選択済み — 保存して適用",
     "photo_hint": "JPG、PNG、またはWEBP。最大5MB。",
     "section_basic": "基本情報",
     "label_name": "お名前",

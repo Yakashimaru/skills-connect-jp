@@ -409,6 +409,7 @@
     "back": "← Back to dashboard",
     "section_photo": "Profile photo",
     "upload_photo": "Upload new photo",
+    "photo_selected": "Photo selected — save to apply",
     "photo_hint": "JPG, PNG or WEBP. Max 5MB.",
     "section_basic": "Basic information",
     "label_name": "Full name",

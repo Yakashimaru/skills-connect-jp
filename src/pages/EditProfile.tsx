@@ -277,13 +277,19 @@ function SectionHeader({ title, hint }: { title: string; hint?: string }) {
 
 function DeleteAccountSection() {
   const { t } = useTranslation()
-  const { signOut } = useAuth()
+  const { signOut, user } = useAuth()
   const navigate = useNavigate()
   const [confirming, setConfirming] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
   const handleDelete = async () => {
     setDeleting(true)
+    if (user) {
+      const { data: files } = await supabase.storage.from('avatars').list(user.id)
+      if (files?.length) {
+        await supabase.storage.from('avatars').remove(files.map(f => `${user.id}/${f.name}`))
+      }
+    }
     const { error } = await supabase.rpc('delete_user')
     if (error) {
       setDeleting(false)
@@ -370,7 +376,7 @@ export default function EditProfile() {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [avatarPreview,        setAvatarPreview]        = useState<string>(p?.avatar_url ?? '')
-  const [uploadingAvatar,      setUploadingAvatar]      = useState(false)
+  const [pendingAvatar,        setPendingAvatar]        = useState<File | null>(null)
 
   const [personalityTraits,    setPersonalityTraits]    = useState<string[]>(p?.personality_traits ?? [])
   const [topTraits,            setTopTraits]            = useState<string[]>(p?.top_traits ?? [])
@@ -403,9 +409,6 @@ export default function EditProfile() {
   const [newLocation,          setNewLocation]          = useState('')
   const [deletedEduIds,        setDeletedEduIds]        = useState<string[]>([])
   const [deletedExpIds,        setDeletedExpIds]        = useState<string[]>([])
-  const [bioTone,              setBioTone]              = useState('friendly')
-  const [bioLang,              setBioLang]              = useState(() => i18n.language.startsWith('ja') ? 'ja' : 'en')
-  const [generatingBio,        setGeneratingBio]        = useState(false)
 
   useEffect(() => {
     if (!p) return
@@ -469,52 +472,19 @@ export default function EditProfile() {
     if (e.id) setDeletedExpIds(prev => [...prev, e.id!])
     setExperienceEntries(prev => prev.filter((_, j) => j !== i))
   }
-  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file || !user) return
+    if (!file) return
     if (!file.type.startsWith('image/')) { setError('Please select an image file'); return }
     if (file.size > 5 * 1024 * 1024) { setError('Image must be under 5 MB'); return }
-    setUploadingAvatar(true)
     setError(null)
-    // TODO: move cleanup to server-side (R2 Worker) when switching away from Supabase storage
-    const { data: existing } = await supabase.storage.from('avatars').list(user.id)
-    if (existing?.length) {
-      await supabase.storage.from('avatars').remove(existing.map(f => `${user.id}/${f.name}`))
-    }
-    const ext = file.name.split('.').pop() ?? 'jpg'
-    const path = `${user.id}/avatar.${ext}`
-    const { error: upErr } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
-    if (upErr) { setError(upErr.message); setUploadingAvatar(false); return }
-    const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-    await updateProfile(user.id, { avatar_url: publicUrl } as any)
-    await refreshProfile()
-    setAvatarPreview(publicUrl)
-    setUploadingAvatar(false)
+    setPendingAvatar(file)
+    setAvatarPreview(URL.createObjectURL(file))
   }
 
   const toggle = (arr: string[], val: string, set: (v: string[]) => void) =>
     set(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
 
-  const generateBio = async () => {
-    setGeneratingBio(true)
-    const { data, error } = await supabase.functions.invoke('generate-bio', {
-      body: {
-        name:         form.name,
-        role:         isProvider ? 'provider' : 'seeker',
-        tone:         bioTone,
-        language:     bioLang,
-        location:     form.location,
-        traits:       personalityTraits,
-        interests,
-        skills:       isProvider ? selectedSkills : [],
-        mbti,
-        loveLanguage,
-        starSign,
-      },
-    })
-    setGeneratingBio(false)
-    if (!error && data?.bio) setForm(prev => ({ ...prev, bio: data.bio }))
-  }
   useEffect(() => {
     setForm(prev => {
       const loc = prev.location
@@ -538,19 +508,35 @@ export default function EditProfile() {
     setSaving(true)
     setError(null)
 
+    // Upload pending avatar now if one was selected
+    if (pendingAvatar) {
+      // TODO: move cleanup to server-side (R2 Worker) when switching away from Supabase storage
+      const { data: existing } = await supabase.storage.from('avatars').list(user.id)
+      if (existing?.length) {
+        await supabase.storage.from('avatars').remove(existing.map(f => `${user.id}/${f.name}`))
+      }
+      const ext = pendingAvatar.name.split('.').pop() ?? 'jpg'
+      const path = `${user.id}/avatar.${ext}`
+      const { error: upErr } = await supabase.storage.from('avatars').upload(path, pendingAvatar, { upsert: true })
+      if (upErr) { setError(upErr.message); setSaving(false); return }
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+      await updateProfile(user.id, { avatar_url: `${publicUrl}?t=${Date.now()}` } as any)
+      setPendingAvatar(null)
+    }
+
     // Base fields — always exist in the original schema
     const { error: profileErr } = await updateProfile(user.id, {
-      name:             form.name,
-      bio:              form.bio,
-      location:         form.location,
+      name:          form.name,
+      bio:           form.bio,
+      location:      form.location,
       user_type:     userType,
       privacy_mode:  form.privacy as 'public' | 'hidden' | 'anonymous',
-      vacation_mode: form.vacationMode,
     } as any)
     if (profileErr) { setError(profileErr.message); setSaving(false); return }
 
     // Extended fields — added by migrations 005 & 007; silently skip if columns not yet applied
     await updateProfile(user.id, {
+      vacation_mode:        form.vacationMode,
       birth_year:           form.birthYear ? Number(form.birthYear) : null,
       gender:               form.gender || null,
       personality_traits:   personalityTraits,
@@ -630,6 +616,12 @@ export default function EditProfile() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
+          {error && (
+            <div className="px-4 py-3 rounded-xl text-sm" style={{ backgroundColor: '#FEE2E2', color: '#DC2626', border: '0.5px solid #FCA5A5' }}>
+              {error}
+            </div>
+          )}
+
           {/* ── Account type ── */}
           <div style={cardStyle}>
             <SectionHeader title={t('edit_profile.section_account')} />
@@ -670,11 +662,11 @@ export default function EditProfile() {
                 }
               </div>
               <div>
-                <button type="button" disabled={uploadingAvatar}
+                <button type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="text-sm px-4 py-2 rounded-xl transition-colors disabled:opacity-60"
+                  className="text-sm px-4 py-2 rounded-xl transition-colors"
                   style={{ backgroundColor: '#FDF0E0', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                  {uploadingAvatar ? 'Uploading...' : t('edit_profile.upload_photo')}
+                  {pendingAvatar ? t('edit_profile.photo_selected') : t('edit_profile.upload_photo')}
                 </button>
                 <p className="text-xs mt-2" style={{ color: '#aaa' }}>{t('edit_profile.photo_hint')}</p>
               </div>
@@ -740,33 +732,6 @@ export default function EditProfile() {
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
 
-                {/* AI generate */}
-                <div className="mt-3 rounded-xl p-3 flex flex-wrap items-center gap-2" style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5' }}>
-                  <span className="text-xs font-medium" style={{ color: '#5C0A1E' }}>✨ {t('edit_profile.generate_with_ai')}</span>
-                  {(personalityTraits.length === 0 && interests.length === 0 && selectedSkills.length === 0) ? (
-                    <span className="text-xs" style={{ color: '#aaa' }}>— {t('edit_profile.generate_select_first')}</span>
-                  ) : (
-                    <>
-                      <select value={bioTone} onChange={e => setBioTone(e.target.value)}
-                        style={{ fontSize: '12px', border: '0.5px solid #E8DDD5', borderRadius: '8px', padding: '4px 8px', color: '#1A0208', backgroundColor: '#fff', outline: 'none', cursor: 'pointer' }}>
-                        <option value="friendly">{t('edit_profile.generate_tone_friendly')}</option>
-                        <option value="professional">{t('edit_profile.generate_tone_professional')}</option>
-                        <option value="casual">{t('edit_profile.generate_tone_casual')}</option>
-                        <option value="creative">{t('edit_profile.generate_tone_creative')}</option>
-                      </select>
-                      <select value={bioLang} onChange={e => setBioLang(e.target.value)}
-                        style={{ fontSize: '12px', border: '0.5px solid #E8DDD5', borderRadius: '8px', padding: '4px 8px', color: '#1A0208', backgroundColor: '#fff', outline: 'none', cursor: 'pointer' }}>
-                        <option value="en">English</option>
-                        <option value="ja">日本語</option>
-                      </select>
-                      <button type="button" onClick={generateBio} disabled={generatingBio}
-                        className="text-xs px-4 py-1.5 rounded-full font-medium disabled:opacity-50 ml-auto"
-                        style={{ backgroundColor: '#B8860B', color: '#3A2400' }}>
-                        {generatingBio ? t('edit_profile.generate_generating') : t('edit_profile.generate_button')}
-                      </button>
-                    </>
-                  )}
-                </div>
               </div>
             </div>
           </div>
@@ -1230,8 +1195,6 @@ export default function EditProfile() {
               </div>
             </label>
           </div>
-
-          {error && <p className="text-sm text-center" style={{ color: '#f87171' }}>{error}</p>}
 
           <div className="flex items-center gap-4 pb-4">
             <button type="submit" disabled={saving}

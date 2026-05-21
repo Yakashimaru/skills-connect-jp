@@ -590,6 +590,7 @@ function RightColumn({ plan, navigate, tr, role }: {
 
 export default function Dashboard() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { user, profile } = useAuth()
 
   const resolveView = (t: string | undefined): 'provider' | 'seeker' =>
