@@ -6,6 +6,7 @@ import { getBookingsForUser } from '../lib/bookings'
 import { getSavedProfiles } from '../lib/profiles'
 import { getActiveSubscription } from '../lib/subscriptions'
 import { createReview } from '../lib/reviews'
+import { TRAIT_JA, INTEREST_JA, SKILL_JA, SOCIAL_SKILL_JA, JA_CITY } from '../lib/constants'
 
 const card = { backgroundColor: '#fff', borderRadius: '16px', border: '0.5px solid #E8DDD5', padding: '20px' }
 
@@ -19,14 +20,21 @@ const SESSION_ICONS: Record<string, string> = {
   'group':            '👥',
 }
 
-const SESSION_DESCS: Record<string, string> = {
-  '1-on-1 Session':   'Private session, online or in-person',
-  'Group Meetup':     'Small group sessions',
-  'Online Call':      'Video or voice call via Zoom or Google Meet',
-  'Social Experience': 'Casual meetup',
-  'online':           'Video or voice call via Zoom or Google Meet',
-  'in-person':        'Private session, in-person',
-  'group':            'Small group sessions',
+const SESSION_TYPE_KEYS: Record<string, string> = {
+  '1-on-1 Session': 'profile.session_type_1on1',
+  'Group Meetup':   'profile.session_type_group',
+  'Online Call':    'profile.session_type_online',
+  'Social Experience': 'profile.session_type_social',
+}
+
+const SESSION_DESC_KEYS: Record<string, string> = {
+  '1-on-1 Session':   'dashboard.session_desc_1on1',
+  'Group Meetup':     'dashboard.session_desc_group',
+  'Online Call':      'dashboard.session_desc_online',
+  'Social Experience': 'dashboard.session_desc_social',
+  'online':           'dashboard.session_desc_online',
+  'in-person':        'dashboard.session_desc_inperson',
+  'group':            'dashboard.session_desc_group',
 }
 
 const ALL_SESSION_TYPES = ['1-on-1 Session', 'Group Meetup', 'Online Call', 'Social Experience']
@@ -288,7 +296,7 @@ function SeekerDashboard({ bookings, savedProfiles, subscription, userId }: {
                       <p className="text-xs" style={{ color: '#aaa' }}>{p?.provider_profile?.title ?? ''}</p>
                     </div>
                     {p?.provider_profile?.hourly_rate && (
-                      <span className="text-xs font-medium" style={{ color: '#B8860B' }}>¥{p.provider_profile.hourly_rate.toLocaleString()}/hr</span>
+                      <span className="text-xs font-medium" style={{ color: '#B8860B' }}>¥{p.provider_profile.hourly_rate.toLocaleString()}{tr('profile.per_hr')}</span>
                     )}
                     <button className="text-xs px-3 py-1.5 rounded-lg transition-colors"
                       style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
@@ -384,6 +392,8 @@ function RightColumn({ plan, navigate, tr, role }: {
   navigate: ReturnType<typeof useNavigate>; tr: any; role: 'provider' | 'seeker'
 }) {
   const { profile, signOut } = useAuth()
+  const { i18n } = useTranslation()
+  const isJa = i18n.language === 'ja'
   const pp = (profile as any)?.provider_profile
   const p = profile as any
 
@@ -412,7 +422,10 @@ function RightColumn({ plan, navigate, tr, role }: {
         </div>
         <p className="font-semibold" style={{ color: '#1A0208' }}>{profile?.name ?? '—'}</p>
         <p className="text-xs mb-3" style={{ color: '#aaa' }}>
-          {role === 'provider' && pp?.title ? pp.title : `${role.charAt(0).toUpperCase() + role.slice(1)} · ${profile?.location ?? ''}`}
+          {role === 'provider' && pp?.title
+            ? pp.title
+            : `${tr(role === 'provider' ? 'dashboard.tab_provider' : 'dashboard.tab_seeker')} · ${profile?.location ? (isJa ? (JA_CITY[profile.location] ?? profile.location) : profile.location) : ''}`
+          }
         </p>
         {profile?.verified && (
           <span className="text-xs font-medium px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{tr('dashboard.verified')}</span>
@@ -429,40 +442,40 @@ function RightColumn({ plan, navigate, tr, role }: {
       {/* Profile details */}
       {hasAnyDetail && (
         <div style={card}>
-          <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>Profile</h3>
+          <h3 className="font-semibold mb-4" style={{ color: '#1A0208' }}>{tr('dashboard.profile_section')}</h3>
 
           {hasTraits && (
-            <SectionRow title="Personality traits">
+            <SectionRow title={tr('dashboard.personality_traits')}>
               <div className="flex flex-wrap gap-1.5">
-                {p.personality_traits.map((t: string) => <Chip key={t} label={t} />)}
+                {p.personality_traits.map((t: string) => <Chip key={t} label={isJa ? (TRAIT_JA[t] ?? t) : t} />)}
               </div>
             </SectionRow>
           )}
 
           {hasInsights && (
-            <SectionRow title="Personality insights">
+            <SectionRow title={tr('dashboard.personality_insights')}>
               <p className="text-xs italic leading-relaxed" style={{ color: '#7A6060' }}>{p.personality_insights}</p>
             </SectionRow>
           )}
 
           {hasInterests && (
-            <SectionRow title="Interests & hobbies">
+            <SectionRow title={tr('profile.interests')}>
               <div className="flex flex-wrap gap-1.5">
-                {p.interests.map((i: string) => <Chip key={i} label={i} />)}
+                {p.interests.map((i: string) => <Chip key={i} label={isJa ? (INTEREST_JA[i] ?? i) : i} />)}
               </div>
             </SectionRow>
           )}
 
           {hasSkills && (
-            <SectionRow title="Skills">
+            <SectionRow title={tr('profile.skills')}>
               <div className="flex flex-wrap gap-1.5">
-                {pp.skills.map((s: string) => <Chip key={s} label={s} />)}
+                {pp.skills.map((s: string) => <Chip key={s} label={isJa ? (SKILL_JA[s] ?? SOCIAL_SKILL_JA[s] ?? s) : s} />)}
               </div>
             </SectionRow>
           )}
 
           {hasExperience && (
-            <SectionRow title="Experience">
+            <SectionRow title={tr('profile.experience')}>
               <div className="flex flex-col gap-1.5">
                 {p.experience.map((e: any, i: number) => (
                   <div key={i}>
@@ -479,7 +492,7 @@ function RightColumn({ plan, navigate, tr, role }: {
           )}
 
           {hasEducation && (
-            <SectionRow title="Education">
+            <SectionRow title={tr('profile.education')}>
               <div className="flex flex-col gap-1.5">
                 {p.education.map((e: any, i: number) => (
                   <div key={i}>
@@ -492,7 +505,7 @@ function RightColumn({ plan, navigate, tr, role }: {
           )}
 
           {hasQuals && (
-            <SectionRow title="Qualifications">
+            <SectionRow title={tr('profile.qualifications')}>
               <div className="flex flex-col gap-1.5">
                 {p.qualifications.map((q: any, i: number) => (
                   <div key={i}>
@@ -505,7 +518,7 @@ function RightColumn({ plan, navigate, tr, role }: {
           )}
 
           {hasAchieve && (
-            <SectionRow title="Achievements">
+            <SectionRow title={tr('profile.achievements')}>
               <ul className="flex flex-col gap-1">
                 {p.achievements.map((a: string, i: number) => (
                   <li key={i} className="text-xs flex gap-1.5" style={{ color: '#1A0208' }}>
@@ -517,7 +530,7 @@ function RightColumn({ plan, navigate, tr, role }: {
           )}
 
           {hasAvail && (
-            <SectionRow title="Availability">
+            <SectionRow title={tr('profile.availability')}>
               {pp.availability?.days?.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mb-2">
                   {pp.availability.days.map((d: string) => (
@@ -569,9 +582,9 @@ function RightColumn({ plan, navigate, tr, role }: {
               onMouseLeave={e => (e.currentTarget.style.borderColor = '#E8DDD5')}>
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="text-base">{SESSION_ICONS[type] ?? '📌'}</span>
-                <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{type}</span>
+                <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{SESSION_TYPE_KEYS[type] ? tr(SESSION_TYPE_KEYS[type]) : type}</span>
               </div>
-              <p className="text-xs leading-relaxed ml-6" style={{ color: '#7A6060' }}>{SESSION_DESCS[type] ?? ''}</p>
+              <p className="text-xs leading-relaxed ml-6" style={{ color: '#7A6060' }}>{SESSION_DESC_KEYS[type] ? tr(SESSION_DESC_KEYS[type]) : ''}</p>
             </div>
           ))}
         </div>

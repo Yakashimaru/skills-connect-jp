@@ -723,8 +723,8 @@ export default function Navbar() {
 
         {/* Logo */}
         <NavLink to="/" className="flex items-baseline gap-0 tracking-tight leading-none">
-          <span className="text-lg font-black" style={{ color: C.brand, letterSpacing: '-0.02em' }}>JAP</span>
-          <span className="text-lg font-black" style={{ color: '#B8860B', letterSpacing: '-0.02em' }}>MATCH</span>
+          <span className="text-lg font-black" style={{ color: C.brand, letterSpacing: '-0.02em' }}>SKILL</span>
+          <span className="text-lg font-black" style={{ color: '#B8860B', letterSpacing: '-0.02em' }}>CONNECT</span>
         </NavLink>
 
         {/* Nav links */}

@@ -7,6 +7,7 @@ import { getReviews } from '../lib/reviews'
 import { getOrCreateConversation } from '../lib/messages'
 import { createBooking } from '../lib/bookings'
 import type { Profile, ProviderProfile } from '../lib/types'
+import { TRAIT_JA, INTEREST_JA, SKILL_JA, SOCIAL_SKILL_JA, STAR_SIGN_JA, JA_CITY } from '../lib/constants'
 
 const SESSION_ICONS: Record<string, string> = {
   '1-on-1 Session': '👤',
@@ -15,11 +16,18 @@ const SESSION_ICONS: Record<string, string> = {
   'Social Experience': '🌸',
 }
 
-const SESSION_DESCS: Record<string, string> = {
-  '1-on-1 Session': 'Private session, online or in-person',
-  'Group Meetup': 'Small group sessions',
-  'Online Call': 'Video or voice call via Zoom or Google Meet',
-  'Social Experience': 'Casual meetup',
+const SESSION_DESC_KEYS: Record<string, string> = {
+  '1-on-1 Session': 'dashboard.session_desc_1on1',
+  'Group Meetup': 'dashboard.session_desc_group',
+  'Online Call': 'dashboard.session_desc_online',
+  'Social Experience': 'dashboard.session_desc_social',
+}
+
+const SESSION_TYPE_KEYS: Record<string, string> = {
+  '1-on-1 Session': 'profile.session_type_1on1',
+  'Group Meetup': 'profile.session_type_group',
+  'Online Call': 'profile.session_type_online',
+  'Social Experience': 'profile.session_type_social',
 }
 
 const DURATIONS = [30, 60, 90, 120]
@@ -117,7 +125,7 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
                   style={sessionType === type
                     ? { backgroundColor: '#5C0A1E', color: '#fff', border: '1px solid #5C0A1E' }
                     : { backgroundColor: '#fff', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                  {SESSION_ICONS[type] ?? '📌'} {type}
+                  {SESSION_ICONS[type] ?? '📌'} {SESSION_TYPE_KEYS[type] ? t(SESSION_TYPE_KEYS[type]) : type}
                 </button>
               ))}
             </div>
@@ -180,7 +188,7 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
                   <span style={{ color: '#7A6060' }}>{t('profile.book_modal.trial_rate_label')}</span>
                 ) : (
                   <span style={{ color: '#7A6060' }}>
-                    {isOnlineType(sessionType) ? t('profile.book_modal.online') : t('profile.book_modal.inperson')} ¥{hourlyRate.toLocaleString()}/hr × {duration} min
+                    {isOnlineType(sessionType) ? t('profile.book_modal.online') : t('profile.book_modal.inperson')} ¥{hourlyRate.toLocaleString()}{t('profile.per_hr')} × {duration} min
                   </span>
                 )}
                 <span className="font-semibold" style={{ color: '#1A0208' }}>¥{total.toLocaleString()}</span>
@@ -207,7 +215,8 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
 export default function ProfilePage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isJa = i18n.language === 'ja'
   const { user } = useAuth()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -303,12 +312,12 @@ export default function ProfilePage() {
           </div>
           {pp?.title && <p className="text-sm mb-1" style={{ color: '#7A6060' }}>{pp.title}</p>}
           <div className="flex items-center gap-3 text-xs" style={{ color: '#aaa' }}>
-            {profile.location && <span>📍 {profile.location}</span>}
+            {profile.location && <span>📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : profile.location}</span>}
             {pp && <span>⭐ {Number(pp.rating).toFixed(1)} ({pp.review_count} {t('profile.reviews')})</span>}
-            {pp?.trial_rate && <span className="font-semibold" style={{ color: '#B8860B' }}>Trial ¥{pp.trial_rate.toLocaleString()}</span>}
-            {pp?.online_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>Online ¥{pp.online_rate.toLocaleString()}/hr</span>}
-            {pp?.inperson_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>In-person ¥{pp.inperson_rate.toLocaleString()}/hr</span>}
-            {!pp?.online_rate && !pp?.inperson_rate && pp?.hourly_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>¥{pp.hourly_rate.toLocaleString()}/hr</span>}
+            {pp?.trial_rate && <span className="font-semibold" style={{ color: '#B8860B' }}>{t('profile.trial')} ¥{pp.trial_rate.toLocaleString()}</span>}
+            {pp?.online_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.online')} ¥{pp.online_rate.toLocaleString()}{t('profile.per_hr')}</span>}
+            {pp?.inperson_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.inperson')} ¥{pp.inperson_rate.toLocaleString()}{t('profile.per_hr')}</span>}
+            {!pp?.online_rate && !pp?.inperson_rate && pp?.hourly_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>¥{pp.hourly_rate.toLocaleString()}{t('profile.per_hr')}</span>}
           </div>
         </div>
 
@@ -325,7 +334,7 @@ export default function ProfilePage() {
 
             {(profile.personality_traits?.length > 0 || profile.mbti || profile.star_sign || profile.personality_insights) && (
               <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Personality</h2>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.personality')}</h2>
                 {(profile.mbti || profile.star_sign) && (
                   <div className="flex flex-wrap gap-2 mb-3">
                     {profile.mbti && (
@@ -343,14 +352,14 @@ export default function ProfilePage() {
                 {profile.top_traits?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {profile.top_traits.map((trait: string) => (
-                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{trait}</span>
+                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
                     ))}
                   </div>
                 )}
-                {profile.personality_traits?.filter((t: string) => !profile.top_traits?.includes(t)).length > 0 && (
+                {profile.personality_traits?.filter((tr: string) => !profile.top_traits?.includes(tr)).length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {profile.personality_traits.filter((t: string) => !profile.top_traits?.includes(t)).map((trait: string) => (
-                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{trait}</span>
+                    {profile.personality_traits.filter((tr: string) => !profile.top_traits?.includes(tr)).map((trait: string) => (
+                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
                     ))}
                   </div>
                 )}
@@ -360,9 +369,9 @@ export default function ProfilePage() {
               </section>
             )}
 
-            {(profile.mbti || profile.love_language || profile.star_sign) && (
+            {(profile.mbti || profile.star_sign) && (
               <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>About me</h2>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.about_me')}</h2>
                 <div className="flex flex-wrap gap-3">
                   {profile.mbti && (
                     <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
@@ -370,16 +379,12 @@ export default function ProfilePage() {
                       <span className="text-sm font-semibold" style={{ color: '#5C0A1E' }}>{profile.mbti}</span>
                     </div>
                   )}
-                  {profile.love_language && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
-                      <span className="text-xs" style={{ color: '#aaa' }}>Love language</span>
-                      <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>{profile.love_language.replace(/-/g, ' ')}</span>
-                    </div>
-                  )}
                   {profile.star_sign && (
                     <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
-                      <span className="text-xs" style={{ color: '#aaa' }}>Star sign</span>
-                      <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>{profile.star_sign}</span>
+                      <span className="text-xs" style={{ color: '#aaa' }}>{isJa ? '星座' : 'Star sign'}</span>
+                      <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>
+                        {isJa ? (STAR_SIGN_JA[profile.star_sign] ?? profile.star_sign) : profile.star_sign}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -388,17 +393,17 @@ export default function ProfilePage() {
 
             {profile.interests?.length > 0 && (
               <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Interests & hobbies</h2>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.interests')}</h2>
                 {profile.top_interests?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
-                    {profile.top_interests.map((i: string) => (
-                      <span key={i} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{i}</span>
+                    {profile.top_interests.map((interest: string) => (
+                      <span key={interest} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
                     ))}
                   </div>
                 )}
                 <div className="flex flex-wrap gap-2">
-                  {profile.interests.filter((i: string) => !profile.top_interests?.includes(i)).map((interest: string) => (
-                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{interest}</span>
+                  {profile.interests.filter((interest: string) => !profile.top_interests?.includes(interest)).map((interest: string) => (
+                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
                   ))}
                 </div>
               </section>
@@ -410,13 +415,13 @@ export default function ProfilePage() {
                 {pp.top_skills?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {pp.top_skills.map((s: string) => (
-                      <span key={s} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{s}</span>
+                      <span key={s} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (SKILL_JA[s] ?? SOCIAL_SKILL_JA[s] ?? s) : s}</span>
                     ))}
                   </div>
                 )}
                 <div className="flex flex-wrap gap-2">
                   {pp.skills.filter((s: string) => !pp.top_skills?.includes(s)).map((skill: string) => (
-                    <span key={skill} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{skill}</span>
+                    <span key={skill} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (SKILL_JA[skill] ?? SOCIAL_SKILL_JA[skill] ?? skill) : skill}</span>
                   ))}
                 </div>
               </section>
@@ -466,7 +471,7 @@ export default function ProfilePage() {
 
             {profile.qualifications?.length > 0 && (
               <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Qualifications</h2>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.qualifications')}</h2>
                 <div className="flex flex-col gap-2">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {profile.qualifications.map((q: any, i: number) => (
@@ -483,7 +488,7 @@ export default function ProfilePage() {
 
             {profile.achievements?.length > 0 && (
               <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Achievements</h2>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.achievements')}</h2>
                 <ul className="flex flex-col gap-2">
                   {profile.achievements.map((a: string, i: number) => (
                     <li key={i} className="flex gap-2 text-sm" style={{ color: '#5A4040' }}>
@@ -552,13 +557,13 @@ export default function ProfilePage() {
                             <div className="flex items-center justify-between mb-1">
                               <div className="flex items-center gap-2">
                                 <span className="text-lg">{SESSION_ICONS[type] ?? '📌'}</span>
-                                <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{type}</span>
+                                <span className="text-sm font-semibold" style={{ color: '#1A0208' }}>{SESSION_TYPE_KEYS[type] ? t(SESSION_TYPE_KEYS[type]) : type}</span>
                               </div>
                               {displayRate && (
-                                <span className="text-xs font-semibold" style={{ color: '#5C0A1E' }}>¥{displayRate.toLocaleString()}/hr</span>
+                                <span className="text-xs font-semibold" style={{ color: '#5C0A1E' }}>¥{displayRate.toLocaleString()}{t('profile.per_hr')}</span>
                               )}
                             </div>
-                            <p className="text-xs leading-relaxed" style={{ color: '#7A6060' }}>{SESSION_DESCS[type] ?? ''}</p>
+                            <p className="text-xs leading-relaxed" style={{ color: '#7A6060' }}>{SESSION_DESC_KEYS[type] ? t(SESSION_DESC_KEYS[type]) : ''}</p>
                           </div>
                         )
                       })}
@@ -568,7 +573,7 @@ export default function ProfilePage() {
 
                 {(pp?.availability?.day_schedule || pp?.availability?.days?.length > 0 || pp?.availability?.locations?.length > 0 || pp?.availability?.time_from) && (
                   <div>
-                    <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>Availability</h2>
+                    <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>{t('profile.availability')}</h2>
                     {(() => {
                       const ds = pp.availability?.day_schedule as Record<string, { from: string; to: string }[]> | undefined
                       const days: string[] = ds ? Object.keys(ds) : (pp.availability?.days ?? [])
@@ -657,11 +662,11 @@ export default function ProfilePage() {
               <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{profile.name}</p>
               {(pp.online_rate || pp.inperson_rate || pp.trial_rate || pp.hourly_rate) && (
                 <p className="text-xs" style={{ color: '#aaa' }}>
-                  {pp.trial_rate ? `Trial ¥${pp.trial_rate.toLocaleString()} · ` : ''}
-                  {pp.online_rate ? `Online ¥${pp.online_rate.toLocaleString()}/hr` : ''}
+                  {pp.trial_rate ? `${t('profile.trial')} ¥${pp.trial_rate.toLocaleString()} · ` : ''}
+                  {pp.online_rate ? `${t('profile.book_modal.online')} ¥${pp.online_rate.toLocaleString()}${t('profile.per_hr')}` : ''}
                   {pp.online_rate && pp.inperson_rate ? ' · ' : ''}
-                  {pp.inperson_rate ? `In-person ¥${pp.inperson_rate.toLocaleString()}/hr` : ''}
-                  {!pp.online_rate && !pp.inperson_rate && pp.hourly_rate ? `¥${pp.hourly_rate.toLocaleString()}/hr` : ''}
+                  {pp.inperson_rate ? `${t('profile.book_modal.inperson')} ¥${pp.inperson_rate.toLocaleString()}${t('profile.per_hr')}` : ''}
+                  {!pp.online_rate && !pp.inperson_rate && pp.hourly_rate ? `¥${pp.hourly_rate.toLocaleString()}${t('profile.per_hr')}` : ''}
                 </p>
               )}
             </div>
