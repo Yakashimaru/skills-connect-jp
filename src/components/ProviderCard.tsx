@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import type { ProfileWithProvider } from '../lib/types'
 
 const C = {
   brand: '#5C0A1E',
@@ -23,8 +24,7 @@ function formatLastOnline(ts: string | null): { label: string; online: boolean }
 }
 
 interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  profile: any
+  profile: ProfileWithProvider
   isSaved?: boolean
   onSaveToggle?: (id: string, e: React.MouseEvent) => void
 }
@@ -96,8 +96,8 @@ export default function ProviderCard({ profile, isSaved, onSaveToggle }: Props) 
       <div className="p-4">
         <div className="flex items-start justify-between mb-1">
           <p className="font-bold" style={{ color: C.text }}>{profile.name}</p>
-          {profile.provider_profile?.rating > 0 && (
-            <span className="text-xs" style={{ color: '#aaa' }}>⭐ {Number(profile.provider_profile.rating).toFixed(1)}</span>
+          {(profile.provider_profile?.rating ?? 0) > 0 && (
+            <span className="text-xs" style={{ color: '#aaa' }}>⭐ {Number(profile.provider_profile?.rating).toFixed(1)}</span>
           )}
         </div>
         {profile.provider_profile?.title && (

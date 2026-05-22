@@ -6,6 +6,7 @@ import { getProfile } from '../lib/profiles'
 import { getReviews } from '../lib/reviews'
 import { getOrCreateConversation } from '../lib/messages'
 import { createBooking } from '../lib/bookings'
+import type { Profile, ProviderProfile } from '../lib/types'
 
 const SESSION_ICONS: Record<string, string> = {
   '1-on-1 Session': '👤',
@@ -24,15 +25,16 @@ const SESSION_DESCS: Record<string, string> = {
 const DURATIONS = [30, 60, 90, 120]
 
 function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
-  provider: any; providerProfile: any; seekerId: string; onClose: () => void
+  provider: Profile; providerProfile: ProviderProfile; seekerId: string; onClose: () => void
 }) {
+  const { t } = useTranslation()
   const sessionTypes: string[] = providerProfile.session_types ?? []
   const onlineRate: number   = providerProfile.online_rate   ?? providerProfile.hourly_rate ?? 0
   const inpersonRate: number = providerProfile.inperson_rate ?? providerProfile.hourly_rate ?? 0
   const trialRate: number    = providerProfile.trial_rate    ?? 0
 
-  const isOnlineType = (t: string) => t === 'Online Call'
-  const resolveRate  = (t: string) => isOnlineType(t) ? onlineRate : inpersonRate
+  const isOnlineType = (type: string) => type === 'Online Call'
+  const resolveRate  = (type: string) => isOnlineType(type) ? onlineRate : inpersonRate
 
   const [sessionType, setSessionType] = useState(sessionTypes[0] ?? '')
   const [isTrial,     setIsTrial]     = useState(false)
@@ -48,7 +50,7 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
   const total = isTrial && trialRate ? trialRate : Math.round((duration / 60) * hourlyRate)
 
   const handleSubmit = async () => {
-    if (!sessionType || !date || !time) { setError('Please fill in all required fields.'); return }
+    if (!sessionType || !date || !time) { setError(t('profile.book_modal.error_required')); return }
     setError('')
     setSubmitting(true)
     const scheduledAt = new Date(`${date}T${time}`).toISOString()
@@ -62,7 +64,7 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
       notes: notes || null,
     })
     setSubmitting(false)
-    if (err) { setError('Something went wrong. Please try again.'); return }
+    if (err) { setError(t('profile.book_modal.error_generic')); return }
     setDone(true)
   }
 
@@ -76,13 +78,13 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ backgroundColor: 'rgba(20,2,6,0.5)' }}>
       <div className="w-full max-w-md rounded-2xl p-8 text-center" style={{ backgroundColor: '#fff' }}>
         <div className="text-4xl mb-4">🎉</div>
-        <h2 className="text-lg font-bold mb-2" style={{ color: '#1A0208' }}>Request sent!</h2>
+        <h2 className="text-lg font-bold mb-2" style={{ color: '#1A0208' }}>{t('profile.book_modal.success_title')}</h2>
         <p className="text-sm mb-6" style={{ color: '#7A6060' }}>
-          Your booking request with <span className="font-semibold">{provider.name}</span> has been submitted. They'll confirm shortly.
+          {t('profile.book_modal.success_body', { name: provider.name })}
         </p>
         <button onClick={onClose} className="w-full py-3 rounded-xl font-semibold text-sm"
           style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>
-          Done
+          {t('profile.book_modal.done')}
         </button>
       </div>
     </div>
@@ -97,8 +99,8 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4" style={{ borderBottom: '0.5px solid #E8DDD5' }}>
           <div>
-            <h2 className="font-bold text-base" style={{ color: '#1A0208' }}>Book a session</h2>
-            <p className="text-xs mt-0.5" style={{ color: '#7A6060' }}>with {provider.name}</p>
+            <h2 className="font-bold text-base" style={{ color: '#1A0208' }}>{t('profile.book_modal.title')}</h2>
+            <p className="text-xs mt-0.5" style={{ color: '#7A6060' }}>{t('profile.book_modal.with', { name: provider.name })}</p>
           </div>
           <button onClick={onClose} className="text-xl leading-none" style={{ color: '#aaa' }}>✕</button>
         </div>
@@ -107,7 +109,7 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
 
           {/* Session type */}
           <div>
-            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Session type</p>
+            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.session_type')}</p>
             <div className="flex flex-wrap gap-2">
               {sessionTypes.map(type => (
                 <button key={type} type="button" onClick={() => setSessionType(type)}
@@ -124,19 +126,19 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
           {/* Date + Time */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Date</p>
+              <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.date')}</p>
               <input type="date" value={date} onChange={e => setDate(e.target.value)}
                 min={new Date().toISOString().split('T')[0]} style={input} />
             </div>
             <div>
-              <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Time</p>
+              <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.time')}</p>
               <input type="time" value={time} onChange={e => setTime(e.target.value)} style={input} />
             </div>
           </div>
 
           {/* Duration */}
           <div>
-            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Duration</p>
+            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.duration')}</p>
             <div className="flex gap-2">
               {DURATIONS.map(d => (
                 <button key={d} type="button" onClick={() => setDuration(d)}
@@ -152,9 +154,9 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
 
           {/* Notes */}
           <div>
-            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Notes <span style={{ color: '#aaa', fontWeight: 400 }}>(optional)</span></p>
+            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.notes')} <span style={{ color: '#aaa', fontWeight: 400 }}>({t('edit_profile.optional')})</span></p>
             <textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)}
-              placeholder="Anything the provider should know…"
+              placeholder={t('profile.book_modal.notes_placeholder')}
               style={{ ...input, resize: 'none' }} />
           </div>
 
@@ -164,8 +166,8 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
               <input type="checkbox" checked={isTrial} onChange={e => setIsTrial(e.target.checked)}
                 className="w-4 h-4" style={{ accentColor: '#B8860B' }} />
               <div>
-                <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>Book as trial session</p>
-                <p className="text-xs" style={{ color: '#7A6060' }}>First-session intro price · ¥{trialRate.toLocaleString()}</p>
+                <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{t('profile.book_modal.trial_label')}</p>
+                <p className="text-xs" style={{ color: '#7A6060' }}>{t('profile.book_modal.trial_hint', { price: trialRate.toLocaleString() })}</p>
               </div>
             </label>
           )}
@@ -175,15 +177,15 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
             <div className="rounded-xl p-4" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
               <div className="flex justify-between text-sm mb-1">
                 {isTrial && trialRate > 0 ? (
-                  <span style={{ color: '#7A6060' }}>Trial session (flat rate)</span>
+                  <span style={{ color: '#7A6060' }}>{t('profile.book_modal.trial_rate_label')}</span>
                 ) : (
                   <span style={{ color: '#7A6060' }}>
-                    {isOnlineType(sessionType) ? 'Online' : 'In-person'} ¥{hourlyRate.toLocaleString()}/hr × {duration} min
+                    {isOnlineType(sessionType) ? t('profile.book_modal.online') : t('profile.book_modal.inperson')} ¥{hourlyRate.toLocaleString()}/hr × {duration} min
                   </span>
                 )}
                 <span className="font-semibold" style={{ color: '#1A0208' }}>¥{total.toLocaleString()}</span>
               </div>
-              <p className="text-xs" style={{ color: '#aaa' }}>Payment collected after provider confirms</p>
+              <p className="text-xs" style={{ color: '#aaa' }}>{t('profile.book_modal.payment_note')}</p>
             </div>
           )}
 
@@ -194,7 +196,7 @@ function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
             style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
             onMouseEnter={e => { if (!submitting) e.currentTarget.style.backgroundColor = '#3A0612' }}
             onMouseLeave={e => { if (!submitting) e.currentTarget.style.backgroundColor = '#5C0A1E' }}>
-            {submitting ? 'Sending…' : 'Request booking'}
+            {submitting ? t('profile.book_modal.sending') : t('profile.book_modal.request')}
           </button>
         </div>
       </div>

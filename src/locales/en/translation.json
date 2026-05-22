@@ -427,7 +427,30 @@
     "book_session": "Book Session",
     "edit_profile": "Edit profile",
     "not_found": "Profile not found",
-    "browse_profiles": "Browse profiles"
+    "browse_profiles": "Browse profiles",
+    "book_modal": {
+      "title": "Book a session",
+      "with": "with {{name}}",
+      "session_type": "Session type",
+      "date": "Date",
+      "time": "Time",
+      "duration": "Duration",
+      "notes": "Notes",
+      "notes_placeholder": "Anything the provider should know…",
+      "trial_label": "Book as trial session",
+      "trial_hint": "First-session intro price · ¥{{price}}",
+      "trial_rate_label": "Trial session (flat rate)",
+      "online": "Online",
+      "inperson": "In-person",
+      "payment_note": "Payment collected after provider confirms",
+      "error_required": "Please fill in all required fields.",
+      "error_generic": "Something went wrong. Please try again.",
+      "sending": "Sending…",
+      "request": "Request booking",
+      "success_title": "Request sent!",
+      "success_body": "Your booking request with {{name}} has been submitted. They'll confirm shortly.",
+      "done": "Done"
+    }
   },
   "edit_profile": {
     "title": "Edit profile",

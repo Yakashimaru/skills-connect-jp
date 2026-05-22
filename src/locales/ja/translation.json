@@ -427,7 +427,30 @@
     "book_session": "セッションを予約",
     "edit_profile": "プロフィールを編集",
     "not_found": "プロフィールが見つかりません",
-    "browse_profiles": "プロフィールを探す"
+    "browse_profiles": "プロフィールを探す",
+    "book_modal": {
+      "title": "セッションを予約",
+      "with": "{{name}}さんへ",
+      "session_type": "セッションタイプ",
+      "date": "日付",
+      "time": "時刻",
+      "duration": "時間",
+      "notes": "備考",
+      "notes_placeholder": "プロバイダーに伝えたいことがあれば…",
+      "trial_label": "トライアルセッションとして予約",
+      "trial_hint": "初回特別価格 · ¥{{price}}",
+      "trial_rate_label": "トライアルセッション（一律料金）",
+      "online": "オンライン",
+      "inperson": "対面",
+      "payment_note": "プロバイダーが確認後にお支払い",
+      "error_required": "すべての必須項目を入力してください。",
+      "error_generic": "エラーが発生しました。もう一度お試しください。",
+      "sending": "送信中…",
+      "request": "予約をリクエスト",
+      "success_title": "リクエスト送信完了！",
+      "success_body": "{{name}}さんへの予約リクエストを送信しました。確認次第ご連絡があります。",
+      "done": "完了"
+    }
   },
   "edit_profile": {
     "title": "プロフィールを編集",

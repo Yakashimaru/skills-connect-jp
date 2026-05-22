@@ -1,3 +1,5 @@
+// TODO: Skills, Social, and Discover share ~95% identical code. Refactor into
+// a single shared component with a `mode` prop before this grows further.
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
