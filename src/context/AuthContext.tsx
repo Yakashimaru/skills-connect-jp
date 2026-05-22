@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import type { User } from '@supabase/supabase-js'
 import * as authService from '../lib/auth'
-import { getProfile } from '../lib/profiles'
+import { getProfile, updateProfile } from '../lib/profiles'
 import type { Profile, UserType } from '../lib/types'
 
 interface AuthContextType {
@@ -41,7 +41,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = authService.onAuthStateChange(async (u) => {
       setUser(u)
-      setProfile(u ? await getProfile(u.id) : null)
+      if (u) {
+        await updateProfile(u.id, { last_online: new Date().toISOString() } as Partial<Profile>)
+        setProfile(await getProfile(u.id))
+      } else {
+        setProfile(null)
+      }
     })
 
     return () => subscription.unsubscribe()

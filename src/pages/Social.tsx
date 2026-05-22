@@ -5,7 +5,6 @@ import { searchProfiles, saveProfile, unsaveProfile, getSavedProfiles } from '..
 import { useAuth } from '../context/AuthContext'
 import ProviderCard from '../components/ProviderCard'
 
-// Convert Navbar filter value (e.g. 'okinawa-city', 'online') to a matchable label
 const toLabel = (value: string): string => {
   if (value === 'online') return 'online only'
   return value.replace(/-/g, ' ')
@@ -17,21 +16,18 @@ const PRICE_RANGES: Record<string, { min?: number; max?: number }> = {
   'over10k': { min: 10001 },
 }
 
-const SOCIAL_FILTER_VALUES = new Set([
-  'companion', 'companionship', 'conversation', 'dining',
-  'travel-partner', 'activity-partner', 'event-date', 'study-partner', 'friendship', 'relationship-experience',
-])
-
 const SOCIAL_SKILLS = new Set([
-  'companion', 'companionship', 'conversation', 'dining',
+  'companion', 'conversation', 'companionship', 'dining',
   'travel partner', 'activity partner', 'event date', 'study partner', 'friendship', 'relationship experience',
 ])
 
-export default function Discover() {
+export default function Social() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
+
+  useEffect(() => { document.title = t('social.heading') }, [t])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allProfiles, setAllProfiles] = useState<any[]>([])
@@ -69,43 +65,20 @@ export default function Discover() {
   const query = searchParams.get('q') ?? ''
   const locationParam = searchParams.get('location') ?? ''
   const skillsParam = searchParams.get('skills') ?? ''
-
-  const pageTitle = useMemo(() => {
-    if (!skillsParam) return null
-    const selected = skillsParam.split(',')
-    const hasSocial = selected.some(v => SOCIAL_FILTER_VALUES.has(v))
-    const hasSkill  = selected.some(v => !SOCIAL_FILTER_VALUES.has(v))
-    if (hasSocial && !hasSkill) return t('nav.social')
-    if (hasSkill  && !hasSocial) return t('nav.skills')
-    return null
-  }, [skillsParam, t])
   const priceParam = searchParams.get('price') ?? ''
   const ageParam = searchParams.get('age') ?? ''
   const genderParam = searchParams.get('gender') ?? ''
   const verifiedOnly = searchParams.get('verified') === '1'
 
   const profiles = useMemo(() => {
-    let result = allProfiles.filter(p => !p.vacation_mode)
+    let result = allProfiles
 
-    // Pre-filter by category type when only social or only skills categories are selected
-    if (skillsParam) {
-      const selected = skillsParam.split(',')
-      const hasSocial = selected.some(v => SOCIAL_FILTER_VALUES.has(v))
-      const hasSkill  = selected.some(v => !SOCIAL_FILTER_VALUES.has(v))
-      if (hasSocial && !hasSkill) {
-        result = result.filter(p => {
-          const skills: string[] = (p.provider_profile?.skills ?? []).map((s: string) => s.toLowerCase())
-          return skills.some(s => SOCIAL_SKILLS.has(s))
-        })
-      } else if (hasSkill && !hasSocial) {
-        result = result.filter(p => {
-          const skills: string[] = (p.provider_profile?.skills ?? []).map((s: string) => s.toLowerCase())
-          return skills.some(s => !SOCIAL_SKILLS.has(s))
-        })
-      }
-    }
+    // Pre-filter: only profiles with at least one social skill
+    result = result.filter(p => {
+      const skills: string[] = (p.provider_profile?.skills ?? []).map((s: string) => s.toLowerCase())
+      return skills.some(s => SOCIAL_SKILLS.has(s))
+    })
 
-    // Name / title search
     if (query.trim()) {
       const q = query.toLowerCase()
       result = result.filter(p =>
@@ -114,7 +87,6 @@ export default function Discover() {
       )
     }
 
-    // Location filter — substring match so 'shinjuku' matches 'Shinjuku, Tokyo' etc.
     if (locationParam) {
       const wanted = locationParam.split(',').map(toLabel)
       result = result.filter(p => {
@@ -123,7 +95,6 @@ export default function Discover() {
       })
     }
 
-    // Skills / category filter — case-insensitive label match
     if (skillsParam) {
       const wanted = skillsParam.split(',').map(toLabel)
       result = result.filter(p => {
@@ -132,7 +103,6 @@ export default function Discover() {
       })
     }
 
-    // Price filter
     if (priceParam) {
       const ranges = priceParam.split(',').map(k => PRICE_RANGES[k]).filter(Boolean)
       result = result.filter(p => {
@@ -141,14 +111,13 @@ export default function Discover() {
       })
     }
 
-    // Age range filter — only profiles with birth_year set are matched
     if (ageParam) {
       const year = new Date().getFullYear()
       const ranges = ageParam.split(',').map(a => {
         if (a === '20s')    return { min: year - 29, max: year - 20 }
         if (a === '30s')    return { min: year - 39, max: year - 30 }
         if (a === '40s')    return { min: year - 49, max: year - 40 }
-        if (a === '50plus') return { min: 0,         max: year - 50 }
+        if (a === '50plus') return { min: 0, max: year - 50 }
         return null
       }).filter(Boolean) as { min: number; max: number }[]
       result = result.filter(p =>
@@ -156,13 +125,11 @@ export default function Discover() {
       )
     }
 
-    // Gender filter — only profiles with gender set are matched
     if (genderParam) {
       const wanted = genderParam.split(',').filter(g => g !== 'any')
-      if (wanted.length) result = result.filter(p => p.gender && wanted.includes(p.gender))
+      if (wanted.length) result = result.filter(p => wanted.includes(p.gender))
     }
 
-    // Verified filter
     if (verifiedOnly) result = result.filter(p => p.verified)
 
     return result
@@ -171,6 +138,10 @@ export default function Discover() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
       <div className="max-w-6xl mx-auto px-6 py-10">
+
+        <div className="mb-8">
+          <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: '#5C0A1E' }}>{t('social.eyebrow')}</p>
+        </div>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -188,15 +159,14 @@ export default function Discover() {
           <p className="text-sm text-center py-20" style={{ color: '#f87171' }}>{error}</p>
         ) : (
           <>
-            {pageTitle && <h1 className="text-3xl font-bold mb-2" style={{ color: '#1A0208' }}>{pageTitle}</h1>}
             <p className="text-sm mb-6" style={{ color: '#7A6060' }}>
-              {t('discover.profiles_found', { count: profiles.length })}
+              {t('social.profiles_found', { count: profiles.length })}
             </p>
 
             {profiles.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3">
-                <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>{t('discover.no_results')}</p>
-                <p className="text-sm" style={{ color: '#aaa' }}>{t('discover.no_results_hint')}</p>
+                <p className="text-lg font-semibold" style={{ color: '#1A0208' }}>{t('social.no_results')}</p>
+                <p className="text-sm" style={{ color: '#aaa' }}>{t('social.no_results_hint')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

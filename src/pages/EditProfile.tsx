@@ -90,12 +90,13 @@ const INTEREST_OPTIONS_JA = [
 const SKILL_OPTIONS = [
   'Advisory', 'App development', 'Assistance',
   'Business',
-  'Coaching', 'Coder', 'Communication support', 'Companion', 'Conversation', 'Cooking', 'Copywriting',
+  'Coaching', 'Coder', 'Communication support', 'Cooking', 'Copywriting',
   'Data analysis', 'Designer', 'Dog Walker',
   'English', 'Event planning',
   'Finance', 'Fitness', 'French',
   'Golf', 'Graphic design',
-  'Investing', 'IT support',
+  'Housekeeper',
+  'Investing', 'Interpreter', 'IT support',
   'Japanese',
   'Korean',
   'Mandarin', 'Marketer', 'Marketing', 'Martial arts', 'Mentorship', 'Music instructor', 'Musician',
@@ -109,12 +110,13 @@ const SKILL_OPTIONS = [
 const SKILL_OPTIONS_JA = [
   'アドバイザリー', 'アプリ開発', 'アシスタンス',
   'ビジネス',
-  'コーチング', 'コーダー', 'コミュニケーションサポート', 'コンパニオン', '会話', '料理', 'コピーライティング',
+  'コーチング', 'コーダー', 'コミュニケーションサポート', '料理', 'コピーライティング',
   'データ分析', 'デザイナー', 'ドッグウォーカー',
   '英語', 'イベント企画',
   'ファイナンス', 'フィットネス', 'フランス語',
   'ゴルフ', 'グラフィックデザイン',
-  '投資', 'ITサポート',
+  'ハウスキーパー',
+  '投資', '通訳', 'ITサポート',
   '日本語',
   '韓国語',
   '中国語', 'マーケター', 'マーケティング', '武道', 'メンタリング', '音楽インストラクター', 'ミュージシャン',
@@ -125,29 +127,86 @@ const SKILL_OPTIONS_JA = [
   'ウェブ開発',
 ]
 
-const LOCATION_EN_TO_JA: Record<string, string> = {
-  'Online only': 'オンラインのみ',
-  'Tokyo': '東京', 'Osaka': '大阪', 'Kyoto': '京都',
-  'Yokohama': '横浜', 'Nagoya': '名古屋', 'Sapporo': '札幌',
-  'Fukuoka': '福岡', 'Kobe': '神戸', 'Hiroshima': '広島',
-  'Sendai': '仙台', 'Nara': '奈良', 'Kanazawa': '金沢',
-  'Nagano': '長野', 'Okinawa': '沖縄', 'Naha': '那覇',
-  'Kawasaki': '川崎', 'Saitama': 'さいたま', 'Chiba': '千葉',
-  'Hamamatsu': '浜松', 'Kumamoto': '熊本', 'Niigata': '新潟',
-  'Shizuoka': '静岡', 'Okayama': '岡山', 'Kagoshima': '鹿児島',
-  'Matsuyama': '松山', 'Takamatsu': '高松', 'Tokushima': '徳島',
-  'Kochi': '高知', 'Nagasaki': '長崎', 'Oita': '大分',
-  'Miyazaki': '宮崎', 'Saga': '佐賀', 'Fukushima': '福島',
-  'Mito': '水戸', 'Utsunomiya': '宇都宮', 'Maebashi': '前橋',
-  'Gifu': '岐阜', 'Tsu': '津', 'Otsu': '大津',
-  'Wakayama': '和歌山', 'Tottori': '鳥取', 'Matsue': '松江',
-  'Yamaguchi': '山口', 'Akita': '秋田', 'Yamagata': '山形',
-  'Morioka': '盛岡', 'Aomori': '青森', 'Hakodate': '函館',
-  'Asahikawa': '旭川',
-}
-const LOCATION_JA_TO_EN: Record<string, string> = Object.fromEntries(
-  Object.entries(LOCATION_EN_TO_JA).map(([en, ja]) => [ja, en])
-)
+const SOCIAL_SKILL_OPTIONS = [
+  'Activity Partner', 'Companion', 'Companionship', 'Conversation',
+  'Dining', 'Event Date', 'Friendship', 'Relationship Experience', 'Study Partner', 'Travel Partner',
+]
+
+const SOCIAL_SKILL_OPTIONS_JA = [
+  'アクティビティパートナー', 'コンパニオン', 'コンパニオンシップ', '会話',
+  'ダイニング', 'イベントデート', 'フレンドシップ', '恋愛サポート', 'スタディパートナー', 'トラベルパートナー',
+]
+
+// { group, items: [{ value (English, stored in DB), ja }] }
+const LOCATION_GROUPS: { group: string; groupJa: string; items: { value: string; ja: string }[] }[] = [
+  { group: '🌐 Online', groupJa: '🌐 オンライン', items: [
+    { value: 'Online only', ja: 'オンラインのみ' },
+  ]},
+  { group: '⭐ Major Cities', groupJa: '⭐ 主要都市', items: [
+    { value: 'Tokyo', ja: '東京' }, { value: 'Osaka', ja: '大阪' },
+    { value: 'Kyoto', ja: '京都' }, { value: 'Nagoya', ja: '名古屋' },
+    { value: 'Fukuoka', ja: '福岡' }, { value: 'Sapporo', ja: '札幌' },
+    { value: 'Yokohama', ja: '横浜' }, { value: 'Sendai', ja: '仙台' },
+    { value: 'Hiroshima', ja: '広島' }, { value: 'Kobe', ja: '神戸' },
+  ]},
+  { group: 'Hokkaido', groupJa: '北海道', items: [
+    { value: 'Sapporo', ja: '札幌市' }, { value: 'Asahikawa', ja: '旭川市' },
+    { value: 'Hakodate', ja: '函館市' }, { value: 'Kushiro', ja: '釧路市' },
+    { value: 'Obihiro', ja: '帯広市' }, { value: 'Tomakomai', ja: '苫小牧市' },
+  ]},
+  { group: 'Tohoku', groupJa: '東北', items: [
+    { value: 'Sendai', ja: '仙台市' }, { value: 'Aomori', ja: '青森市' },
+    { value: 'Morioka', ja: '盛岡市' }, { value: 'Akita', ja: '秋田市' },
+    { value: 'Yamagata', ja: '山形市' }, { value: 'Fukushima', ja: '福島市' },
+    { value: 'Koriyama', ja: '郡山市' }, { value: 'Hachinohe', ja: '八戸市' },
+  ]},
+  { group: 'Kanto', groupJa: '関東', items: [
+    { value: 'Tokyo', ja: '東京' }, { value: 'Shinjuku', ja: '新宿区' },
+    { value: 'Shibuya', ja: '渋谷区' }, { value: 'Minato', ja: '港区' },
+    { value: 'Setagaya', ja: '世田谷区' }, { value: 'Nerima', ja: '練馬区' },
+    { value: 'Hachioji', ja: '八王子市' }, { value: 'Machida', ja: '町田市' },
+    { value: 'Yokohama', ja: '横浜市' }, { value: 'Kawasaki', ja: '川崎市' },
+    { value: 'Sagamihara', ja: '相模原市' }, { value: 'Kamakura', ja: '鎌倉市' },
+    { value: 'Saitama', ja: 'さいたま市' }, { value: 'Kawagoe', ja: '川越市' },
+    { value: 'Chiba', ja: '千葉市' }, { value: 'Funabashi', ja: '船橋市' },
+    { value: 'Kashiwa', ja: '柏市' }, { value: 'Urayasu', ja: '浦安市' },
+    { value: 'Mito', ja: '水戸市' }, { value: 'Tsukuba', ja: 'つくば市' },
+    { value: 'Utsunomiya', ja: '宇都宮市' }, { value: 'Maebashi', ja: '前橋市' },
+    { value: 'Takasaki', ja: '高崎市' }, { value: 'Narita', ja: '成田市' },
+  ]},
+  { group: 'Chubu', groupJa: '中部', items: [
+    { value: 'Nagoya', ja: '名古屋市' }, { value: 'Toyota', ja: '豊田市' },
+    { value: 'Okazaki', ja: '岡崎市' }, { value: 'Gifu', ja: '岐阜市' },
+    { value: 'Shizuoka', ja: '静岡市' }, { value: 'Hamamatsu', ja: '浜松市' },
+    { value: 'Niigata', ja: '新潟市' }, { value: 'Nagano', ja: '長野市' },
+    { value: 'Matsumoto', ja: '松本市' }, { value: 'Kanazawa', ja: '金沢市' },
+    { value: 'Toyama', ja: '富山市' }, { value: 'Fukui', ja: '福井市' },
+  ]},
+  { group: 'Kansai', groupJa: '関西', items: [
+    { value: 'Osaka', ja: '大阪市' }, { value: 'Sakai', ja: '堺市' },
+    { value: 'Kyoto', ja: '京都市' }, { value: 'Kobe', ja: '神戸市' },
+    { value: 'Nara', ja: '奈良市' }, { value: 'Himeji', ja: '姫路市' },
+    { value: 'Nishinomiya', ja: '西宮市' }, { value: 'Amagasaki', ja: '尼崎市' },
+    { value: 'Wakayama', ja: '和歌山市' }, { value: 'Otsu', ja: '大津市' },
+    { value: 'Takarazuka', ja: '宝塚市' }, { value: 'Ashiya', ja: '芦屋市' },
+  ]},
+  { group: 'Chugoku / Shikoku', groupJa: '中国・四国', items: [
+    { value: 'Hiroshima', ja: '広島市' }, { value: 'Fukuyama', ja: '福山市' },
+    { value: 'Okayama', ja: '岡山市' }, { value: 'Kurashiki', ja: '倉敷市' },
+    { value: 'Matsue', ja: '松江市' }, { value: 'Yamaguchi', ja: '山口市' },
+    { value: 'Matsuyama', ja: '松山市' }, { value: 'Takamatsu', ja: '高松市' },
+    { value: 'Tokushima', ja: '徳島市' }, { value: 'Kochi', ja: '高知市' },
+    { value: 'Tottori', ja: '鳥取市' },
+  ]},
+  { group: 'Kyushu / Okinawa', groupJa: '九州・沖縄', items: [
+    { value: 'Fukuoka', ja: '福岡市' }, { value: 'Kitakyushu', ja: '北九州市' },
+    { value: 'Kumamoto', ja: '熊本市' }, { value: 'Kagoshima', ja: '鹿児島市' },
+    { value: 'Nagasaki', ja: '長崎市' }, { value: 'Oita', ja: '大分市' },
+    { value: 'Miyazaki', ja: '宮崎市' }, { value: 'Saga', ja: '佐賀市' },
+    { value: 'Beppu', ja: '別府市' }, { value: 'Naha', ja: '那覇市' },
+    { value: 'Nago', ja: '名護市' }, { value: 'Ishigaki', ja: '石垣市' },
+  ]},
+]
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
@@ -392,11 +451,12 @@ export default function EditProfile() {
   const [topTraits,            setTopTraits]            = useState<string[]>(p?.top_traits ?? [])
   const [personalityInsights,  setPersonalityInsights]  = useState<string>(p?.personality_insights ?? '')
   const [mbti,                 setMbti]                 = useState<string>(p?.mbti ?? '')
-  const [loveLanguage,         setLoveLanguage]         = useState<string>(p?.love_language ?? '')
   const [starSign,             setStarSign]             = useState<string>(p?.star_sign ?? '')
   const [interests,            setInterests]            = useState<string[]>(p?.interests ?? [])
   const [topInterests,         setTopInterests]         = useState<string[]>(p?.top_interests ?? [])
-  const [selectedSkills,       setSelectedSkills]       = useState<string[]>(pp?.skills ?? [])
+  const [selectedSkills,       setSelectedSkills]       = useState<string[]>((pp?.skills ?? []).filter((s: string) => !SOCIAL_SKILL_OPTIONS.includes(s)))
+  const [selectedSocialSkills, setSelectedSocialSkills] = useState<string[]>((pp?.skills ?? []).filter((s: string) => SOCIAL_SKILL_OPTIONS.includes(s)))
+  const [skillsDescription,    setSkillsDescription]    = useState<string>(pp?.description ?? '')
   const [topSkills,            setTopSkills]            = useState<string[]>(pp?.top_skills ?? [])
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [educationEntries,     setEducationEntries]     = useState<EduEntry[]>((p?.education ?? []).map((e: any) => ({ id: e.id, degree: e.degree, school: e.school, year: e.year ?? '' })))
@@ -443,11 +503,12 @@ export default function EditProfile() {
     setTopTraits(p.top_traits ?? [])
     setPersonalityInsights(p.personality_insights ?? '')
     setMbti(p.mbti ?? '')
-    setLoveLanguage(p.love_language ?? '')
     setStarSign(p.star_sign ?? '')
     setInterests(p.interests ?? [])
     setTopInterests(p.top_interests ?? [])
-    setSelectedSkills(pp2?.skills ?? [])
+    setSelectedSkills((pp2?.skills ?? []).filter((s: string) => !SOCIAL_SKILL_OPTIONS.includes(s)))
+    setSelectedSocialSkills((pp2?.skills ?? []).filter((s: string) => SOCIAL_SKILL_OPTIONS.includes(s)))
+    setSkillsDescription(pp2?.description ?? '')
     setTopSkills(pp2?.top_skills ?? [])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setEducationEntries((p.education ?? []).map((e: any) => ({ id: e.id, degree: e.degree, school: e.school, year: e.year ?? '' })))
@@ -495,17 +556,25 @@ export default function EditProfile() {
   const toggle = (arr: string[], val: string, set: (v: string[]) => void) =>
     set(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
 
-  useEffect(() => {
-    setForm(prev => {
-      const loc = prev.location
-      if (!loc) return prev
-      const translated = isJa
-        ? (LOCATION_EN_TO_JA[loc] ?? loc)
-        : (LOCATION_JA_TO_EN[loc] ?? loc)
-      return translated !== loc ? { ...prev, location: translated } : prev
+  const generateBio = async () => {
+    setGeneratingBio(true)
+    const { data, error } = await supabase.functions.invoke('generate-bio', {
+      body: {
+        name:         form.name,
+        role:         isProvider ? 'provider' : 'seeker',
+        tone:         bioTone,
+        language:     bioLang,
+        location:     form.location,
+        traits:       personalityTraits,
+        interests,
+        skills:       isProvider ? [...selectedSkills, ...selectedSocialSkills] : [],
+        mbti,
+        starSign,
+      },
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isJa])
+    setGeneratingBio(false)
+    if (!error && data?.bio) setForm(prev => ({ ...prev, bio: data.bio }))
+  }
 
   const addLoc = () => {
     const loc = newLocation.trim()
@@ -555,7 +624,6 @@ export default function EditProfile() {
       top_interests:        topInterests,
       personality_insights: personalityInsights || null,
       mbti:                 mbti || null,
-      love_language:        loveLanguage || null,
       star_sign:            starSign || null,
       qualifications,
       achievements,
@@ -566,7 +634,8 @@ export default function EditProfile() {
     if (isProvider) {
       saves.push(updateProviderProfile(user.id, {
         title:        form.title,
-        skills:       selectedSkills,
+        description:  skillsDescription || null,
+        skills:       [...selectedSkills, ...selectedSocialSkills],
         top_skills:   topSkills,
         hourly_rate:   Number(form.price) || undefined,
         online_rate:   Number(form.priceOnline) || undefined,
@@ -702,17 +771,24 @@ export default function EditProfile() {
               )}
               <div className="col-span-2">
                 <label style={labelStyle}>{t('edit_profile.label_location')}</label>
-                <input list="location-list" value={form.location}
+                <select
+                  value={form.location}
                   onChange={e => setForm({ ...form, location: e.target.value })}
-                  placeholder="e.g. Tokyo, Osaka, or type your own…"
-                  style={inputStyle}
+                  style={{ ...inputStyle, cursor: 'pointer' }}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                  onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                <datalist id="location-list">
-                  {Object.entries(LOCATION_EN_TO_JA).map(([en, ja]) => (
-                    <option key={en} value={isJa ? ja : en} />
+                  onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
+                >
+                  <option value="">— select location —</option>
+                  {LOCATION_GROUPS.map(group => (
+                    <optgroup key={group.group} label={isJa ? group.groupJa : group.group}>
+                      {group.items.map(item => (
+                        <option key={`${group.group}-${item.value}`} value={item.value}>
+                          {isJa ? item.ja : item.value}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
-                </datalist>
+                </select>
               </div>
               <div>
                 <label style={labelStyle}>{t('edit_profile.label_birth_year')}</label>
@@ -741,6 +817,33 @@ export default function EditProfile() {
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
 
+                {/* AI generate */}
+                <div className="mt-3 rounded-xl p-3 flex flex-wrap items-center gap-2" style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5' }}>
+                  <span className="text-xs font-medium" style={{ color: '#5C0A1E' }}>✨ {t('edit_profile.generate_with_ai')}</span>
+                  {(personalityTraits.length === 0 && interests.length === 0 && selectedSkills.length === 0 && selectedSocialSkills.length === 0) ? (
+                    <span className="text-xs" style={{ color: '#aaa' }}>— {t('edit_profile.generate_select_first')}</span>
+                  ) : (
+                    <>
+                      <select value={bioTone} onChange={e => setBioTone(e.target.value)}
+                        style={{ fontSize: '12px', border: '0.5px solid #E8DDD5', borderRadius: '8px', padding: '4px 8px', color: '#1A0208', backgroundColor: '#fff', outline: 'none', cursor: 'pointer' }}>
+                        <option value="friendly">{t('edit_profile.generate_tone_friendly')}</option>
+                        <option value="professional">{t('edit_profile.generate_tone_professional')}</option>
+                        <option value="casual">{t('edit_profile.generate_tone_casual')}</option>
+                        <option value="creative">{t('edit_profile.generate_tone_creative')}</option>
+                      </select>
+                      <select value={bioLang} onChange={e => setBioLang(e.target.value)}
+                        style={{ fontSize: '12px', border: '0.5px solid #E8DDD5', borderRadius: '8px', padding: '4px 8px', color: '#1A0208', backgroundColor: '#fff', outline: 'none', cursor: 'pointer' }}>
+                        <option value="en">English</option>
+                        <option value="ja">日本語</option>
+                      </select>
+                      <button type="button" onClick={generateBio} disabled={generatingBio}
+                        className="text-xs px-4 py-1.5 rounded-full font-medium disabled:opacity-50 ml-auto"
+                        style={{ backgroundColor: '#B8860B', color: '#3A2400' }}>
+                        {generatingBio ? t('edit_profile.generate_generating') : t('edit_profile.generate_button')}
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -768,20 +871,6 @@ export default function EditProfile() {
                     'ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'].map(t => (
                     <option key={t} value={t}>{t}</option>
                   ))}
-                </select>
-              </div>
-
-              {/* Love language */}
-              <div>
-                <label style={labelStyle}>Love language</label>
-                <select value={loveLanguage} onChange={e => setLoveLanguage(e.target.value)}
-                  style={{ ...inputStyle, cursor: 'pointer' }}>
-                  <option value="">— select —</option>
-                  <option value="words-of-affirmation">Words of Affirmation</option>
-                  <option value="acts-of-service">Acts of Service</option>
-                  <option value="receiving-gifts">Receiving Gifts</option>
-                  <option value="quality-time">Quality Time</option>
-                  <option value="physical-touch">Physical Touch</option>
                 </select>
               </div>
 
@@ -821,7 +910,29 @@ export default function EditProfile() {
               <SectionHeader title={t('edit_profile.section_skills')} hint={t('edit_profile.skills_hint')} />
               <ChipPicker options={SKILL_OPTIONS} selected={selectedSkills}
                 onToggle={v => toggle(selectedSkills, v, setSelectedSkills)}
-                labels={isJa ? SKILL_OPTIONS_JA : undefined} />
+                labels={isJa ? SKILL_OPTIONS_JA : undefined}  />
+              <div className="mt-5">
+                <label style={labelStyle}>{t('edit_profile.skills_description_label')}</label>
+                <textarea
+                  value={skillsDescription}
+                  onChange={e => setSkillsDescription(e.target.value)}
+                  rows={5}
+                  placeholder={t('edit_profile.skills_description_placeholder')}
+                  style={{ ...inputStyle, resize: 'vertical' }}
+                  onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                  onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* ── Social (provider only) ── */}
+          {isProvider && (
+            <div style={cardStyle}>
+              <SectionHeader title={t('edit_profile.section_social_skills')} hint={t('edit_profile.social_skills_hint')} />
+              <ChipPicker options={SOCIAL_SKILL_OPTIONS} selected={selectedSocialSkills}
+                onToggle={v => toggle(selectedSocialSkills, v, setSelectedSocialSkills)}
+                labels={isJa ? SOCIAL_SKILL_OPTIONS_JA : undefined} />
             </div>
           )}
 

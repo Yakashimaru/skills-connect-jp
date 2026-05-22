@@ -26,7 +26,6 @@ export default function FeaturedProfiles() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: '#5C0A1E' }}>{t('featured.eyebrow')}</p>
             <h2 className="text-3xl font-bold" style={{ color: '#1A0208' }}>{t('featured.heading')}</h2>
           </div>
           <button onClick={() => navigate('/discover')}

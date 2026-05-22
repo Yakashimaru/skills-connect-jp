@@ -40,12 +40,12 @@ export default function Meetups() {
 
   const categories: { key: 'All' | EventCategory; label: string }[] = [
     { key: 'All', label: t('meetups.cat_all') },
-    { key: 'social', label: t('meetups.cat_social') },
-    { key: 'sports', label: t('meetups.cat_sports') },
-    { key: 'culture', label: t('meetups.cat_culture') },
+    { key: 'private', label: t('meetups.cat_private') },
     { key: 'business', label: t('meetups.cat_business') },
     { key: 'wellness', label: t('meetups.cat_wellness') },
-    { key: 'food', label: t('meetups.cat_food') },
+    { key: 'sports', label: t('meetups.cat_sports') },
+    { key: 'networking', label: t('meetups.cat_networking') },
+    { key: 'community', label: t('meetups.cat_community') },
   ]
 
   const handleRsvp = async (e: React.MouseEvent, eventId: string) => {
@@ -76,6 +76,7 @@ export default function Meetups() {
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: '#5C0A1E' }}>{t('meetups.eyebrow')}</p>
             <h1 className="text-3xl font-bold" style={{ color: '#1A0208' }}>{t('meetups.heading')}</h1>
+
           </div>
           <div className="flex items-center p-1 rounded-full" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
             {([['list', t('meetups.view_list')], ['map', t('meetups.view_map')]] as const).map(([v, label]) => (

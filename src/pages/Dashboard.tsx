@@ -23,7 +23,7 @@ const SESSION_DESCS: Record<string, string> = {
   '1-on-1 Session':   'Private session, online or in-person',
   'Group Meetup':     'Small group sessions',
   'Online Call':      'Video or voice call via Zoom or Google Meet',
-  'Social Experience':'Casual meetup, café or walk',
+  'Social Experience': 'Casual meetup',
   'online':           'Video or voice call via Zoom or Google Meet',
   'in-person':        'Private session, in-person',
   'group':            'Small group sessions',

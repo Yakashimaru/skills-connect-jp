@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { getProfile } from '../lib/profiles'
 import { getReviews } from '../lib/reviews'
 import { getOrCreateConversation } from '../lib/messages'
+import { createBooking } from '../lib/bookings'
 
 const SESSION_ICONS: Record<string, string> = {
   '1-on-1 Session': '👤',
@@ -17,7 +18,188 @@ const SESSION_DESCS: Record<string, string> = {
   '1-on-1 Session': 'Private session, online or in-person',
   'Group Meetup': 'Small group sessions',
   'Online Call': 'Video or voice call via Zoom or Google Meet',
-  'Social Experience': 'Casual meetup, café or walk',
+  'Social Experience': 'Casual meetup',
+}
+
+const DURATIONS = [30, 60, 90, 120]
+
+function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
+  provider: any; providerProfile: any; seekerId: string; onClose: () => void
+}) {
+  const sessionTypes: string[] = providerProfile.session_types ?? []
+  const onlineRate: number   = providerProfile.online_rate   ?? providerProfile.hourly_rate ?? 0
+  const inpersonRate: number = providerProfile.inperson_rate ?? providerProfile.hourly_rate ?? 0
+  const trialRate: number    = providerProfile.trial_rate    ?? 0
+
+  const isOnlineType = (t: string) => t === 'Online Call'
+  const resolveRate  = (t: string) => isOnlineType(t) ? onlineRate : inpersonRate
+
+  const [sessionType, setSessionType] = useState(sessionTypes[0] ?? '')
+  const [isTrial,     setIsTrial]     = useState(false)
+  const [date,  setDate]  = useState('')
+  const [time,  setTime]  = useState('')
+  const [duration, setDuration] = useState(60)
+  const [notes, setNotes] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [done,  setDone]  = useState(false)
+  const [error, setError] = useState('')
+
+  const hourlyRate = resolveRate(sessionType)
+  const total = isTrial && trialRate ? trialRate : Math.round((duration / 60) * hourlyRate)
+
+  const handleSubmit = async () => {
+    if (!sessionType || !date || !time) { setError('Please fill in all required fields.'); return }
+    setError('')
+    setSubmitting(true)
+    const scheduledAt = new Date(`${date}T${time}`).toISOString()
+    const { error: err } = await createBooking({
+      provider_id: provider.id,
+      seeker_id: seekerId,
+      session_type: sessionType,
+      scheduled_at: scheduledAt,
+      duration_minutes: duration,
+      rate: total,
+      notes: notes || null,
+    })
+    setSubmitting(false)
+    if (err) { setError('Something went wrong. Please try again.'); return }
+    setDone(true)
+  }
+
+  const input = {
+    width: '100%', border: '0.5px solid #E8DDD5', borderRadius: '10px',
+    padding: '9px 14px', fontSize: '14px', outline: 'none',
+    color: '#1A0208', backgroundColor: '#fff',
+  }
+
+  if (done) return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ backgroundColor: 'rgba(20,2,6,0.5)' }}>
+      <div className="w-full max-w-md rounded-2xl p-8 text-center" style={{ backgroundColor: '#fff' }}>
+        <div className="text-4xl mb-4">🎉</div>
+        <h2 className="text-lg font-bold mb-2" style={{ color: '#1A0208' }}>Request sent!</h2>
+        <p className="text-sm mb-6" style={{ color: '#7A6060' }}>
+          Your booking request with <span className="font-semibold">{provider.name}</span> has been submitted. They'll confirm shortly.
+        </p>
+        <button onClick={onClose} className="w-full py-3 rounded-xl font-semibold text-sm"
+          style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>
+          Done
+        </button>
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" style={{ backgroundColor: 'rgba(20,2,6,0.5)' }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <div className="w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl overflow-y-auto"
+        style={{ backgroundColor: '#FDF8F2', maxHeight: '90vh' }}>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 pt-6 pb-4" style={{ borderBottom: '0.5px solid #E8DDD5' }}>
+          <div>
+            <h2 className="font-bold text-base" style={{ color: '#1A0208' }}>Book a session</h2>
+            <p className="text-xs mt-0.5" style={{ color: '#7A6060' }}>with {provider.name}</p>
+          </div>
+          <button onClick={onClose} className="text-xl leading-none" style={{ color: '#aaa' }}>✕</button>
+        </div>
+
+        <div className="px-6 py-5 flex flex-col gap-5">
+
+          {/* Session type */}
+          <div>
+            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Session type</p>
+            <div className="flex flex-wrap gap-2">
+              {sessionTypes.map(type => (
+                <button key={type} type="button" onClick={() => setSessionType(type)}
+                  className="text-sm px-4 py-2 rounded-xl transition-colors"
+                  style={sessionType === type
+                    ? { backgroundColor: '#5C0A1E', color: '#fff', border: '1px solid #5C0A1E' }
+                    : { backgroundColor: '#fff', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                  {SESSION_ICONS[type] ?? '📌'} {type}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Date + Time */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Date</p>
+              <input type="date" value={date} onChange={e => setDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]} style={input} />
+            </div>
+            <div>
+              <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Time</p>
+              <input type="time" value={time} onChange={e => setTime(e.target.value)} style={input} />
+            </div>
+          </div>
+
+          {/* Duration */}
+          <div>
+            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Duration</p>
+            <div className="flex gap-2">
+              {DURATIONS.map(d => (
+                <button key={d} type="button" onClick={() => setDuration(d)}
+                  className="flex-1 py-2 rounded-xl text-sm font-medium transition-colors"
+                  style={duration === d
+                    ? { backgroundColor: '#B8860B', color: '#3A2400', border: '1px solid #B8860B' }
+                    : { backgroundColor: '#fff', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                  {d < 60 ? `${d}m` : `${d / 60}h`}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>Notes <span style={{ color: '#aaa', fontWeight: 400 }}>(optional)</span></p>
+            <textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)}
+              placeholder="Anything the provider should know…"
+              style={{ ...input, resize: 'none' }} />
+          </div>
+
+          {/* Trial toggle */}
+          {trialRate > 0 && (
+            <label className="flex items-center gap-3 cursor-pointer rounded-xl p-3" style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8C88A' }}>
+              <input type="checkbox" checked={isTrial} onChange={e => setIsTrial(e.target.checked)}
+                className="w-4 h-4" style={{ accentColor: '#B8860B' }} />
+              <div>
+                <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>Book as trial session</p>
+                <p className="text-xs" style={{ color: '#7A6060' }}>First-session intro price · ¥{trialRate.toLocaleString()}</p>
+              </div>
+            </label>
+          )}
+
+          {/* Price summary */}
+          {(hourlyRate > 0 || (isTrial && trialRate > 0)) && (
+            <div className="rounded-xl p-4" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
+              <div className="flex justify-between text-sm mb-1">
+                {isTrial && trialRate > 0 ? (
+                  <span style={{ color: '#7A6060' }}>Trial session (flat rate)</span>
+                ) : (
+                  <span style={{ color: '#7A6060' }}>
+                    {isOnlineType(sessionType) ? 'Online' : 'In-person'} ¥{hourlyRate.toLocaleString()}/hr × {duration} min
+                  </span>
+                )}
+                <span className="font-semibold" style={{ color: '#1A0208' }}>¥{total.toLocaleString()}</span>
+              </div>
+              <p className="text-xs" style={{ color: '#aaa' }}>Payment collected after provider confirms</p>
+            </div>
+          )}
+
+          {error && <p className="text-xs" style={{ color: '#C0392B' }}>{error}</p>}
+
+          <button onClick={handleSubmit} disabled={submitting}
+            className="w-full py-3 rounded-xl font-semibold text-sm transition-colors disabled:opacity-60"
+            style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
+            onMouseEnter={e => { if (!submitting) e.currentTarget.style.backgroundColor = '#3A0612' }}
+            onMouseLeave={e => { if (!submitting) e.currentTarget.style.backgroundColor = '#5C0A1E' }}>
+            {submitting ? 'Sending…' : 'Request booking'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default function ProfilePage() {
@@ -33,6 +215,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [messageSending, setMessageSending] = useState(false)
+  const [bookingOpen, setBookingOpen] = useState(false)
 
   useEffect(() => {
     if (!id) { setNotFound(true); setLoading(false); return }
@@ -120,7 +303,10 @@ export default function ProfilePage() {
           <div className="flex items-center gap-3 text-xs" style={{ color: '#aaa' }}>
             {profile.location && <span>📍 {profile.location}</span>}
             {pp && <span>⭐ {Number(pp.rating).toFixed(1)} ({pp.review_count} {t('profile.reviews')})</span>}
-            {pp?.hourly_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>¥{pp.hourly_rate.toLocaleString()}/hr</span>}
+            {pp?.trial_rate && <span className="font-semibold" style={{ color: '#B8860B' }}>Trial ¥{pp.trial_rate.toLocaleString()}</span>}
+            {pp?.online_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>Online ¥{pp.online_rate.toLocaleString()}/hr</span>}
+            {pp?.inperson_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>In-person ¥{pp.inperson_rate.toLocaleString()}/hr</span>}
+            {!pp?.online_rate && !pp?.inperson_rate && pp?.hourly_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>¥{pp.hourly_rate.toLocaleString()}/hr</span>}
           </div>
         </div>
 
@@ -135,14 +321,37 @@ export default function ProfilePage() {
               </section>
             )}
 
-            {profile.personality_traits?.length > 0 && (
+            {(profile.personality_traits?.length > 0 || profile.mbti || profile.star_sign || profile.personality_insights) && (
               <section>
                 <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Personality</h2>
-                <div className="flex flex-wrap gap-2">
-                  {profile.personality_traits.map((trait: string) => (
-                    <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{trait}</span>
-                  ))}
-                </div>
+                {(profile.mbti || profile.star_sign) && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {profile.mbti && (
+                      <span className="text-sm px-3 py-1 rounded-full font-medium" style={{ backgroundColor: '#1A0208', color: '#FDF0E0' }}>
+                        {profile.mbti}
+                      </span>
+                    )}
+                    {profile.star_sign && (
+                      <span className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00', border: '0.5px solid #E8C88A' }}>
+                        ✨ {profile.star_sign[0].toUpperCase() + profile.star_sign.slice(1)}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {profile.top_traits?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {profile.top_traits.map((trait: string) => (
+                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{trait}</span>
+                    ))}
+                  </div>
+                )}
+                {profile.personality_traits?.filter((t: string) => !profile.top_traits?.includes(t)).length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {profile.personality_traits.filter((t: string) => !profile.top_traits?.includes(t)).map((trait: string) => (
+                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{trait}</span>
+                    ))}
+                  </div>
+                )}
                 {profile.personality_insights && (
                   <p className="text-sm italic mt-3 leading-relaxed" style={{ color: '#7A6060' }}>{profile.personality_insights}</p>
                 )}
@@ -178,8 +387,15 @@ export default function ProfilePage() {
             {profile.interests?.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>Interests & hobbies</h2>
+                {profile.top_interests?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {profile.top_interests.map((i: string) => (
+                      <span key={i} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{i}</span>
+                    ))}
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-2">
-                  {profile.interests.map((interest: string) => (
+                  {profile.interests.filter((i: string) => !profile.top_interests?.includes(i)).map((interest: string) => (
                     <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{interest}</span>
                   ))}
                 </div>
@@ -189,8 +405,15 @@ export default function ProfilePage() {
             {pp?.skills?.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.skills')}</h2>
+                {pp.top_skills?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {pp.top_skills.map((s: string) => (
+                      <span key={s} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{s}</span>
+                    ))}
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-2">
-                  {pp.skills.map((skill: string) => (
+                  {pp.skills.filter((s: string) => !pp.top_skills?.includes(s)).map((skill: string) => (
                     <span key={skill} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{skill}</span>
                   ))}
                 </div>
@@ -341,7 +564,7 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                {(pp?.availability?.day_schedule || pp?.availability?.days?.length > 0 || pp?.availability?.locations?.length > 0) && (
+                {(pp?.availability?.day_schedule || pp?.availability?.days?.length > 0 || pp?.availability?.locations?.length > 0 || pp?.availability?.time_from) && (
                   <div>
                     <h2 className="text-lg font-semibold mb-4" style={{ color: '#1A0208' }}>Availability</h2>
                     {(() => {
@@ -376,6 +599,26 @@ export default function ProfilePage() {
                         </div>
                       )
                     })()}
+                    {[
+                      [pp.availability?.time_from, pp.availability?.time_to],
+                      [pp.availability?.time_from2, pp.availability?.time_to2],
+                      [pp.availability?.time_from3, pp.availability?.time_to3],
+                    ].some(([f, t]) => f || t) && (
+                      <div className="mb-3">
+                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>Hours</p>
+                        <div className="flex flex-col gap-1">
+                          {[
+                            [pp.availability?.time_from, pp.availability?.time_to],
+                            [pp.availability?.time_from2, pp.availability?.time_to2],
+                            [pp.availability?.time_from3, pp.availability?.time_to3],
+                          ].filter(([f, t]) => f || t).map(([f, t], i) => (
+                            <span key={i} className="text-xs px-2.5 py-1 rounded-full w-fit" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>
+                              {f ?? '—'} – {t ?? '—'}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {pp.availability?.locations?.length > 0 && (
                       <div>
                         <p className="text-xs mb-2" style={{ color: '#aaa' }}>Locations</p>
@@ -395,6 +638,15 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {bookingOpen && pp && user && (
+        <BookSessionModal
+          provider={profile}
+          providerProfile={pp}
+          seekerId={user.id}
+          onClose={() => setBookingOpen(false)}
+        />
+      )}
+
       {/* Sticky bottom bar — only for other users' profiles */}
       {!isOwnProfile && pp && (
         <div className="fixed bottom-0 left-0 right-0 z-20" style={{ backgroundColor: '#fff', borderTop: '0.5px solid #E8DDD5', boxShadow: '0 -2px 12px rgba(92,10,30,0.08)' }}>
@@ -403,7 +655,11 @@ export default function ProfilePage() {
               <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{profile.name}</p>
               {(pp.online_rate || pp.inperson_rate || pp.trial_rate || pp.hourly_rate) && (
                 <p className="text-xs" style={{ color: '#aaa' }}>
-                  from ¥{Math.min(...[pp.online_rate, pp.inperson_rate, pp.trial_rate, pp.hourly_rate].filter(Boolean)).toLocaleString()}/hr
+                  {pp.trial_rate ? `Trial ¥${pp.trial_rate.toLocaleString()} · ` : ''}
+                  {pp.online_rate ? `Online ¥${pp.online_rate.toLocaleString()}/hr` : ''}
+                  {pp.online_rate && pp.inperson_rate ? ' · ' : ''}
+                  {pp.inperson_rate ? `In-person ¥${pp.inperson_rate.toLocaleString()}/hr` : ''}
+                  {!pp.online_rate && !pp.inperson_rate && pp.hourly_rate ? `¥${pp.hourly_rate.toLocaleString()}/hr` : ''}
                 </p>
               )}
             </div>
@@ -418,6 +674,7 @@ export default function ProfilePage() {
                 {t('profile.send_message')}
               </button>
               <button
+                onClick={() => { if (!user) { navigate('/login'); return } setBookingOpen(true) }}
                 className="font-medium text-sm px-6 py-2.5 rounded-xl transition-colors"
                 style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}

@@ -21,8 +21,12 @@ const C = {
 
 const links = [
   { path: '/', label: 'nav.home' },
-  { path: '/discover', label: 'nav.discover' },
-  { path: '/meetups', label: 'nav.meetups' },
+  { path: '/events', label: 'nav.events' },
+]
+
+const discoverItems = [
+  { path: '/skills', label: 'nav.skills' },
+  { path: '/social', label: 'nav.social' },
 ]
 
 const howItWorksItems = [
@@ -573,14 +577,18 @@ export default function Navbar() {
   const navigate = useNavigate()
   const { isLoggedIn, signOut, user, profile } = useAuth()
   const { t, i18n } = useTranslation()
-  const isDiscover = pathname === '/discover'
+  const isDiscover = ['/skills', '/social'].includes(pathname)
+  const isSocialPage = pathname === '/social'
+  const isSkillsPage = pathname === '/skills'
 
   const [search, setSearch] = useState('')
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [howItWorksOpen, setHowItWorksOpen] = useState(false)
+  const [discoverOpen, setDiscoverOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const avatarRef = useRef<HTMLDivElement>(null)
   const howItWorksRef = useRef<HTMLDivElement>(null)
+  const discoverRef = useRef<HTMLDivElement>(null)
 
   const [categoryFilter, setCategoryFilter] = useState<FilterState>({})
   const [locationFilter, setLocationFilter] = useState<FilterState>({})
@@ -588,6 +596,10 @@ export default function Navbar() {
   const [priceFilter, setPriceFilter] = useState<FilterState>({})
   const [genderFilter, setGenderFilter] = useState<FilterState>({})
   const [verifiedOnly, setVerifiedOnly] = useState(false)
+
+  useEffect(() => {
+    setCategoryFilter({})
+  }, [pathname])
 
   useEffect(() => {
     if (!isDiscover) return
@@ -607,7 +619,7 @@ export default function Navbar() {
       if (genders.length) params.set('gender', genders.join(','))
       if (verifiedOnly) params.set('verified', '1')
       const qs = params.toString()
-      navigate(qs ? `/discover?${qs}` : '/discover', { replace: true })
+      navigate(qs ? `${pathname}?${qs}` : pathname, { replace: true })
     }, search !== '' ? 250 : 0)
     return () => clearTimeout(timer)
   }, [locationFilter, categoryFilter, priceFilter, ageFilter, genderFilter, verifiedOnly, search, isDiscover, navigate])
@@ -617,49 +629,65 @@ export default function Navbar() {
   }, [])
   const clear = useCallback((setter: React.Dispatch<React.SetStateAction<FilterState>>) => () => setter({}), [])
 
-  const categoryOptions = useMemo((): OptionGroup[] => [
-    { group: `🌐 ${t('nav.cat_group_language')}`, items: [
-      { value: 'english', label: t('nav.cat_english') }, { value: 'chinese', label: t('nav.cat_chinese') },
-      { value: 'japanese', label: t('nav.cat_japanese') }, { value: 'spanish', label: t('nav.cat_spanish') },
-      { value: 'french', label: t('nav.cat_french') }, { value: 'korean', label: t('nav.cat_korean') },
-      { value: 'language-other', label: t('nav.cat_language_other') },
-    ]},
-    { group: `💬 ${t('nav.cat_group_social')}`, items: [
-      { value: 'conversation', label: t('nav.cat_conversation') }, { value: 'companionship', label: t('nav.cat_companionship') },
-      { value: 'event', label: t('nav.cat_event') }, { value: 'travel-social', label: t('nav.cat_travel') },
-    ]},
-    { group: `💼 ${t('nav.cat_group_business')}`, items: [
-      { value: 'coaching', label: t('nav.cat_coaching') }, { value: 'presentation', label: t('nav.cat_presentation') },
-      { value: 'advisory', label: t('nav.cat_advisory') }, { value: 'assistance', label: t('nav.cat_assistance') },
-      { value: 'marketer', label: t('nav.cat_marketer') },
-    ]},
-    { group: `🏋️ ${t('nav.cat_group_fitness')}`, items: [
-      { value: 'personal-training', label: t('nav.cat_personal_training') }, { value: 'instructor', label: t('nav.cat_instructor') },
-    ]},
-    { group: `📚 ${t('nav.cat_group_education')}`, items: [
-      { value: 'tutoring', label: t('nav.cat_tutoring') }, { value: 'mentorship', label: t('nav.cat_mentorship') },
-    ]},
-    { group: `✈️ ${t('nav.cat_group_travel')}`, items: [
-      { value: 'tour-guide', label: t('nav.cat_tour_guide') },
-      { value: 'communication-support', label: t('nav.cat_communication_support') },
-    ]},
-    { group: `🎨 ${t('nav.cat_group_creative')}`, items: [
-      { value: 'videographer', label: t('nav.cat_videographer') },
-      { value: 'photographer', label: t('nav.cat_photographer') },
-      { value: 'musician', label: t('nav.cat_musician') },
-      { value: 'designer', label: t('nav.cat_designer') },
-    ]},
-    { group: `🌿 ${t('nav.cat_group_lifestyle')}`, items: [
-      { value: 'private-hire', label: t('nav.cat_private_hire') },
-      { value: 'dog-walker', label: t('nav.cat_dog_walker') },
-      { value: 'personal-shopper', label: t('nav.cat_personal_shopper') },
-    ]},
-    { group: `💻 ${t('nav.cat_group_online')}`, items: [
-      { value: 'online', label: t('nav.cat_online') },
-      { value: 'coder', label: t('nav.cat_coder') },
-    ]},
-    { group: `➕ ${t('nav.cat_group_other')}`, items: [{ value: 'others', label: t('nav.cat_others') }] },
-  ], [t])
+  const categoryOptions = useMemo((): OptionGroup[] => {
+    const socialGroup: OptionGroup = { group: `💬 ${t('nav.cat_group_social')}`, items: [
+      { value: 'companion',               label: t('nav.cat_companion') },
+      { value: 'companionship',           label: t('nav.cat_companionship') },
+      { value: 'conversation',            label: t('nav.cat_conversation') },
+      { value: 'dining',                  label: t('nav.cat_dining') },
+      { value: 'travel-partner',            label: t('nav.cat_travel_partner') },
+      { value: 'activity-partner',        label: t('nav.cat_activity_partner') },
+      { value: 'event-date',              label: t('nav.cat_event_date') },
+      { value: 'study-partner',             label: t('nav.cat_study_partner') },
+      { value: 'friendship',              label: t('nav.cat_friendship') },
+      { value: 'relationship-experience', label: t('nav.cat_relationship_experience') },
+    ]}
+    if (isSocialPage) return [socialGroup]
+
+    const skillsGroups: OptionGroup[] = [
+      { group: `🌐 ${t('nav.cat_group_language')}`, items: [
+        { value: 'english', label: t('nav.cat_english') }, { value: 'chinese', label: t('nav.cat_chinese') },
+        { value: 'japanese', label: t('nav.cat_japanese') }, { value: 'spanish', label: t('nav.cat_spanish') },
+        { value: 'french', label: t('nav.cat_french') }, { value: 'korean', label: t('nav.cat_korean') },
+        { value: 'language-other', label: t('nav.cat_language_other') },
+      ]},
+      { group: `💼 ${t('nav.cat_group_business')}`, items: [
+        { value: 'coaching', label: t('nav.cat_coaching') }, { value: 'presentation', label: t('nav.cat_presentation') },
+        { value: 'advisory', label: t('nav.cat_advisory') }, { value: 'assistance', label: t('nav.cat_assistance') },
+        { value: 'marketer', label: t('nav.cat_marketer') },
+      ]},
+      { group: `🏋️ ${t('nav.cat_group_fitness')}`, items: [
+        { value: 'personal-training', label: t('nav.cat_personal_training') }, { value: 'sports-instructor', label: t('nav.cat_sports_instructor') },
+      ]},
+      { group: `📚 ${t('nav.cat_group_education')}`, items: [
+        { value: 'tutoring', label: t('nav.cat_tutoring') }, { value: 'mentorship', label: t('nav.cat_mentorship') },
+      ]},
+      { group: `✈️ ${t('nav.cat_group_travel')}`, items: [
+        { value: 'tour-guide', label: t('nav.cat_tour_guide') },
+        { value: 'communication-support', label: t('nav.cat_communication_support') },
+      ]},
+      { group: `🎨 ${t('nav.cat_group_creative')}`, items: [
+        { value: 'videographer', label: t('nav.cat_videographer') },
+        { value: 'photographer', label: t('nav.cat_photographer') },
+        { value: 'musician', label: t('nav.cat_musician') },
+        { value: 'music-instructor', label: t('nav.cat_music_instructor') },
+        { value: 'designer', label: t('nav.cat_designer') },
+      ]},
+      { group: `🌿 ${t('nav.cat_group_lifestyle')}`, items: [
+        { value: 'private-hire', label: t('nav.cat_private_hire') },
+        { value: 'dog-walker', label: t('nav.cat_dog_walker') },
+        { value: 'personal-shopper', label: t('nav.cat_personal_shopper') },
+      ]},
+      { group: `💻 ${t('nav.cat_group_online')}`, items: [
+        { value: 'online', label: t('nav.cat_online') },
+        { value: 'coder', label: t('nav.cat_coder') },
+      ]},
+      { group: `➕ ${t('nav.cat_group_other')}`, items: [{ value: 'others', label: t('nav.cat_others') }] },
+    ]
+
+    if (isSkillsPage) return skillsGroups
+    return [...skillsGroups, socialGroup]
+  }, [t, isSocialPage, isSkillsPage])
 
   const ageOptions = useMemo(() => [
     { value: '20s', label: t('nav.age_20s') }, { value: '30s', label: t('nav.age_30s') },
@@ -700,14 +728,55 @@ export default function Navbar() {
 
         {/* Nav links */}
         <nav className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
-            <NavLink key={link.path} to={link.path} end={link.path === '/'}
-              className={({ isActive }) => `text-sm transition-colors ${isActive ? 'font-semibold' : 'hover:opacity-80'}`}
-              style={({ isActive }) => ({ color: isActive ? C.text : C.muted })}
+          {/* Home */}
+          <NavLink to="/" end
+            className={({ isActive }) => `text-sm transition-colors ${isActive ? 'font-semibold' : 'hover:opacity-80'}`}
+            style={({ isActive }) => ({ color: isActive ? C.text : C.muted })}
+          >
+            {t('nav.home')}
+          </NavLink>
+
+          {/* Discover dropdown */}
+          <div ref={discoverRef} className="relative"
+            onMouseEnter={() => setDiscoverOpen(true)}
+            onMouseLeave={() => setDiscoverOpen(false)}
+          >
+            <NavLink to="/skills"
+              className={({ isActive }) => `text-sm transition-colors flex items-center gap-1 ${isActive || pathname === '/social' ? 'font-semibold' : ''}`}
+              style={() => ({ color: (pathname === '/skills' || pathname === '/social') ? C.text : C.muted })}
             >
-              {t(link.label)}
+              {pathname === '/skills' ? t('nav.skills') : pathname === '/social' ? t('nav.social') : t('nav.discover')}
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
+                style={{ transform: discoverOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                <path d="M1 3L5 7L9 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </NavLink>
-          ))}
+            {discoverOpen && (
+              <div className="absolute left-0 top-full pt-2 z-30">
+                <div className="bg-white rounded-2xl shadow-lg py-2 min-w-[140px]" style={{ border: `0.5px solid ${C.border}` }}>
+                  {discoverItems.map(item => (
+                    <NavLink key={item.path} to={item.path}
+                      className="block px-4 py-2.5 text-sm transition-colors"
+                      style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}
+                      onMouseOver={e => { (e.currentTarget as HTMLElement).style.backgroundColor = C.soft; (e.currentTarget as HTMLElement).style.color = C.text }}
+                      onMouseOut={e => { (e.currentTarget as HTMLElement).style.backgroundColor = ''; (e.currentTarget as HTMLElement).style.color = '' }}
+                      onClick={() => setDiscoverOpen(false)}
+                    >
+                      {t(item.label)}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Events */}
+          <NavLink to="/events"
+            className={({ isActive }) => `text-sm transition-colors ${isActive ? 'font-semibold' : 'hover:opacity-80'}`}
+            style={({ isActive }) => ({ color: isActive ? C.text : C.muted })}
+          >
+            {t('nav.events')}
+          </NavLink>
 
           {/* How it works hover dropdown */}
           <div ref={howItWorksRef} className="relative"
@@ -829,14 +898,26 @@ export default function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden px-6 py-4 flex flex-col gap-4 bg-white" style={{ borderTop: `0.5px solid ${C.border}` }}>
-          {links.map((link) => (
-            <NavLink key={link.path} to={link.path} end={link.path === '/'}
-              onClick={() => setMobileOpen(false)}
-              className="text-sm transition-colors"
-              style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}>
-              {t(link.label)}
-            </NavLink>
-          ))}
+          <NavLink to="/" end onClick={() => setMobileOpen(false)}
+            className="text-sm transition-colors"
+            style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}>
+            {t('nav.home')}
+          </NavLink>
+          <div className="flex flex-col gap-1 pl-3" style={{ borderLeft: `2px solid ${C.border}` }}>
+            <span className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: C.brand }}>{t('nav.discover')}</span>
+            {discoverItems.map(item => (
+              <NavLink key={item.path} to={item.path} onClick={() => setMobileOpen(false)}
+                className="text-sm transition-colors"
+                style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}>
+                {t(item.label)}
+              </NavLink>
+            ))}
+          </div>
+          <NavLink to="/events" onClick={() => setMobileOpen(false)}
+            className="text-sm transition-colors"
+            style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}>
+            {t('nav.events')}
+          </NavLink>
           <div className="flex flex-col gap-1 pl-3" style={{ borderLeft: `2px solid ${C.border}` }}>
             {howItWorksItems.map(item => (
               <a key={item.hash} href={`/how-it-works${item.hash}`}

@@ -3,7 +3,7 @@ export type PrivacyMode = 'public' | 'hidden' | 'anonymous'
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
 export type SubscriptionPlan = 'standard' | 'premium' | 'elite'
 export type SubscriptionStatus = 'active' | 'cancelled' | 'expired'
-export type EventCategory = 'social' | 'sports' | 'culture' | 'business' | 'wellness' | 'food'
+export type EventCategory = 'private' | 'business' | 'wellness' | 'sports' | 'networking' | 'community'
 export type RsvpStatus = 'attending' | 'interested' | 'cancelled'
 
 export interface Profile {
@@ -27,6 +27,7 @@ export interface Profile {
   privacy_mode: PrivacyMode
   vacation_mode: boolean
   verified: boolean
+  last_online: string | null
   created_at: string
   updated_at: string
 }
@@ -34,6 +35,7 @@ export interface Profile {
 export interface ProviderProfile {
   id: string
   title: string | null
+  description: string | null
   skills: string[]
   top_skills: string[]
   hourly_rate: number | null
