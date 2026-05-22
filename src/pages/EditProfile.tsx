@@ -556,26 +556,6 @@ export default function EditProfile() {
   const toggle = (arr: string[], val: string, set: (v: string[]) => void) =>
     set(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val])
 
-  const generateBio = async () => {
-    setGeneratingBio(true)
-    const { data, error } = await supabase.functions.invoke('generate-bio', {
-      body: {
-        name:         form.name,
-        role:         isProvider ? 'provider' : 'seeker',
-        tone:         bioTone,
-        language:     bioLang,
-        location:     form.location,
-        traits:       personalityTraits,
-        interests,
-        skills:       isProvider ? [...selectedSkills, ...selectedSocialSkills] : [],
-        mbti,
-        starSign,
-      },
-    })
-    setGeneratingBio(false)
-    if (!error && data?.bio) setForm(prev => ({ ...prev, bio: data.bio }))
-  }
-
   const addLoc = () => {
     const loc = newLocation.trim()
     if (loc && !availLocations.includes(loc)) { setAvailLocations(prev => [...prev, loc]); setNewLocation('') }
@@ -817,33 +797,6 @@ export default function EditProfile() {
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
 
-                {/* AI generate */}
-                <div className="mt-3 rounded-xl p-3 flex flex-wrap items-center gap-2" style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5' }}>
-                  <span className="text-xs font-medium" style={{ color: '#5C0A1E' }}>✨ {t('edit_profile.generate_with_ai')}</span>
-                  {(personalityTraits.length === 0 && interests.length === 0 && selectedSkills.length === 0 && selectedSocialSkills.length === 0) ? (
-                    <span className="text-xs" style={{ color: '#aaa' }}>— {t('edit_profile.generate_select_first')}</span>
-                  ) : (
-                    <>
-                      <select value={bioTone} onChange={e => setBioTone(e.target.value)}
-                        style={{ fontSize: '12px', border: '0.5px solid #E8DDD5', borderRadius: '8px', padding: '4px 8px', color: '#1A0208', backgroundColor: '#fff', outline: 'none', cursor: 'pointer' }}>
-                        <option value="friendly">{t('edit_profile.generate_tone_friendly')}</option>
-                        <option value="professional">{t('edit_profile.generate_tone_professional')}</option>
-                        <option value="casual">{t('edit_profile.generate_tone_casual')}</option>
-                        <option value="creative">{t('edit_profile.generate_tone_creative')}</option>
-                      </select>
-                      <select value={bioLang} onChange={e => setBioLang(e.target.value)}
-                        style={{ fontSize: '12px', border: '0.5px solid #E8DDD5', borderRadius: '8px', padding: '4px 8px', color: '#1A0208', backgroundColor: '#fff', outline: 'none', cursor: 'pointer' }}>
-                        <option value="en">English</option>
-                        <option value="ja">日本語</option>
-                      </select>
-                      <button type="button" onClick={generateBio} disabled={generatingBio}
-                        className="text-xs px-4 py-1.5 rounded-full font-medium disabled:opacity-50 ml-auto"
-                        style={{ backgroundColor: '#B8860B', color: '#3A2400' }}>
-                        {generatingBio ? t('edit_profile.generate_generating') : t('edit_profile.generate_button')}
-                      </button>
-                    </>
-                  )}
-                </div>
               </div>
             </div>
           </div>
