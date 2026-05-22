@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { submitContact } from '../lib/contact'
 
 const inputStyle = {
   width: '100%',
@@ -15,10 +16,17 @@ const inputStyle = {
 export default function Contact() {
   const { t } = useTranslation()
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSending(true)
+    setError(null)
+    const { error: err } = await submitContact(form)
+    setSending(false)
+    if (err) { setError(err.message); return }
     setSubmitted(true)
   }
 
@@ -108,14 +116,18 @@ export default function Contact() {
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
                 />
               </div>
+              {error && (
+                <p className="text-sm text-center" style={{ color: '#f87171' }}>{error}</p>
+              )}
               <button
                 type="submit"
-                className="w-full font-medium py-3 rounded-xl transition-colors mt-2"
+                disabled={sending || !form.name || !form.email || !form.message}
+                className="w-full font-medium py-3 rounded-xl transition-colors mt-2 disabled:opacity-60"
                 style={{ backgroundColor: '#B8860B', color: '#3A2400' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#9A6F09')}
                 onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#B8860B')}
               >
-                {t('contact.submit')}
+                {sending ? t('contact.sending') : t('contact.submit')}
               </button>
             </form>
           )}

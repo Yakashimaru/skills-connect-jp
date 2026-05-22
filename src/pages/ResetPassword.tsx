@@ -1,33 +1,44 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../context/AuthContext'
+import { supabase } from '../lib/supabase'
 
-export default function Login() {
+export default function ResetPassword() {
   const navigate = useNavigate()
-  const { signIn } = useAuth()
   const { t } = useTranslation()
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-    setLoading(true)
-    const { error: authError } = await signIn(email, password)
-    setLoading(false)
-    if (authError) {
-      setError(authError)
+
+    if (password.length < 8) {
+      setError(t('reset_password.password_too_short'))
       return
     }
+    if (password !== confirm) {
+      setError(t('reset_password.passwords_dont_match'))
+      return
+    }
+
+    setLoading(true)
+    const { error: updateError } = await supabase.auth.updateUser({ password })
+    setLoading(false)
+
+    if (updateError) {
+      setError(updateError.message)
+      return
+    }
+
     navigate('/dashboard')
   }
 
   const fields = [
-    { label: t('login.label_email'), type: 'email', value: email, set: setEmail, placeholder: t('login.placeholder_email') },
-    { label: t('login.label_password'), type: 'password', value: password, set: setPassword, placeholder: '••••••••' },
+    { label: t('reset_password.label_password', 'New password'), value: password, set: setPassword },
+    { label: t('reset_password.label_confirm', 'Confirm password'), value: confirm, set: setConfirm },
   ]
 
   return (
@@ -38,18 +49,23 @@ export default function Login() {
           skillconnect
         </Link>
 
-        <h1 className="text-2xl font-bold text-white text-center mb-1">{t('login.heading')}</h1>
-        <p className="text-sm text-center mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>{t('login.subheading')}</p>
+        <h1 className="text-2xl font-bold text-white text-center mb-1">
+          {t('reset_password.heading', 'Set new password')}
+        </h1>
+        <p className="text-sm text-center mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          {t('reset_password.subheading', 'Choose a strong password for your account.')}
+        </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {fields.map(({ label, type, value, set, placeholder }) => (
+          {fields.map(({ label, value, set }) => (
             <div key={label}>
               <label className="text-xs font-medium block mb-1.5" style={{ color: '#B8860B' }}>{label}</label>
               <input
-                type={type}
+                type="password"
                 value={value}
                 onChange={(e) => set(e.target.value)}
-                placeholder={placeholder}
+                placeholder="••••••••"
+                required
                 className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
                 style={{ backgroundColor: 'rgba(255,255,255,0.07)', border: '0.5px solid rgba(184,134,11,0.3)', color: '#fff' }}
                 onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
@@ -58,9 +74,7 @@ export default function Login() {
             </div>
           ))}
 
-          {error && (
-            <p className="text-xs text-center" style={{ color: '#f87171' }}>{error}</p>
-          )}
+          {error && <p className="text-xs text-center" style={{ color: '#f87171' }}>{error}</p>}
 
           <button
             type="submit"
@@ -70,20 +84,9 @@ export default function Login() {
             onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#9A6F09')}
             onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#B8860B')}
           >
-            {loading ? '...' : t('login.cta')}
+            {loading ? '...' : t('reset_password.cta', 'Update password')}
           </button>
         </form>
-
-        <p className="text-sm text-center mt-4" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          <Link to="/forgot-password" className="hover:underline" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            {t('login.forgot_password', 'Forgot password?')}
-          </Link>
-        </p>
-
-        <p className="text-sm text-center mt-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          {t('login.no_account')}{' '}
-          <Link to="/signup" className="font-medium hover:underline" style={{ color: '#B8860B' }}>{t('login.signup_link')}</Link>
-        </p>
       </div>
     </div>
   )

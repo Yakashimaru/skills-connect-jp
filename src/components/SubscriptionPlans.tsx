@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
-const prices = ['¥5,000', '¥10,000', '¥50,000']
+const prices     = ['¥5,000', '¥10,000', '¥50,000']
+const trialPrices = ['¥2,500',  '¥5,000', '¥25,000']
 const styleKeys = ['standard', 'premium', 'elite'] as const
 
 const cardStyle = {
@@ -15,6 +16,7 @@ export default function SubscriptionPlans() {
   const plans = styleKeys.map((key, i) => ({
     style: key,
     price: prices[i],
+    trialPrice: trialPrices[i],
     name: t(`plans.${key}.name`),
     description: t(`plans.${key}.description`),
     cta: t(`plans.${key}.cta`),
@@ -38,11 +40,18 @@ export default function SubscriptionPlans() {
               className={`rounded-3xl p-8 transition-all ${plan.style === 'premium' ? 'md:scale-105' : ''}`}
               style={cardStyle[plan.style]}
             >
-              <p className="text-sm font-semibold mb-1" style={{ color: '#B8860B' }}>{plan.name}</p>
-              <div className="flex items-end gap-1 mb-2">
-                <span className="text-4xl font-bold" style={{ color: plan.style === 'standard' ? '#1A0208' : '#fff' }}>{plan.price}</span>
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-sm font-semibold" style={{ color: '#B8860B' }}>{plan.name}</p>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#B8860B', color: '#fff' }}>{t('plans.trial_badge')}</span>
+              </div>
+              <div className="flex items-end gap-1.5 mb-1">
+                <span className="text-4xl font-bold" style={{ color: plan.style === 'standard' ? '#1A0208' : '#fff' }}>{plan.trialPrice}</span>
                 <span className="text-sm mb-1" style={{ color: 'rgba(184,134,11,0.7)' }}>{t('plans.period')}</span>
               </div>
+              <p className="text-xs mb-2" style={{ color: plan.style === 'standard' ? '#aaa' : 'rgba(255,255,255,0.4)' }}>
+                <span className="line-through">{plan.price}</span>
+                {' '}{t('plans.period')}
+              </p>
               <p className="text-sm mb-6 leading-relaxed" style={{ color: plan.style === 'standard' ? '#7A6060' : 'rgba(255,255,255,0.5)' }}>{plan.description}</p>
 
               <ul className="flex flex-col gap-2.5 mb-8">
@@ -53,6 +62,8 @@ export default function SubscriptionPlans() {
                   </li>
                 ))}
               </ul>
+
+              <p className="text-xs mb-4" style={{ color: plan.style === 'standard' ? '#aaa' : 'rgba(255,255,255,0.35)' }}>{t('plans.trial_note')}</p>
 
               <button
                 className="w-full py-3 rounded-xl font-medium text-sm transition-colors"

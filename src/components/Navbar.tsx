@@ -19,10 +19,10 @@ const C = {
   soft:     '#FDF8F2',   // softest bg for hover
 }
 
-const links = [
-  { path: '/', label: 'nav.home' },
-  { path: '/discover', label: 'nav.discover' },
-  { path: '/meetups', label: 'nav.meetups' },
+
+const discoverItems = [
+  { path: '/skills', label: 'nav.skills' },
+  { path: '/social', label: 'nav.social' },
 ]
 
 const howItWorksItems = [
@@ -37,6 +37,8 @@ type FilterState = Record<string, boolean>
 
 // ─── Japanese city name lookup (keyed by the romaji label stored in LOCATION_OPTIONS) ──
 const JA_CITY: Record<string, string> = {
+  // 'Tokyo' only appears as a top-level label (not in region groups), so add it explicitly
+  Tokyo:'東京',
   // Hokkaido
   Sapporo:'札幌市', Asahikawa:'旭川市', Hakodate:'函館市', Kushiro:'釧路市',
   Obihiro:'帯広市', Kitami:'北見市', Tomakomai:'苫小牧市', Otaru:'小樽市',
@@ -172,6 +174,18 @@ const JA_CITY: Record<string, string> = {
 
 const LOCATION_OPTIONS: OptionGroup[] = [
   { group: '🌐', items: [{ value: 'online', label: 'nav.loc_online' }] },
+  { group: '⭐ Major Cities', items: [
+    { value: 'tokyo', label: 'Tokyo' },
+    { value: 'osaka', label: 'Osaka' },
+    { value: 'kyoto', label: 'Kyoto' },
+    { value: 'nagoya', label: 'Nagoya' },
+    { value: 'fukuoka', label: 'Fukuoka' },
+    { value: 'sapporo', label: 'Sapporo' },
+    { value: 'yokohama', label: 'Yokohama' },
+    { value: 'sendai', label: 'Sendai' },
+    { value: 'hiroshima', label: 'Hiroshima' },
+    { value: 'kobe', label: 'Kobe' },
+  ]},
   { group: 'Hokkaido', groupKey: 'nav.loc_hokkaido', items: [
     { value: 'sapporo', label: 'Sapporo' }, { value: 'asahikawa', label: 'Asahikawa' },
     { value: 'hakodate', label: 'Hakodate' }, { value: 'kushiro', label: 'Kushiro' },
@@ -443,8 +457,13 @@ function FilterDropdown({ label, options, flatOptions, selected, onChange, onCle
 
   const count = Object.values(selected).filter(Boolean).length
 
+  const seenValues = new Set<string>()
   const filteredGroups = options
-    ? options.map(g => ({ ...g, items: query ? g.items.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : g.items })).filter(g => g.items.length > 0)
+    ? options.map(g => ({
+        ...g,
+        items: (query ? g.items.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : g.items)
+          .filter(i => { if (seenValues.has(i.value)) return false; seenValues.add(i.value); return true }),
+      })).filter(g => g.items.length > 0)
     : []
   const filteredFlat = flatOptions
     ? (query ? flatOptions.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : flatOptions)
@@ -557,16 +576,20 @@ function OptionRow({ item, checked, onChange }: { item: { value: string; label: 
 export default function Navbar() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { isLoggedIn, logout } = useAuth()
+  const { isLoggedIn, signOut, user, profile } = useAuth()
   const { t, i18n } = useTranslation()
-  const isDiscover = pathname === '/discover'
+  const isDiscover = ['/skills', '/social'].includes(pathname)
+  const isSocialPage = pathname === '/social'
+  const isSkillsPage = pathname === '/skills'
 
   const [search, setSearch] = useState('')
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [howItWorksOpen, setHowItWorksOpen] = useState(false)
+  const [discoverOpen, setDiscoverOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const avatarRef = useRef<HTMLDivElement>(null)
   const howItWorksRef = useRef<HTMLDivElement>(null)
+  const discoverRef = useRef<HTMLDivElement>(null)
 
   const [categoryFilter, setCategoryFilter] = useState<FilterState>({})
   const [locationFilter, setLocationFilter] = useState<FilterState>({})
@@ -575,39 +598,97 @@ export default function Navbar() {
   const [genderFilter, setGenderFilter] = useState<FilterState>({})
   const [verifiedOnly, setVerifiedOnly] = useState(false)
 
+  useEffect(() => {
+    setCategoryFilter({})
+  }, [pathname])
+
+  useEffect(() => {
+    if (!isDiscover) return
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams()
+      const active = (f: FilterState) => Object.entries(f).filter(([, v]) => v).map(([k]) => k)
+      const locations = active(locationFilter)
+      const skills = active(categoryFilter)
+      const prices = active(priceFilter)
+      const ages = active(ageFilter)
+      const genders = active(genderFilter)
+      if (search.trim()) params.set('q', search.trim())
+      if (locations.length) params.set('location', locations.join(','))
+      if (skills.length) params.set('skills', skills.join(','))
+      if (prices.length) params.set('price', prices.join(','))
+      if (ages.length) params.set('age', ages.join(','))
+      if (genders.length) params.set('gender', genders.join(','))
+      if (verifiedOnly) params.set('verified', '1')
+      const qs = params.toString()
+      navigate(qs ? `${pathname}?${qs}` : pathname, { replace: true })
+    }, search !== '' ? 250 : 0)
+    return () => clearTimeout(timer)
+  }, [locationFilter, categoryFilter, priceFilter, ageFilter, genderFilter, verifiedOnly, search, isDiscover, navigate])
+
   const toggle = useCallback((setter: React.Dispatch<React.SetStateAction<FilterState>>) => (val: string) => {
     setter(prev => ({ ...prev, [val]: !prev[val] }))
   }, [])
   const clear = useCallback((setter: React.Dispatch<React.SetStateAction<FilterState>>) => () => setter({}), [])
 
-  const categoryOptions = useMemo((): OptionGroup[] => [
-    { group: `🌐 ${t('nav.cat_group_language')}`, items: [
-      { value: 'english', label: t('nav.cat_english') }, { value: 'chinese', label: t('nav.cat_chinese') },
-      { value: 'japanese', label: t('nav.cat_japanese') }, { value: 'spanish', label: t('nav.cat_spanish') },
-      { value: 'french', label: t('nav.cat_french') }, { value: 'korean', label: t('nav.cat_korean') },
-      { value: 'language-other', label: t('nav.cat_language_other') },
-    ]},
-    { group: `💬 ${t('nav.cat_group_social')}`, items: [
-      { value: 'conversation', label: t('nav.cat_conversation') }, { value: 'companionship', label: t('nav.cat_companionship') },
-      { value: 'event', label: t('nav.cat_event') }, { value: 'travel-social', label: t('nav.cat_travel') },
-    ]},
-    { group: `💼 ${t('nav.cat_group_business')}`, items: [
-      { value: 'coaching', label: t('nav.cat_coaching') }, { value: 'presentation', label: t('nav.cat_presentation') },
-      { value: 'advisory', label: t('nav.cat_advisory') }, { value: 'assistance', label: t('nav.cat_assistance') },
-    ]},
-    { group: `🏋️ ${t('nav.cat_group_fitness')}`, items: [
-      { value: 'personal-training', label: t('nav.cat_personal_training') }, { value: 'instructor', label: t('nav.cat_instructor') },
-    ]},
-    { group: `📚 ${t('nav.cat_group_education')}`, items: [
-      { value: 'tutoring', label: t('nav.cat_tutoring') }, { value: 'mentorship', label: t('nav.cat_mentorship') },
-    ]},
-    { group: `✈️ ${t('nav.cat_group_travel')}`, items: [
-      { value: 'tour-guide', label: t('nav.cat_tour_guide') }, { value: 'local-guide', label: t('nav.cat_local_guide') },
-      { value: 'communication-support', label: t('nav.cat_communication_support') },
-    ]},
-    { group: `💻 ${t('nav.cat_group_online')}`, items: [{ value: 'online', label: t('nav.cat_online') }] },
-    { group: `➕ ${t('nav.cat_group_other')}`, items: [{ value: 'others', label: t('nav.cat_others') }] },
-  ], [t])
+  const categoryOptions = useMemo((): OptionGroup[] => {
+    const socialGroup: OptionGroup = { group: `💬 ${t('nav.cat_group_social')}`, items: [
+      { value: 'companion',               label: t('nav.cat_companion') },
+      { value: 'companionship',           label: t('nav.cat_companionship') },
+      { value: 'conversation',            label: t('nav.cat_conversation') },
+      { value: 'dining',                  label: t('nav.cat_dining') },
+      { value: 'travel-partner',            label: t('nav.cat_travel_partner') },
+      { value: 'activity-partner',        label: t('nav.cat_activity_partner') },
+      { value: 'event-date',              label: t('nav.cat_event_date') },
+      { value: 'study-partner',             label: t('nav.cat_study_partner') },
+      { value: 'friendship',              label: t('nav.cat_friendship') },
+      { value: 'relationship-experience', label: t('nav.cat_relationship_experience') },
+    ]}
+    if (isSocialPage) return [socialGroup]
+
+    const skillsGroups: OptionGroup[] = [
+      { group: `🌐 ${t('nav.cat_group_language')}`, items: [
+        { value: 'english', label: t('nav.cat_english') }, { value: 'chinese', label: t('nav.cat_chinese') },
+        { value: 'japanese', label: t('nav.cat_japanese') }, { value: 'spanish', label: t('nav.cat_spanish') },
+        { value: 'french', label: t('nav.cat_french') }, { value: 'korean', label: t('nav.cat_korean') },
+        { value: 'language-other', label: t('nav.cat_language_other') },
+      ]},
+      { group: `💼 ${t('nav.cat_group_business')}`, items: [
+        { value: 'coaching', label: t('nav.cat_coaching') }, { value: 'presentation', label: t('nav.cat_presentation') },
+        { value: 'advisory', label: t('nav.cat_advisory') }, { value: 'assistance', label: t('nav.cat_assistance') },
+        { value: 'marketer', label: t('nav.cat_marketer') },
+      ]},
+      { group: `🏋️ ${t('nav.cat_group_fitness')}`, items: [
+        { value: 'personal-training', label: t('nav.cat_personal_training') }, { value: 'sports-instructor', label: t('nav.cat_sports_instructor') },
+      ]},
+      { group: `📚 ${t('nav.cat_group_education')}`, items: [
+        { value: 'tutoring', label: t('nav.cat_tutoring') }, { value: 'mentorship', label: t('nav.cat_mentorship') },
+      ]},
+      { group: `✈️ ${t('nav.cat_group_travel')}`, items: [
+        { value: 'tour-guide', label: t('nav.cat_tour_guide') },
+        { value: 'communication-support', label: t('nav.cat_communication_support') },
+      ]},
+      { group: `🎨 ${t('nav.cat_group_creative')}`, items: [
+        { value: 'videographer', label: t('nav.cat_videographer') },
+        { value: 'photographer', label: t('nav.cat_photographer') },
+        { value: 'musician', label: t('nav.cat_musician') },
+        { value: 'music-instructor', label: t('nav.cat_music_instructor') },
+        { value: 'designer', label: t('nav.cat_designer') },
+      ]},
+      { group: `🌿 ${t('nav.cat_group_lifestyle')}`, items: [
+        { value: 'private-hire', label: t('nav.cat_private_hire') },
+        { value: 'dog-walker', label: t('nav.cat_dog_walker') },
+        { value: 'personal-shopper', label: t('nav.cat_personal_shopper') },
+      ]},
+      { group: `💻 ${t('nav.cat_group_online')}`, items: [
+        { value: 'online', label: t('nav.cat_online') },
+        { value: 'coder', label: t('nav.cat_coder') },
+      ]},
+      { group: `➕ ${t('nav.cat_group_other')}`, items: [{ value: 'others', label: t('nav.cat_others') }] },
+    ]
+
+    if (isSkillsPage) return skillsGroups
+    return [...skillsGroups, socialGroup]
+  }, [t, isSocialPage, isSkillsPage])
 
   const ageOptions = useMemo(() => [
     { value: '20s', label: t('nav.age_20s') }, { value: '30s', label: t('nav.age_30s') },
@@ -641,20 +722,62 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <NavLink to="/" className="text-xl font-semibold tracking-tight" style={{ color: C.brand }}>
-          skillconnect
+        <NavLink to="/" className="flex items-baseline gap-0 tracking-tight leading-none">
+          <span className="text-lg font-black" style={{ color: C.brand, letterSpacing: '-0.02em' }}>SKILL</span>
+          <span className="text-lg font-black" style={{ color: '#B8860B', letterSpacing: '-0.02em' }}>CONNECT</span>
         </NavLink>
 
         {/* Nav links */}
         <nav className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
-            <NavLink key={link.path} to={link.path} end={link.path === '/'}
-              className={({ isActive }) => `text-sm transition-colors ${isActive ? 'font-semibold' : 'hover:opacity-80'}`}
-              style={({ isActive }) => ({ color: isActive ? C.text : C.muted })}
+          {/* Home */}
+          <NavLink to="/" end
+            className={({ isActive }) => `text-sm transition-colors ${isActive ? 'font-semibold' : 'hover:opacity-80'}`}
+            style={({ isActive }) => ({ color: isActive ? C.text : C.muted })}
+          >
+            {t('nav.home')}
+          </NavLink>
+
+          {/* Discover dropdown */}
+          <div ref={discoverRef} className="relative"
+            onMouseEnter={() => setDiscoverOpen(true)}
+            onMouseLeave={() => setDiscoverOpen(false)}
+          >
+            <NavLink to="/skills"
+              className={({ isActive }) => `text-sm transition-colors flex items-center gap-1 ${isActive || pathname === '/social' ? 'font-semibold' : ''}`}
+              style={() => ({ color: (pathname === '/skills' || pathname === '/social') ? C.text : C.muted })}
             >
-              {t(link.label)}
+              {pathname === '/skills' ? t('nav.skills') : pathname === '/social' ? t('nav.social') : t('nav.discover')}
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
+                style={{ transform: discoverOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                <path d="M1 3L5 7L9 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </NavLink>
-          ))}
+            {discoverOpen && (
+              <div className="absolute left-0 top-full pt-2 z-30">
+                <div className="bg-white rounded-2xl shadow-lg py-2 min-w-[140px]" style={{ border: `0.5px solid ${C.border}` }}>
+                  {discoverItems.map(item => (
+                    <NavLink key={item.path} to={item.path}
+                      className="block px-4 py-2.5 text-sm transition-colors"
+                      style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}
+                      onMouseOver={e => { (e.currentTarget as HTMLElement).style.backgroundColor = C.soft; (e.currentTarget as HTMLElement).style.color = C.text }}
+                      onMouseOut={e => { (e.currentTarget as HTMLElement).style.backgroundColor = ''; (e.currentTarget as HTMLElement).style.color = '' }}
+                      onClick={() => setDiscoverOpen(false)}
+                    >
+                      {t(item.label)}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Events */}
+          <NavLink to="/events"
+            className={({ isActive }) => `text-sm transition-colors ${isActive ? 'font-semibold' : 'hover:opacity-80'}`}
+            style={({ isActive }) => ({ color: isActive ? C.text : C.muted })}
+          >
+            {t('nav.events')}
+          </NavLink>
 
           {/* How it works hover dropdown */}
           <div ref={howItWorksRef} className="relative"
@@ -708,22 +831,26 @@ export default function Navbar() {
             onMouseOver={e => { (e.currentTarget as HTMLElement).style.borderColor = C.brand; (e.currentTarget as HTMLElement).style.color = C.brand }}
             onMouseOut={e => { (e.currentTarget as HTMLElement).style.borderColor = C.border; (e.currentTarget as HTMLElement).style.color = C.muted }}
           >
-            {i18n.language === 'ja' ? 'EN' : 'JA'}
+            {i18n.language === 'ja' ? 'EN' : '日本'}
           </button>
 
           {isLoggedIn ? (
             <div className="relative" ref={avatarRef}>
               <button onClick={() => setAvatarOpen(!avatarOpen)} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar"
-                  className="w-9 h-9 rounded-full object-cover"
-                  style={{ border: `2px solid ${C.border}` }} />
+                <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-sm font-bold flex-shrink-0"
+                  style={{ border: `2px solid ${C.border}`, backgroundColor: C.cream, color: C.gold }}>
+                  {profile?.avatar_url
+                    ? <img src={profile.avatar_url} alt={profile.name ?? ''} className="w-full h-full object-cover" />
+                    : profile?.name?.[0]?.toUpperCase() ?? '?'
+                  }
+                </div>
               </button>
               {avatarOpen && (
                 <div className="absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-lg py-2 z-30"
                   style={{ border: `0.5px solid ${C.border}`, boxShadow: `0 4px 16px rgba(92,10,30,0.1)` }}>
                   {[
                     { to: '/dashboard', label: t('nav.dashboard') },
-                    { to: '/profile/1', label: t('nav.my_profile') },
+                    { to: `/profile/${user?.id}`, label: t('nav.my_profile') },
                     { to: '/chat', label: t('nav.messages') },
                   ].map(item => (
                     <NavLink key={item.to} to={item.to} onClick={() => setAvatarOpen(false)}
@@ -735,7 +862,7 @@ export default function Navbar() {
                     </NavLink>
                   ))}
                   <hr className="my-1" style={{ borderColor: C.border }} />
-                  <button onClick={() => { logout(); setAvatarOpen(false); navigate('/') }}
+                  <button onClick={() => { signOut(); setAvatarOpen(false); navigate('/') }}
                     className="block w-full text-left px-4 py-2.5 text-sm transition-colors"
                     style={{ color: C.brand }}
                     onMouseOver={e => (e.currentTarget as HTMLElement).style.backgroundColor = C.soft}
@@ -772,14 +899,26 @@ export default function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden px-6 py-4 flex flex-col gap-4 bg-white" style={{ borderTop: `0.5px solid ${C.border}` }}>
-          {links.map((link) => (
-            <NavLink key={link.path} to={link.path} end={link.path === '/'}
-              onClick={() => setMobileOpen(false)}
-              className="text-sm transition-colors"
-              style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}>
-              {t(link.label)}
-            </NavLink>
-          ))}
+          <NavLink to="/" end onClick={() => setMobileOpen(false)}
+            className="text-sm transition-colors"
+            style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}>
+            {t('nav.home')}
+          </NavLink>
+          <div className="flex flex-col gap-1 pl-3" style={{ borderLeft: `2px solid ${C.border}` }}>
+            <span className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: C.brand }}>{t('nav.discover')}</span>
+            {discoverItems.map(item => (
+              <NavLink key={item.path} to={item.path} onClick={() => setMobileOpen(false)}
+                className="text-sm transition-colors"
+                style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}>
+                {t(item.label)}
+              </NavLink>
+            ))}
+          </div>
+          <NavLink to="/events" onClick={() => setMobileOpen(false)}
+            className="text-sm transition-colors"
+            style={({ isActive }) => ({ color: isActive ? C.text : C.muted, fontWeight: isActive ? 600 : 400 })}>
+            {t('nav.events')}
+          </NavLink>
           <div className="flex flex-col gap-1 pl-3" style={{ borderLeft: `2px solid ${C.border}` }}>
             {howItWorksItems.map(item => (
               <a key={item.hash} href={`/how-it-works${item.hash}`}
@@ -820,8 +959,8 @@ export default function Navbar() {
 
             <FilterDropdown label={t('nav.filter_category')} options={categoryOptions} selected={categoryFilter} onChange={toggle(setCategoryFilter)} onClear={clear(setCategoryFilter)} searchable />
             <FilterDropdown label={t('nav.filter_location')} options={LOCATION_OPTIONS} selected={locationFilter} onChange={toggle(setLocationFilter)} onClear={clear(setLocationFilter)} searchable wide />
-            <FilterDropdown label={t('nav.filter_age')} flatOptions={ageOptions} selected={ageFilter} onChange={toggle(setAgeFilter)} onClear={clear(setAgeFilter)} />
             <FilterDropdown label={t('nav.filter_price')} flatOptions={priceOptions} selected={priceFilter} onChange={toggle(setPriceFilter)} onClear={clear(setPriceFilter)} />
+            <FilterDropdown label={t('nav.filter_age')} flatOptions={ageOptions} selected={ageFilter} onChange={toggle(setAgeFilter)} onClear={clear(setAgeFilter)} />
             <FilterDropdown label={t('nav.filter_gender')} flatOptions={genderOptions} selected={genderFilter} onChange={toggle(setGenderFilter)} onClear={clear(setGenderFilter)} />
 
             <label className="flex items-center gap-2 cursor-pointer ml-1">
