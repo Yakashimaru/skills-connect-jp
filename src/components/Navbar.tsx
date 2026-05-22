@@ -19,10 +19,6 @@ const C = {
   soft:     '#FDF8F2',   // softest bg for hover
 }
 
-const links = [
-  { path: '/', label: 'nav.home' },
-  { path: '/events', label: 'nav.events' },
-]
 
 const discoverItems = [
   { path: '/skills', label: 'nav.skills' },
