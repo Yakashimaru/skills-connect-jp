@@ -457,8 +457,13 @@ function FilterDropdown({ label, options, flatOptions, selected, onChange, onCle
 
   const count = Object.values(selected).filter(Boolean).length
 
+  const seenValues = new Set<string>()
   const filteredGroups = options
-    ? options.map(g => ({ ...g, items: query ? g.items.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : g.items })).filter(g => g.items.length > 0)
+    ? options.map(g => ({
+        ...g,
+        items: (query ? g.items.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : g.items)
+          .filter(i => { if (seenValues.has(i.value)) return false; seenValues.add(i.value); return true }),
+      })).filter(g => g.items.length > 0)
     : []
   const filteredFlat = flatOptions
     ? (query ? flatOptions.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : flatOptions)

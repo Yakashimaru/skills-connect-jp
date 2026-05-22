@@ -42,8 +42,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = authService.onAuthStateChange(async (u) => {
       setUser(u)
       if (u) {
-        await updateProfile(u.id, { last_online: new Date().toISOString() } as Partial<Profile>)
-        setProfile(await getProfile(u.id))
+        const p = await getProfile(u.id)
+        const lastOnline = p?.last_online ? new Date(p.last_online).getTime() : 0
+        if (Date.now() - lastOnline > 5 * 60 * 1000) {
+          await updateProfile(u.id, { last_online: new Date().toISOString() } as Partial<Profile>)
+        }
+        setProfile(p)
       } else {
         setProfile(null)
       }

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { searchProfiles, saveProfile, unsaveProfile, getSavedProfiles } from '../lib/profiles'
 import { useAuth } from '../context/AuthContext'
 import ProviderCard from '../components/ProviderCard'
+import { SOCIAL_SKILLS } from '../lib/constants'
 
 // Convert Navbar filter value (e.g. 'okinawa-city', 'online') to a matchable label
 const toLabel = (value: string): string => {
@@ -20,11 +21,6 @@ const PRICE_RANGES: Record<string, { min?: number; max?: number }> = {
 const SOCIAL_FILTER_VALUES = new Set([
   'companion', 'companionship', 'conversation', 'dining',
   'travel-partner', 'activity-partner', 'event-date', 'study-partner', 'friendship', 'relationship-experience',
-])
-
-const SOCIAL_SKILLS = new Set([
-  'companion', 'companionship', 'conversation', 'dining',
-  'travel partner', 'activity partner', 'event date', 'study partner', 'friendship', 'relationship experience',
 ])
 
 export default function Discover() {

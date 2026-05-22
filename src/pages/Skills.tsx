@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { searchProfiles, saveProfile, unsaveProfile, getSavedProfiles } from '../lib/profiles'
 import { useAuth } from '../context/AuthContext'
 import ProviderCard from '../components/ProviderCard'
+import { SOCIAL_SKILLS } from '../lib/constants'
 
 const toLabel = (value: string): string => {
   if (value === 'online') return 'online only'
@@ -15,11 +16,6 @@ const PRICE_RANGES: Record<string, { min?: number; max?: number }> = {
   '5k-10k': { min: 5000, max: 10000 },
   'over10k': { min: 10001 },
 }
-
-const SOCIAL_SKILLS = new Set([
-  'companion', 'conversation', 'companionship', 'dining',
-  'travel partner', 'activity partner', 'event date', 'study partner', 'friendship', 'relationship experience',
-])
 
 export default function Skills() {
   const navigate = useNavigate()
@@ -71,7 +67,7 @@ export default function Skills() {
   const verifiedOnly = searchParams.get('verified') === '1'
 
   const profiles = useMemo(() => {
-    let result = allProfiles
+    let result = allProfiles.filter(p => !p.vacation_mode)
 
     // Pre-filter: only profiles with at least one non-social skill
     result = result.filter(p => {
