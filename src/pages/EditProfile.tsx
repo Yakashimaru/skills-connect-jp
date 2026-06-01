@@ -495,9 +495,7 @@ export default function EditProfile() {
   const [userType, setUserType] = useState<'seeker' | 'provider' | 'both'>(p?.user_type ?? 'seeker')
   const isProvider = userType === 'provider' || userType === 'both'
 
-  // Provider/both → default to provider tab; seeker-only → default to seeker tab
-  const defaultTab = (p?.user_type === 'provider' || p?.user_type === 'both') ? 'provider' : 'seeker'
-  const [activeTab, setActiveTab] = useState<'provider' | 'seeker' | 'social'>(defaultTab)
+  const [activeTab, setActiveTab] = useState<'skills' | 'social'>('skills')
 
   const [form, setForm] = useState({
     name:            p?.name ?? '',
@@ -666,20 +664,12 @@ export default function EditProfile() {
 
   const handleUserTypeChange = (type: 'seeker' | 'provider' | 'both') => {
     setUserType(type)
-    // Reset to the primary tab for the new type
-    setActiveTab((type === 'provider' || type === 'both') ? 'provider' : 'seeker')
   }
 
-  // Tab order: Provider (or Seeker) first, Social always last
-  const tabs = isProvider
-    ? [
-        { id: 'provider' as const, label: t('edit_profile.tab_provider') },
-        { id: 'social' as const,   label: t('edit_profile.tab_social') },
-      ]
-    : [
-        { id: 'seeker' as const, label: t('edit_profile.tab_seeker') },
-        { id: 'social' as const, label: t('edit_profile.tab_social') },
-      ]
+  const tabs = [
+    { id: 'skills' as const, label: t('edit_profile.tab_skills') },
+    { id: 'social' as const, label: t('edit_profile.tab_social') },
+  ]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -850,30 +840,8 @@ export default function EditProfile() {
           )}
 
           {/* ── Tab toggle ── */}
-          <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5', backgroundColor: '#fff' }}>
-            {tabs.map((tab, i) => {
-              const isActive = activeTab === tab.id
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className="flex-1 text-sm py-3 transition-colors"
-                  style={{
-                    backgroundColor: isActive ? '#5C0A1E' : '#fff',
-                    color: isActive ? '#fff' : '#7A6060',
-                    fontWeight: isActive ? 600 : 400,
-                    borderRight: i < tabs.length - 1 ? '0.5px solid #E8DDD5' : undefined,
-                  }}
-                >
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-
-          {/* ── Account type (hidden on Social tab) ── */}
-          {activeTab !== 'social' && <div style={cardStyle}>
+          {/* ── Account type — always at top ── */}
+          <div style={cardStyle}>
             <SectionHeader title={t('edit_profile.account_type_label')} />
             <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
               {(['seeker', 'both', 'provider'] as const).map((type, i) => {
@@ -896,7 +864,30 @@ export default function EditProfile() {
                 )
               })}
             </div>
-          </div>}
+          </div>
+
+          {/* ── Skills / Social tab toggle ── */}
+          <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5', backgroundColor: '#fff' }}>
+            {tabs.map((tab, i) => {
+              const isActive = activeTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className="flex-1 text-sm py-3 transition-colors"
+                  style={{
+                    backgroundColor: isActive ? '#5C0A1E' : '#fff',
+                    color: isActive ? '#fff' : '#7A6060',
+                    fontWeight: isActive ? 600 : 400,
+                    borderRight: i < tabs.length - 1 ? '0.5px solid #E8DDD5' : undefined,
+                  }}
+                >
+                  {tab.label}
+                </button>
+              )
+            })}
+          </div>
 
           {/* ── Photo ── */}
           <div style={cardStyle}>
@@ -991,8 +982,8 @@ export default function EditProfile() {
             </div>
           </div>
 
-          {/* ── Provider tab ── */}
-          {activeTab === 'provider' && (
+          {/* ── Skills tab (provider/both) ── */}
+          {activeTab === 'skills' && isProvider && (
             <>
               {/* Skills — always visible */}
               <div style={cardStyle}>
@@ -1386,8 +1377,8 @@ export default function EditProfile() {
             </>
           )}
 
-          {/* ── Seeker tab ── */}
-          {activeTab === 'seeker' && (
+          {/* ── Skills tab (seeker only) ── */}
+          {activeTab === 'skills' && !isProvider && (
             <div style={cardStyle}>
               <SectionHeader title={t('edit_profile.seeker_looking_for')} />
               <p className="text-sm" style={{ color: '#aaa' }}>{t('edit_profile.seeker_looking_for_hint')}</p>
@@ -1486,9 +1477,8 @@ export default function EditProfile() {
             </>
           )}
 
-          {/* ── Privacy & vacation — always visible for all user types ── */}
-          {activeTab !== 'social' && (
-            <div style={cardStyle}>
+          {/* ── Privacy & vacation — always visible ── */}
+          <div style={cardStyle}>
               <SectionHeader title={t('edit_profile.section_privacy')} />
               <div className="flex flex-col gap-3">
                 {[
@@ -1514,8 +1504,7 @@ export default function EditProfile() {
                   <p className="text-xs mt-0.5" style={{ color: '#aaa' }}>{t('edit_profile.vacation_mode_hint')}</p>
                 </div>
               </label>
-            </div>
-          )}
+          </div>
 
           <div className="flex items-center gap-4 pb-4">
             <button type="submit" disabled={saving}
