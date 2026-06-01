@@ -4,14 +4,15 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 
 import en from './locales/en/translation.json'
 import ja from './locales/ja/translation.json'
+import zh from './locales/zh/translation.json'
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: { en: { translation: en }, ja: { translation: ja } },
-    fallbackLng: 'ja',
-    supportedLngs: ['ja', 'en'],
+    resources: { en: { translation: en }, ja: { translation: ja }, zh: { translation: zh } },
+    fallbackLng: ['en', 'ja'],
+    supportedLngs: ['ja', 'en', 'zh'],
     interpolation: { escapeValue: false },
     detection: {
       order: ['localStorage'],

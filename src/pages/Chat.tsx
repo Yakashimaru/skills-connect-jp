@@ -182,8 +182,6 @@ export default function Chat() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <button className="text-lg" style={{ color: '#5C0A1E' }}>📞</button>
-                <button className="text-lg" style={{ color: '#5C0A1E' }}>📹</button>
                 <button className="text-xs font-medium px-4 py-2 rounded-full transition-colors"
                   style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
                   onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}

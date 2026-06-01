@@ -8,6 +8,7 @@ export async function signUp(email: string, password: string, name: string, user
     password,
     options: {
       data: { name, user_type: userType },
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
     },
   })
 }

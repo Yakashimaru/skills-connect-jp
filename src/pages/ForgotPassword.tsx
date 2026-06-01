@@ -28,7 +28,7 @@ export default function ForgotPassword() {
       <div className="w-full max-w-md p-8 rounded-3xl" style={{ backgroundColor: '#1A0208', border: '0.5px solid rgba(184,134,11,0.3)' }}>
 
         <Link to="/" className="text-xl font-semibold tracking-tight block text-center mb-8" style={{ color: '#fff' }}>
-          skillconnect
+          kaiyui
         </Link>
 
         <h1 className="text-2xl font-bold text-white text-center mb-1">{t('forgot_password.heading', 'Reset password')}</h1>

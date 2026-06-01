@@ -33,7 +33,6 @@
     "filter_gender": "Gender",
     "gender_male": "Male",
     "gender_female": "Female",
-    "gender_any": "Any",
     "verified_only": "Verified only",
     "filter_clear": "Clear all",
     "filter_search": "Search...",
@@ -61,7 +60,6 @@
     "cat_korean": "Korean",
     "cat_language_other": "Other language",
     "cat_conversation": "Conversation",
-    "cat_companionship": "Companionship",
     "cat_event": "Event",
     "cat_travel": "Travel",
     "cat_companion": "Companion",
@@ -71,7 +69,6 @@
     "cat_event_date": "Event Date",
     "cat_study_partner": "Study Partner",
     "cat_friendship": "Friendship",
-    "cat_relationship_experience": "Relationship Experience",
     "cat_coaching": "Coaching",
     "cat_presentation": "Presentation",
     "cat_advisory": "Advisory",
@@ -191,7 +188,7 @@
     "heading": "What people are saying",
     "items": [
       {
-        "text": "I found an amazing English conversation partner through SkillConnect. We meet weekly and my confidence has improved so much.",
+        "text": "I found an amazing English conversation partner through Kaiyui. We meet weekly and my confidence has improved so much.",
         "name": "Sarah M.",
         "location": "Tokyo"
       },
@@ -427,6 +424,7 @@
     "reviews": "reviews",
     "about": "About",
     "skills": "Skills",
+    "social_experience": "Social experience",
     "experience": "Experience",
     "education": "Education",
     "reviews_section": "Reviews",
@@ -441,7 +439,6 @@
     "session_type_online": "Online Call",
     "session_type_social": "Social Experience",
     "personality": "Personality",
-    "about_me": "About me",
     "interests": "Interests & hobbies",
     "qualifications": "Qualifications",
     "achievements": "Achievements",
@@ -539,6 +536,11 @@
     "account_type_seeker": "Looking for services",
     "account_type_provider": "Offering services",
     "account_type_both": "Both",
+    "tab_social": "Social",
+    "tab_provider": "Provider",
+    "tab_seeker": "Seeker",
+    "seeker_looking_for": "What I'm looking for",
+    "seeker_looking_for_hint": "Coming soon — match based on your preferences",
     "delete_account": "Delete account",
     "delete_account_confirm": "Are you sure? This cannot be undone.",
     "delete_account_confirm_yes": "Yes, delete my account",
@@ -621,8 +623,8 @@
     "faq_heading": "Frequently asked questions",
     "faqs": [
       {
-        "q": "What is SkillConnect?",
-        "a": "SkillConnect is a skills and social matching platform. Connections are based on personality, skills, and shared interests, helping users to build both professional and social connections."
+        "q": "What is Kaiyui?",
+        "a": "Kaiyui is a skills and social matching platform. Connections are based on personality, skills, and shared interests, helping users to build both professional and social connections."
       },
       {
         "q": "Why can't I chat or connect?",

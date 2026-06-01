@@ -587,6 +587,8 @@ export default function Navbar() {
   const [howItWorksOpen, setHowItWorksOpen] = useState(false)
   const [discoverOpen, setDiscoverOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef<HTMLDivElement>(null)
   const avatarRef = useRef<HTMLDivElement>(null)
   const howItWorksRef = useRef<HTMLDivElement>(null)
   const discoverRef = useRef<HTMLDivElement>(null)
@@ -632,16 +634,14 @@ export default function Navbar() {
 
   const categoryOptions = useMemo((): OptionGroup[] => {
     const socialGroup: OptionGroup = { group: `💬 ${t('nav.cat_group_social')}`, items: [
-      { value: 'companion',               label: t('nav.cat_companion') },
-      { value: 'companionship',           label: t('nav.cat_companionship') },
-      { value: 'conversation',            label: t('nav.cat_conversation') },
-      { value: 'dining',                  label: t('nav.cat_dining') },
-      { value: 'travel-partner',            label: t('nav.cat_travel_partner') },
-      { value: 'activity-partner',        label: t('nav.cat_activity_partner') },
-      { value: 'event-date',              label: t('nav.cat_event_date') },
-      { value: 'study-partner',             label: t('nav.cat_study_partner') },
-      { value: 'friendship',              label: t('nav.cat_friendship') },
-      { value: 'relationship-experience', label: t('nav.cat_relationship_experience') },
+      { value: 'companion',        label: t('nav.cat_companion') },
+      { value: 'conversation',     label: t('nav.cat_conversation') },
+      { value: 'dining',           label: t('nav.cat_dining') },
+      { value: 'travel-partner',   label: t('nav.cat_travel_partner') },
+      { value: 'activity-partner', label: t('nav.cat_activity_partner') },
+      { value: 'event-date',       label: t('nav.cat_event_date') },
+      { value: 'study-partner',    label: t('nav.cat_study_partner') },
+      { value: 'friendship',       label: t('nav.cat_friendship') },
     ]}
     if (isSocialPage) return [socialGroup]
 
@@ -704,12 +704,12 @@ export default function Navbar() {
   const genderOptions = useMemo(() => [
     { value: 'male', label: t('nav.gender_male') },
     { value: 'female', label: t('nav.gender_female') },
-    { value: 'any', label: t('nav.gender_any') },
   ], [t])
 
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (avatarRef.current && !avatarRef.current.contains(e.target as Node)) setAvatarOpen(false)
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false)
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
@@ -723,8 +723,8 @@ export default function Navbar() {
 
         {/* Logo */}
         <NavLink to="/" className="flex items-baseline gap-0 tracking-tight leading-none">
-          <span className="text-lg font-black" style={{ color: C.brand, letterSpacing: '-0.02em' }}>SKILL</span>
-          <span className="text-lg font-black" style={{ color: '#B8860B', letterSpacing: '-0.02em' }}>CONNECT</span>
+          <span className="text-lg font-black" style={{ color: C.brand, letterSpacing: '-0.02em' }}>KAI</span>
+          <span className="text-lg font-black" style={{ color: '#B8860B', letterSpacing: '-0.02em' }}>YUI</span>
         </NavLink>
 
         {/* Nav links */}
@@ -823,16 +823,55 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
-          {/* Language toggle */}
-          <button
-            onClick={() => i18n.changeLanguage(i18n.language === 'ja' ? 'en' : 'ja')}
-            className="text-xs font-medium px-2.5 py-1 rounded-full transition-colors"
-            style={{ border: `1px solid ${C.border}`, color: C.muted }}
-            onMouseOver={e => { (e.currentTarget as HTMLElement).style.borderColor = C.brand; (e.currentTarget as HTMLElement).style.color = C.brand }}
-            onMouseOut={e => { (e.currentTarget as HTMLElement).style.borderColor = C.border; (e.currentTarget as HTMLElement).style.color = C.muted }}
-          >
-            {i18n.language === 'ja' ? 'EN' : '日本'}
-          </button>
+          {/* Language dropdown */}
+          {(() => {
+            const langs = [
+              { code: 'en', full: 'English' },
+              { code: 'ja', full: '日本語' },
+              { code: 'zh', full: '中文' },
+            ]
+            const current = langs.find(l => i18n.language.startsWith(l.code)) ?? langs[0]
+            return (
+              <div className="relative" ref={langRef}>
+                <button
+                  onClick={() => setLangOpen(o => !o)}
+                  className="text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1 transition-colors"
+                  style={{ border: `1px solid ${C.border}`, color: C.muted }}
+                  onMouseOver={e => { (e.currentTarget as HTMLElement).style.borderColor = C.brand; (e.currentTarget as HTMLElement).style.color = C.brand }}
+                  onMouseOut={e => { (e.currentTarget as HTMLElement).style.borderColor = C.border; (e.currentTarget as HTMLElement).style.color = C.muted }}
+                >
+                  {current.full}
+                  <span style={{ fontSize: '9px', opacity: 0.6 }}>▾</span>
+                </button>
+                {langOpen && (
+                  <div className="absolute right-0 top-full mt-1.5 rounded-xl overflow-hidden z-50"
+                    style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5', boxShadow: '0 4px 16px rgba(92,10,30,0.12)', minWidth: '120px' }}>
+                    {langs.map(lang => {
+                      const isActive = i18n.language.startsWith(lang.code)
+                      return (
+                        <button
+                          key={lang.code}
+                          type="button"
+                          onClick={() => { i18n.changeLanguage(lang.code); setLangOpen(false) }}
+                          className="w-full text-left px-4 py-2.5 text-sm flex items-center justify-between transition-colors"
+                          style={{
+                            backgroundColor: isActive ? '#FDF0E0' : '#fff',
+                            color: isActive ? '#5C0A1E' : '#1A0208',
+                            fontWeight: isActive ? 600 : 400,
+                          }}
+                          onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = '#FAFAF8' }}
+                          onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = '#fff' }}
+                        >
+                          <span style={{ fontWeight: isActive ? 600 : 400 }}>{lang.full}</span>
+                          {isActive && <span style={{ fontSize: '10px', color: '#B8860B' }}>✓</span>}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          })()}
 
           {isLoggedIn ? (
             <div className="relative" ref={avatarRef}>

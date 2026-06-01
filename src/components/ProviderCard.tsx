@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, JA_CITY } from '../lib/constants'
 import type { ProfileWithProvider } from '../lib/types'
 
 const C = {
@@ -31,6 +33,9 @@ interface Props {
 
 export default function ProviderCard({ profile, isSaved, onSaveToggle }: Props) {
   const navigate = useNavigate()
+  const { i18n } = useTranslation()
+  const isJa = i18n.language.startsWith('ja')
+  const isZh = i18n.language.startsWith('zh')
   const online = formatLastOnline(profile.last_online ?? null)
 
   return (
@@ -107,12 +112,14 @@ export default function ProviderCard({ profile, isSaved, onSaveToggle }: Props) 
           <div className="flex gap-1 flex-wrap">
             {(profile.provider_profile?.skills ?? []).slice(0, 2).map((skill: string) => (
               <span key={skill} className="text-xs px-2.5 py-0.5 rounded-full" style={{ backgroundColor: C.cream, color: '#7A4A00' }}>
-                {skill}
+                {isJa ? (SKILL_JA[skill] ?? SOCIAL_SKILL_JA[skill] ?? skill) : isZh ? (SKILL_ZH[skill] ?? SOCIAL_SKILL_ZH[skill] ?? skill) : skill}
               </span>
             ))}
           </div>
           {profile.location && (
-            <span className="text-xs" style={{ color: '#aaa' }}>📍 {profile.location}</span>
+            <span className="text-xs" style={{ color: '#aaa' }}>
+              📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : profile.location}
+            </span>
           )}
         </div>
       </div>

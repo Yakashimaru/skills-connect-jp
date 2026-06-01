@@ -7,7 +7,7 @@ import { getReviews } from '../lib/reviews'
 import { getOrCreateConversation } from '../lib/messages'
 import { createBooking } from '../lib/bookings'
 import type { Profile, ProviderProfile } from '../lib/types'
-import { TRAIT_JA, INTEREST_JA, SKILL_JA, SOCIAL_SKILL_JA, STAR_SIGN_JA, JA_CITY } from '../lib/constants'
+import { TRAIT_JA, INTEREST_JA, SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, STAR_SIGN_JA, JA_CITY } from '../lib/constants'
 
 const SESSION_ICONS: Record<string, string> = {
   '1-on-1 Session': '👤',
@@ -216,7 +216,8 @@ export default function ProfilePage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
-  const isJa = i18n.language === 'ja'
+  const isJa = i18n.language.startsWith('ja')
+  const isZh = i18n.language.startsWith('zh')
   const { user } = useAuth()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -332,100 +333,45 @@ export default function ProfilePage() {
               </section>
             )}
 
-            {(profile.personality_traits?.length > 0 || profile.mbti || profile.star_sign || profile.personality_insights) && (
-              <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.personality')}</h2>
-                {(profile.mbti || profile.star_sign) && (
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {profile.mbti && (
-                      <span className="text-sm px-3 py-1 rounded-full font-medium" style={{ backgroundColor: '#1A0208', color: '#FDF0E0' }}>
-                        {profile.mbti}
-                      </span>
-                    )}
-                    {profile.star_sign && (
-                      <span className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00', border: '0.5px solid #E8C88A' }}>
-                        ✨ {profile.star_sign[0].toUpperCase() + profile.star_sign.slice(1)}
-                      </span>
-                    )}
-                  </div>
-                )}
-                {profile.top_traits?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {profile.top_traits.map((trait: string) => (
-                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
-                    ))}
-                  </div>
-                )}
-                {profile.personality_traits?.filter((tr: string) => !profile.top_traits?.includes(tr)).length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {profile.personality_traits.filter((tr: string) => !profile.top_traits?.includes(tr)).map((trait: string) => (
-                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
-                    ))}
-                  </div>
-                )}
-                {profile.personality_insights && (
-                  <p className="text-sm italic mt-3 leading-relaxed" style={{ color: '#7A6060' }}>{profile.personality_insights}</p>
-                )}
-              </section>
-            )}
-
-            {(profile.mbti || profile.star_sign) && (
-              <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.about_me')}</h2>
-                <div className="flex flex-wrap gap-3">
-                  {profile.mbti && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
-                      <span className="text-xs" style={{ color: '#aaa' }}>MBTI</span>
-                      <span className="text-sm font-semibold" style={{ color: '#5C0A1E' }}>{profile.mbti}</span>
-                    </div>
+            {(() => {
+              const socialSkillKeys = Object.keys(SOCIAL_SKILL_JA)
+              const proSkills = (pp?.skills ?? []).filter((s: string) => !socialSkillKeys.includes(s))
+              const socialSkills = (pp?.skills ?? []).filter((s: string) => socialSkillKeys.includes(s))
+              return (
+                <>
+                  {proSkills.length > 0 && (
+                    <section>
+                      <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.skills')}</h2>
+                      {pp.top_skills?.filter((s: string) => !socialSkillKeys.includes(s)).length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {pp.top_skills.filter((s: string) => !socialSkillKeys.includes(s)).map((s: string) => (
+                            <span key={s} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (SKILL_JA[s] ?? s) : isZh ? (SKILL_ZH[s] ?? s) : s}</span>
+                          ))}
+                        </div>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        {proSkills.filter((s: string) => !pp.top_skills?.includes(s)).map((skill: string) => (
+                          <span key={skill} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (SKILL_JA[skill] ?? skill) : isZh ? (SKILL_ZH[skill] ?? skill) : skill}</span>
+                        ))}
+                      </div>
+                      {pp.description && (
+                        <p className="text-sm mt-3 leading-relaxed" style={{ color: '#7A6060' }}>{pp.description}</p>
+                      )}
+                    </section>
                   )}
-                  {profile.star_sign && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
-                      <span className="text-xs" style={{ color: '#aaa' }}>{isJa ? '星座' : 'Star sign'}</span>
-                      <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>
-                        {isJa ? (STAR_SIGN_JA[profile.star_sign] ?? profile.star_sign) : profile.star_sign}
-                      </span>
-                    </div>
+                  {socialSkills.length > 0 && (
+                    <section>
+                      <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.social_experience')}</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {socialSkills.map((skill: string) => (
+                          <span key={skill} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#FDF0E0', color: '#5C0A1E', border: '0.5px solid #E8C88A' }}>{isJa ? (SOCIAL_SKILL_JA[skill] ?? skill) : isZh ? (SOCIAL_SKILL_ZH[skill] ?? skill) : skill}</span>
+                        ))}
+                      </div>
+                    </section>
                   )}
-                </div>
-              </section>
-            )}
-
-            {profile.interests?.length > 0 && (
-              <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.interests')}</h2>
-                {profile.top_interests?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {profile.top_interests.map((interest: string) => (
-                      <span key={interest} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
-                    ))}
-                  </div>
-                )}
-                <div className="flex flex-wrap gap-2">
-                  {profile.interests.filter((interest: string) => !profile.top_interests?.includes(interest)).map((interest: string) => (
-                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {pp?.skills?.length > 0 && (
-              <section>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.skills')}</h2>
-                {pp.top_skills?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {pp.top_skills.map((s: string) => (
-                      <span key={s} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (SKILL_JA[s] ?? SOCIAL_SKILL_JA[s] ?? s) : s}</span>
-                    ))}
-                  </div>
-                )}
-                <div className="flex flex-wrap gap-2">
-                  {pp.skills.filter((s: string) => !pp.top_skills?.includes(s)).map((skill: string) => (
-                    <span key={skill} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (SKILL_JA[skill] ?? SOCIAL_SKILL_JA[skill] ?? skill) : skill}</span>
-                  ))}
-                </div>
-              </section>
-            )}
+                </>
+              )
+            })()}
 
             {profile.experience?.length > 0 && (
               <section>
@@ -496,6 +442,65 @@ export default function ProfilePage() {
                     </li>
                   ))}
                 </ul>
+              </section>
+            )}
+
+            {(profile.personality_traits?.length > 0 || profile.mbti || profile.star_sign || profile.personality_insights) && (
+              <section>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.personality')}</h2>
+                {(profile.mbti || profile.star_sign) && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {profile.mbti && (
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
+                        <span className="text-xs" style={{ color: '#aaa' }}>MBTI</span>
+                        <span className="text-sm font-semibold" style={{ color: '#5C0A1E' }}>{profile.mbti}</span>
+                      </div>
+                    )}
+                    {profile.star_sign && (
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
+                        <span className="text-xs" style={{ color: '#aaa' }}>{isJa ? '星座' : 'Star sign'}</span>
+                        <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>
+                          {isJa ? (STAR_SIGN_JA[profile.star_sign] ?? profile.star_sign) : profile.star_sign}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {profile.top_traits?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {profile.top_traits.map((trait: string) => (
+                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
+                    ))}
+                  </div>
+                )}
+                {profile.personality_traits?.filter((tr: string) => !profile.top_traits?.includes(tr)).length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {profile.personality_traits.filter((tr: string) => !profile.top_traits?.includes(tr)).map((trait: string) => (
+                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
+                    ))}
+                  </div>
+                )}
+                {profile.personality_insights && (
+                  <p className="text-sm italic mt-3 leading-relaxed" style={{ color: '#7A6060' }}>{profile.personality_insights}</p>
+                )}
+              </section>
+            )}
+
+            {profile.interests?.length > 0 && (
+              <section>
+                <h2 className="text-lg font-semibold mb-3" style={{ color: '#1A0208' }}>{t('profile.interests')}</h2>
+                {profile.top_interests?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {profile.top_interests.map((interest: string) => (
+                      <span key={interest} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
+                    ))}
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  {profile.interests.filter((interest: string) => !profile.top_interests?.includes(interest)).map((interest: string) => (
+                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
+                  ))}
+                </div>
               </section>
             )}
 
