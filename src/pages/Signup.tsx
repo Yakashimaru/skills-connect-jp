@@ -42,8 +42,8 @@ export default function Signup() {
     return (
       <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#0A0A0A' }}>
         <div className="w-full max-w-md p-8 rounded-3xl text-center" style={{ backgroundColor: '#1A0208', border: '0.5px solid rgba(184,134,11,0.3)' }}>
-          <Link to="/" className="text-xl font-semibold tracking-tight block text-center mb-8" style={{ color: '#fff' }}>
-            kaiyui
+          <Link to="/" className="text-xl font-semibold tracking-tight flex items-baseline justify-center gap-0 mb-8">
+            <span style={{ color: '#fff' }}>KAI</span><span style={{ color: '#B8860B' }}>YUI</span>
           </Link>
           <div className="text-4xl mb-4">📧</div>
           <h1 className="text-2xl font-bold text-white mb-3">Check your email</h1>
@@ -62,8 +62,8 @@ export default function Signup() {
     <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#0A0A0A' }}>
       <div className="w-full max-w-md p-8 rounded-3xl" style={{ backgroundColor: '#1A0208', border: '0.5px solid rgba(184,134,11,0.3)' }}>
 
-        <Link to="/" className="text-xl font-semibold tracking-tight block text-center mb-8" style={{ color: '#fff' }}>
-          kaiyui
+        <Link to="/" className="text-xl font-semibold tracking-tight flex items-baseline justify-center gap-0 mb-8">
+          <span style={{ color: '#fff' }}>KAI</span><span style={{ color: '#B8860B' }}>YUI</span>
         </Link>
 
         <h1 className="text-2xl font-bold text-white text-center mb-1">{t('signup.heading')}</h1>

@@ -300,11 +300,11 @@
   "contact": {
     "eyebrow": "联系我们",
     "heading": "联系我们",
-    "body": "有问题、合作想法或需要帮助？填写表格，我们将在1-2个工作日内回复您。",
+    "body": "有问题、合作想法或需要帮助？发送邮件给我们，我们将在1-2个工作日内回复您。",
     "info_email_label": "邮箱",
     "info_based_label": "地址",
     "info_response_label": "响应时间",
-    "info_email_value": "hello@skillconnect.jp",
+    "info_email_value": "info.kaiyui@gmail.com",
     "info_based_value": "日本东京",
     "info_response_value": "1–2个工作日",
     "label_name": "姓名",

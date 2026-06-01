@@ -300,11 +300,11 @@
   "contact": {
     "eyebrow": "お問い合わせ",
     "heading": "お問い合わせ",
-    "body": "ご質問、パートナーシップのご提案、またはサポートが必要な場合は、フォームにご記入ください。1〜2営業日以内にご返信いたします。",
+    "body": "ご質問、パートナーシップのご提案、またはサポートが必要な場合は、メールにてご連絡ください。1〜2営業日以内にご返信いたします。",
     "info_email_label": "メールアドレス",
     "info_based_label": "所在地",
     "info_response_label": "返信時間",
-    "info_email_value": "hello@skillconnect.jp",
+    "info_email_value": "info.kaiyui@gmail.com",
     "info_based_value": "東京、日本",
     "info_response_value": "1〜2営業日",
     "label_name": "お名前",
