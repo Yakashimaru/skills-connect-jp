@@ -128,16 +128,40 @@ const SKILL_OPTIONS_JA = [
 ]
 
 const SOCIAL_SKILL_OPTIONS = [
-  'Activity Partner', 'Companion', 'Companionship', 'Conversation',
-  'Dining', 'Event Date', 'Friendship', 'Relationship Experience', 'Study Partner', 'Travel Partner',
+  'Activity Partner', 'Companion', 'Conversation',
+  'Dining', 'Event Date', 'Friendship', 'Study Partner', 'Travel Partner',
 ]
 
 const SOCIAL_SKILL_OPTIONS_JA = [
-  'アクティビティパートナー', 'コンパニオン', 'コンパニオンシップ', '会話',
-  'ダイニング', 'イベントデート', 'フレンドシップ', '恋愛サポート', 'スタディパートナー', 'トラベルパートナー',
+  'アクティビティパートナー', 'コンパニオン', '会話',
+  'ダイニング', 'イベントデート', 'フレンドシップ', 'スタディパートナー', 'トラベルパートナー',
 ]
 
-// { group, items: [{ value (English, stored in DB), ja }] }
+const SKILL_OPTIONS_ZH = [
+  '顾问', '应用开发', '协助',
+  '商业',
+  '辅导', '程序员', '沟通支持', '烹饪', '文案写作',
+  '数据分析', '设计师', '遛狗',
+  '英语', '活动策划',
+  '金融', '健身', '法语',
+  '高尔夫', '平面设计',
+  '管家服务',
+  '投资', '口译', 'IT支持',
+  '日语',
+  '韩语',
+  '普通话', '营销人员', '营销', '武术', '导师辅导', '音乐老师', '音乐人',
+  '私人买手', '私人训练', '摄影师', '演讲', '私人雇佣',
+  '西班牙语', '运动教练',
+  '导游', '旅行协助', '家教',
+  '视频剪辑', '摄像师',
+  '网页开发',
+]
+
+const SOCIAL_SKILL_OPTIONS_ZH = [
+  '活动伙伴', '陪伴', '对话交流',
+  '餐饮约伴', '活动约伴', '友谊', '学习伙伴', '旅行伙伴',
+]
+
 const LOCATION_GROUPS: { group: string; groupJa: string; items: { value: string; ja: string }[] }[] = [
   { group: '🌐 Online', groupJa: '🌐 オンライン', items: [
     { value: 'Online only', ja: 'オンラインのみ' },
@@ -246,6 +270,12 @@ type EduEntry  = { id?: string; degree: string; school: string; year: string }
 type ExpEntry  = { id?: string; role: string; company: string; years: string }
 type QualEntry = { title: string; issuer: string; year: string }
 
+type OptionalSection = 'schedule' | 'experience' | 'education' | 'qualifications' | 'achievements'
+const OPTIONAL_SECTIONS: OptionalSection[] = ['schedule', 'experience', 'education', 'qualifications', 'achievements']
+
+type SocialSection = 'personality' | 'insights' | 'interests'
+const SOCIAL_SECTIONS: SocialSection[] = ['personality', 'insights', 'interests']
+
 function ChipPicker({ options, selected, onToggle, labels }: {
   options: string[]; selected: string[]; onToggle: (v: string) => void; labels?: string[]
 }) {
@@ -267,7 +297,6 @@ function ChipPicker({ options, selected, onToggle, labels }: {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Selected chips — always visible */}
       {(selected.length > 0 || customChips.length > 0) && (
         <div className="flex flex-wrap gap-2">
           {selected.filter(s => options.includes(s)).map(opt => {
@@ -290,7 +319,6 @@ function ChipPicker({ options, selected, onToggle, labels }: {
         </div>
       )}
 
-      {/* Search */}
       <input
         value={search}
         onChange={e => setSearch(e.target.value)}
@@ -300,7 +328,6 @@ function ChipPicker({ options, selected, onToggle, labels }: {
         onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
       />
 
-      {/* Unselected options — scrollable */}
       <div className="flex flex-wrap gap-2 overflow-y-auto pr-1" style={{ maxHeight: '160px' }}>
         {unselected.length > 0
           ? unselected.map((opt) => {
@@ -317,7 +344,6 @@ function ChipPicker({ options, selected, onToggle, labels }: {
         }
       </div>
 
-      {/* Add custom */}
       <div className="flex gap-2">
         <input value={custom} onChange={e => setCustom(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustom() } }}
@@ -340,6 +366,47 @@ function SectionHeader({ title, hint }: { title: string; hint?: string }) {
     <div className="mb-4">
       <p style={sectionTitle}>{title}</p>
       {hint && <p style={sectionHint}>{hint}</p>}
+    </div>
+  )
+}
+
+function CollapsibleSection({ title, summary, children, defaultOpen = false, onRemove }: {
+  title: string
+  summary: string
+  children: React.ReactNode
+  defaultOpen?: boolean
+  onRemove?: () => void
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div style={{ backgroundColor: '#fff', borderRadius: '16px', border: '0.5px solid #E8DDD5' }}>
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between gap-4 text-left px-6 py-5"
+      >
+        <div>
+          <p style={{ fontWeight: 600, color: '#1A0208', fontSize: '15px', marginBottom: open ? 0 : '2px' }}>{title}</p>
+          {!open && <p className="text-xs" style={{ color: '#aaa' }}>{summary}</p>}
+        </div>
+        <span className="flex-shrink-0" style={{ color: '#5C0A1E', fontSize: '14px', display: 'inline-block', transition: 'transform 0.15s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+          ▾
+        </span>
+      </button>
+      {open && (
+        <div className="px-6 pb-6 pt-1" style={{ borderTop: '0.5px solid #F0E8E0' }}>
+          {children}
+          {onRemove && (
+            <div className="mt-5 pt-4" style={{ borderTop: '0.5px solid #F0E8E0' }}>
+              <button type="button" onClick={onRemove}
+                className="text-xs hover:opacity-60 transition-opacity"
+                style={{ color: '#aaa' }}>
+                Remove section
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -416,6 +483,7 @@ export default function EditProfile() {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const isJa = i18n.language.startsWith('ja')
+  const isZh = i18n.language.startsWith('zh')
   const { user, profile: cachedProfile, refreshProfile, loading: authLoading } = useAuth()
 
   const [saving, setSaving] = useState(false)
@@ -426,6 +494,8 @@ export default function EditProfile() {
   const pp = p?.provider_profile
   const [userType, setUserType] = useState<'seeker' | 'provider' | 'both'>(p?.user_type ?? 'seeker')
   const isProvider = userType === 'provider' || userType === 'both'
+
+  const [activeTab, setActiveTab] = useState<'skills' | 'social'>('skills')
 
   const [form, setForm] = useState({
     name:            p?.name ?? '',
@@ -479,6 +549,24 @@ export default function EditProfile() {
   const [newLocation,          setNewLocation]          = useState('')
   const [deletedEduIds,        setDeletedEduIds]        = useState<string[]>([])
   const [deletedExpIds,        setDeletedExpIds]        = useState<string[]>([])
+  const [addedSections, setAddedSections] = useState<OptionalSection[]>(() => {
+    const s: OptionalSection[] = []
+    if (Object.keys(pp?.availability?.day_schedule ?? {}).length || (pp?.availability?.days ?? []).length) s.push('schedule')
+    if ((p?.experience ?? []).length) s.push('experience')
+    if ((p?.education ?? []).length) s.push('education')
+    if ((p?.qualifications ?? []).length) s.push('qualifications')
+    if ((p?.achievements ?? []).filter(Boolean).length) s.push('achievements')
+    return s
+  })
+  const [openSections, setOpenSections] = useState<Set<OptionalSection>>(new Set())
+  const [addedSocialSections, setAddedSocialSections] = useState<SocialSection[]>(() => {
+    const s: SocialSection[] = []
+    if ((p?.personality_traits ?? []).length) s.push('personality')
+    if (p?.mbti || p?.star_sign || p?.personality_insights) s.push('insights')
+    if ((p?.interests ?? []).length) s.push('interests')
+    return s
+  })
+  const [openSocialSections, setOpenSocialSections] = useState<Set<SocialSection>>(new Set())
 
   useEffect(() => {
     if (!p) return
@@ -530,6 +618,19 @@ export default function EditProfile() {
       setAvailDaySchedule(result2)
     }
     setAvatarPreview(p.avatar_url ?? '')
+    const pp2av = pp2?.availability
+    const sections: OptionalSection[] = []
+    if (Object.keys(pp2av?.day_schedule ?? {}).length || (pp2av?.days ?? []).length) sections.push('schedule')
+    if ((p.experience ?? []).length) sections.push('experience')
+    if ((p.education ?? []).length) sections.push('education')
+    if ((p.qualifications ?? []).length) sections.push('qualifications')
+    if ((p.achievements ?? []).filter(Boolean).length) sections.push('achievements')
+    setAddedSections(sections)
+    const socialSections: SocialSection[] = []
+    if ((p.personality_traits ?? []).length) socialSections.push('personality')
+    if (p.mbti || p.star_sign || p.personality_insights) socialSections.push('insights')
+    if ((p.interests ?? []).length) socialSections.push('interests')
+    setAddedSocialSections(socialSections)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cachedProfile])
 
@@ -561,13 +662,21 @@ export default function EditProfile() {
     if (loc && !availLocations.includes(loc)) { setAvailLocations(prev => [...prev, loc]); setNewLocation('') }
   }
 
+  const handleUserTypeChange = (type: 'seeker' | 'provider' | 'both') => {
+    setUserType(type)
+  }
+
+  const tabs = [
+    { id: 'skills' as const, label: t('edit_profile.tab_skills') },
+    { id: 'social' as const, label: t('edit_profile.tab_social') },
+  ]
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!user) return
     setSaving(true)
     setError(null)
 
-    // Upload pending avatar now if one was selected
     if (pendingAvatar) {
       // TODO: move cleanup to server-side (R2 Worker) when switching away from Supabase storage
       const { data: existing } = await supabase.storage.from('avatars').list(user.id)
@@ -583,7 +692,6 @@ export default function EditProfile() {
       setPendingAvatar(null)
     }
 
-    // Base fields — always exist in the original schema
     const { error: profileErr } = await updateProfile(user.id, {
       name:          form.name,
       bio:           form.bio,
@@ -593,7 +701,6 @@ export default function EditProfile() {
     } as any)
     if (profileErr) { setError(profileErr.message); setSaving(false); return }
 
-    // Extended fields — added by migrations 005 & 007; silently skip if columns not yet applied
     await updateProfile(user.id, {
       vacation_mode:        form.vacationMode,
       birth_year:           form.birthYear ? Number(form.birthYear) : null,
@@ -623,7 +730,6 @@ export default function EditProfile() {
         trial_rate:    Number(form.priceTrial) || undefined,
         session_types: form.sessionTypes,
       }))
-      // availability column added by migration 005 — silently skip if not yet applied
       saves.push(
         updateProviderProfile(user.id, { availability: { days: Object.keys(availDaySchedule), day_schedule: availDaySchedule, locations: availLocations, location_dates: availLocationDates } } as any)
           .catch(() => {})
@@ -647,6 +753,58 @@ export default function EditProfile() {
     await Promise.all(saves)
     await refreshProfile()
     navigate('/dashboard')
+  }
+
+  const sectionLabels: Record<OptionalSection, string> = {
+    schedule:       t('edit_profile.section_schedule'),
+    experience:     t('edit_profile.label_experience'),
+    education:      t('edit_profile.label_education'),
+    qualifications: t('edit_profile.section_qualifications'),
+    achievements:   t('edit_profile.section_achievements'),
+  }
+
+  const addSection = (section: OptionalSection) => {
+    setAddedSections(prev => [...prev, section])
+    setOpenSections(prev => new Set([...prev, section]))
+  }
+
+  const removeSection = (section: OptionalSection) => {
+    setAddedSections(prev => prev.filter(s => s !== section))
+    setOpenSections(prev => { const n = new Set(prev); n.delete(section); return n })
+  }
+
+  const sectionSummary = (section: OptionalSection): string => {
+    switch (section) {
+      case 'schedule':       return Object.keys(availDaySchedule).length ? `Available: ${Object.keys(availDaySchedule).join(', ')}` : 'When are you available to meet?'
+      case 'experience':     return experienceEntries.length ? `${experienceEntries.length} entr${experienceEntries.length !== 1 ? 'ies' : 'y'} added` : 'Add past roles to build trust'
+      case 'education':      return educationEntries.length ? `${educationEntries.length} entr${educationEntries.length !== 1 ? 'ies' : 'y'} added` : 'Degrees, diplomas, certifications'
+      case 'qualifications': return qualifications.length ? `${qualifications.length} added` : 'Licences, certificates, formal credentials'
+      case 'achievements':   return achievements.filter(Boolean).length ? `${achievements.filter(Boolean).length} added` : 'Awards, milestones, notable work'
+    }
+  }
+
+  const socialSectionLabels: Record<SocialSection, string> = {
+    personality: t('edit_profile.section_personality'),
+    insights:    t('edit_profile.section_personality_insights'),
+    interests:   t('edit_profile.section_interests'),
+  }
+
+  const addSocialSection = (section: SocialSection) => {
+    setAddedSocialSections(prev => [...prev, section])
+    setOpenSocialSections(prev => new Set([...prev, section]))
+  }
+
+  const removeSocialSection = (section: SocialSection) => {
+    setAddedSocialSections(prev => prev.filter(s => s !== section))
+    setOpenSocialSections(prev => { const n = new Set(prev); n.delete(section); return n })
+  }
+
+  const socialSectionSummary = (section: SocialSection): string => {
+    switch (section) {
+      case 'personality': return personalityTraits.length ? `${personalityTraits.length} trait${personalityTraits.length !== 1 ? 's' : ''} selected` : 'How would you describe yourself?'
+      case 'insights':    return mbti || starSign ? [mbti, starSign].filter(Boolean).join(' · ') : 'MBTI, star sign, personality notes'
+      case 'interests':   return interests.length ? `${interests.length} interest${interests.length !== 1 ? 's' : ''} selected` : 'What do you enjoy?'
+    }
   }
 
   if (!cachedProfile) {
@@ -681,7 +839,8 @@ export default function EditProfile() {
             </div>
           )}
 
-          {/* ── Account type ── */}
+          {/* ── Tab toggle ── */}
+          {/* ── Account type — always at top ── */}
           <div style={cardStyle}>
             <SectionHeader title={t('edit_profile.account_type_label')} />
             <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
@@ -691,7 +850,7 @@ export default function EditProfile() {
                   <button
                     key={type}
                     type="button"
-                    onClick={() => setUserType(type)}
+                    onClick={() => handleUserTypeChange(type)}
                     className="flex-1 text-sm py-2.5 transition-colors"
                     style={{
                       backgroundColor: isActive ? '#5C0A1E' : '#fff',
@@ -705,6 +864,29 @@ export default function EditProfile() {
                 )
               })}
             </div>
+          </div>
+
+          {/* ── Skills / Social tab toggle ── */}
+          <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5', backgroundColor: '#fff' }}>
+            {tabs.map((tab, i) => {
+              const isActive = activeTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className="flex-1 text-sm py-3 transition-colors"
+                  style={{
+                    backgroundColor: isActive ? '#5C0A1E' : '#fff',
+                    color: isActive ? '#fff' : '#7A6060',
+                    fontWeight: isActive ? 600 : 400,
+                    borderRight: i < tabs.length - 1 ? '0.5px solid #E8DDD5' : undefined,
+                  }}
+                >
+                  {tab.label}
+                </button>
+              )
+            })}
           </div>
 
           {/* ── Photo ── */}
@@ -731,7 +913,7 @@ export default function EditProfile() {
             </div>
           </div>
 
-          {/* ── Basic info ── */}
+          {/* ── Basic info (always visible) ── */}
           <div style={cardStyle}>
             <SectionHeader title={t('edit_profile.section_basic')} />
             <div className="grid grid-cols-2 gap-4">
@@ -796,262 +978,62 @@ export default function EditProfile() {
                   style={{ ...inputStyle, resize: 'none' }}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-
               </div>
             </div>
           </div>
 
-          {/* ── Personality traits ── */}
-          <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_personality')} hint={t('edit_profile.personality_traits_hint')} />
-            <ChipPicker options={PERSONALITY_TRAITS} selected={personalityTraits}
-              onToggle={v => toggle(personalityTraits, v, setPersonalityTraits)}
-              labels={isJa ? PERSONALITY_TRAITS_JA : undefined} />
-          </div>
-
-          {/* ── Personality insights ── */}
-          <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_personality_insights')} hint={t('edit_profile.optional')} />
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-              {/* MBTI */}
-              <div>
-                <label style={labelStyle}>MBTI type</label>
-                <select value={mbti} onChange={e => setMbti(e.target.value)}
-                  style={{ ...inputStyle, cursor: 'pointer' }}>
-                  <option value="">— select —</option>
-                  {['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP',
-                    'ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'].map(t => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Star sign */}
-              <div>
-                <label style={labelStyle}>Star sign</label>
-                <select value={starSign} onChange={e => setStarSign(e.target.value)}
-                  style={{ ...inputStyle, cursor: 'pointer' }}>
-                  <option value="">— select —</option>
-                  {['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
-                    'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'].map(s => (
-                    <option key={s} value={s.toLowerCase()}>{s}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <label style={labelStyle}>{t('edit_profile.label_personality_insights')}</label>
-            <textarea value={personalityInsights} onChange={e => setPersonalityInsights(e.target.value)} rows={3}
-              placeholder={t('edit_profile.personality_insights_placeholder')}
-              style={{ ...inputStyle, resize: 'none' }}
-              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-          </div>
-
-          {/* ── Interests & hobbies ── */}
-          <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_interests')} hint={t('edit_profile.interests_hint')} />
-            <ChipPicker options={INTEREST_OPTIONS} selected={interests}
-              onToggle={v => toggle(interests, v, setInterests)}
-              labels={isJa ? INTEREST_OPTIONS_JA : undefined} />
-          </div>
-
-          {/* ── Skills (provider only) ── */}
-          {isProvider && (
-            <div style={cardStyle}>
-              <SectionHeader title={t('edit_profile.section_skills')} hint={t('edit_profile.skills_hint')} />
-              <ChipPicker options={SKILL_OPTIONS} selected={selectedSkills}
-                onToggle={v => toggle(selectedSkills, v, setSelectedSkills)}
-                labels={isJa ? SKILL_OPTIONS_JA : undefined}  />
-              <div className="mt-5">
-                <label style={labelStyle}>{t('edit_profile.skills_description_label')}</label>
-                <textarea
-                  value={skillsDescription}
-                  onChange={e => setSkillsDescription(e.target.value)}
-                  rows={5}
-                  placeholder={t('edit_profile.skills_description_placeholder')}
-                  style={{ ...inputStyle, resize: 'vertical' }}
-                  onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                  onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* ── Social (provider only) ── */}
-          {isProvider && (
-            <div style={cardStyle}>
-              <SectionHeader title={t('edit_profile.section_social_skills')} hint={t('edit_profile.social_skills_hint')} />
-              <ChipPicker options={SOCIAL_SKILL_OPTIONS} selected={selectedSocialSkills}
-                onToggle={v => toggle(selectedSocialSkills, v, setSelectedSocialSkills)}
-                labels={isJa ? SOCIAL_SKILL_OPTIONS_JA : undefined} />
-            </div>
-          )}
-
-          {/* ── Experience (provider only) ── */}
-          {isProvider && (
-            <div style={cardStyle}>
-              <SectionHeader title={t('edit_profile.label_experience')} hint={t('edit_profile.optional')} />
-              <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
-                {['Role / Title', 'Company', 'Years exp.'].map(h => (
-                  <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
-                ))}
-              </div>
-              <div className="flex flex-col gap-3 mb-3">
-                {experienceEntries.map((entry, i) => (
-                  <div key={i} className="grid grid-cols-3 gap-2 items-start">
-                    <input placeholder="Role" value={entry.role}
-                      onChange={e => setExperienceEntries(prev => prev.map((x, j) => j === i ? { ...x, role: e.target.value } : x))}
-                      style={{ ...inputStyle, fontSize: '13px' }}
-                      onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                      onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                    <input placeholder="Company" value={entry.company}
-                      onChange={e => setExperienceEntries(prev => prev.map((x, j) => j === i ? { ...x, company: e.target.value } : x))}
-                      style={{ ...inputStyle, fontSize: '13px' }}
-                      onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                      onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                    <div className="flex gap-2">
-                      <input type="number" placeholder="Years" min={0} max={60} value={entry.years}
-                        onChange={e => setExperienceEntries(prev => prev.map((x, j) => j === i ? { ...x, years: e.target.value } : x))}
-                        style={{ ...inputStyle, fontSize: '13px' }}
-                        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                      <button type="button" onClick={() => removeExp(i)}
-                        className="text-xs px-2 rounded-lg flex-shrink-0"
-                        style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button type="button"
-                onClick={() => setExperienceEntries(prev => [...prev, { role: '', company: '', years: '' }])}
-                className="text-xs px-4 py-2 rounded-xl"
-                style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                {t('edit_profile.add_experience')}
-              </button>
-            </div>
-          )}
-
-          {/* ── Education ── */}
-          <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.label_education')} hint={t('edit_profile.optional')} />
-            <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
-              {['Degree / Qualification', 'School / Institution', 'Year'].map(h => (
-                <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
-              ))}
-            </div>
-            <div className="flex flex-col gap-3 mb-3">
-              {educationEntries.map((entry, i) => (
-                <div key={i} className="grid grid-cols-3 gap-2 items-start">
-                  <input placeholder="Degree" value={entry.degree}
-                    onChange={e => setEducationEntries(prev => prev.map((x, j) => j === i ? { ...x, degree: e.target.value } : x))}
-                    style={{ ...inputStyle, fontSize: '13px' }}
-                    onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                    onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                  <input placeholder="School" value={entry.school}
-                    onChange={e => setEducationEntries(prev => prev.map((x, j) => j === i ? { ...x, school: e.target.value } : x))}
-                    style={{ ...inputStyle, fontSize: '13px' }}
-                    onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                    onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                  <div className="flex gap-2">
-                    <input type="number" placeholder="Year" min={1970} max={new Date().getFullYear()} value={entry.year}
-                      onChange={e => setEducationEntries(prev => prev.map((x, j) => j === i ? { ...x, year: e.target.value } : x))}
-                      style={{ ...inputStyle, fontSize: '13px' }}
-                      onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                      onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                    <button type="button" onClick={() => removeEdu(i)}
-                      className="text-xs px-2 rounded-lg flex-shrink-0"
-                      style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button type="button"
-              onClick={() => setEducationEntries(prev => [...prev, { degree: '', school: '', year: '' }])}
-              className="text-xs px-4 py-2 rounded-xl"
-              style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-              {t('edit_profile.add_education')}
-            </button>
-          </div>
-
-          {/* ── Qualifications ── */}
-          <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_qualifications')} hint={t('edit_profile.optional')} />
-            <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
-              {['Certification / Qualification', 'Issued by', 'Year'].map(h => (
-                <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
-              ))}
-            </div>
-            <div className="flex flex-col gap-3 mb-3">
-              {qualifications.map((entry, i) => (
-                <div key={i} className="grid grid-cols-3 gap-2 items-start">
-                  <input placeholder="e.g. TEFL Certificate" value={entry.title}
-                    onChange={e => setQualifications(prev => prev.map((x, j) => j === i ? { ...x, title: e.target.value } : x))}
-                    style={{ ...inputStyle, fontSize: '13px' }}
-                    onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                    onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                  <input placeholder="e.g. Cambridge" value={entry.issuer}
-                    onChange={e => setQualifications(prev => prev.map((x, j) => j === i ? { ...x, issuer: e.target.value } : x))}
-                    style={{ ...inputStyle, fontSize: '13px' }}
-                    onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                    onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                  <div className="flex gap-2">
-                    <input type="number" placeholder="Year" min={1970} max={new Date().getFullYear() + 5} value={entry.year}
-                      onChange={e => setQualifications(prev => prev.map((x, j) => j === i ? { ...x, year: e.target.value } : x))}
-                      style={{ ...inputStyle, fontSize: '13px' }}
-                      onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                      onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                    <button type="button" onClick={() => setQualifications(prev => prev.filter((_, j) => j !== i))}
-                      className="text-xs px-2 rounded-lg flex-shrink-0"
-                      style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button type="button"
-              onClick={() => setQualifications(prev => [...prev, { title: '', issuer: '', year: '' }])}
-              className="text-xs px-4 py-2 rounded-xl"
-              style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-              {t('edit_profile.add_qualification')}
-            </button>
-          </div>
-
-          {/* ── Achievements ── */}
-          <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_achievements')} hint={t('edit_profile.optional')} />
-            <div className="flex flex-col gap-3 mb-3">
-              {achievements.map((ach, i) => (
-                <div key={i} className="flex gap-2 items-start">
-                  <input placeholder={t('edit_profile.achievement_placeholder')} value={ach}
-                    onChange={e => setAchievements(prev => prev.map((x, j) => j === i ? e.target.value : x))}
-                    style={{ ...inputStyle, fontSize: '13px' }}
-                    onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                    onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                  <button type="button" onClick={() => setAchievements(prev => prev.filter((_, j) => j !== i))}
-                    className="text-xs px-2 py-3 rounded-lg flex-shrink-0"
-                    style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
-                </div>
-              ))}
-            </div>
-            <button type="button"
-              onClick={() => setAchievements(prev => [...prev, ''])}
-              className="text-xs px-4 py-2 rounded-xl"
-              style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-              {t('edit_profile.add_achievement')}
-            </button>
-          </div>
-
-          {/* ── Provider-only sections ── */}
-          {isProvider && (
+          {/* ── Skills tab (provider/both) ── */}
+          {activeTab === 'skills' && isProvider && (
             <>
-              {/* Pricing */}
+              {/* Skills — always visible */}
               <div style={cardStyle}>
-                <SectionHeader title={t('edit_profile.section_pricing')} hint="Leave blank any rates that don't apply." />
+                <SectionHeader title={t('edit_profile.section_skills')} />
+                <ChipPicker options={SKILL_OPTIONS} selected={selectedSkills}
+                  onToggle={v => toggle(selectedSkills, v, setSelectedSkills)}
+                  labels={isJa ? SKILL_OPTIONS_JA : isZh ? SKILL_OPTIONS_ZH : undefined} />
+                <div className="mt-5">
+                  <label style={labelStyle}>{t('edit_profile.skills_description_label')}</label>
+                  <textarea
+                    value={skillsDescription}
+                    onChange={e => setSkillsDescription(e.target.value)}
+                    rows={4}
+                    placeholder={t('edit_profile.skills_description_placeholder')}
+                    style={{ ...inputStyle, resize: 'vertical' }}
+                    onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                    onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
+                  />
+                </div>
+              </div>
+
+              {/* Bookings — always visible (session types + pricing) */}
+              <div style={cardStyle}>
+                <SectionHeader title="Bookings" hint="Session types and pricing — seekers need this to book you" />
+                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>Session types</p>
+                <div className="flex flex-col gap-3 mb-6">
+                  {([
+                    ['1-on-1 Session',    t('edit_profile.session_1on1')],
+                    ['Group Meetup',      t('edit_profile.session_group')],
+                    ['Online Call',       t('edit_profile.session_online')],
+                    ['Social Experience', t('edit_profile.session_social')],
+                  ] as const).map(([type, label]) => (
+                    <label key={type} className="flex items-center gap-3 cursor-pointer">
+                      <input type="checkbox" checked={form.sessionTypes.includes(type)}
+                        onChange={() => setForm(prev => ({
+                          ...prev,
+                          sessionTypes: prev.sessionTypes.includes(type)
+                            ? prev.sessionTypes.filter((st: string) => st !== type)
+                            : [...prev.sessionTypes, type],
+                        }))}
+                        className="w-4 h-4" style={{ accentColor: '#B8860B' }} />
+                      <span className="text-sm" style={{ color: '#1A0208' }}>{label}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>Pricing</p>
                 {([
-                  ['Online',     'priceOnline',   'Online sessions (video / call)'],
-                  ['In-person',  'priceInPerson', 'Face-to-face sessions'],
-                  ['Trial',      'priceTrial',    'First-session intro price'],
+                  ['Online',    'priceOnline',   'Online sessions (video / call)'],
+                  ['In-person', 'priceInPerson', 'Face-to-face sessions'],
+                  ['Trial',     'priceTrial',    'First-session intro price'],
                 ] as const).map(([label, key, hint]) => (
                   <div key={key} className="flex items-center gap-3 mb-4 last:mb-0">
                     <div style={{ width: '90px' }}>
@@ -1070,203 +1052,458 @@ export default function EditProfile() {
                 ))}
               </div>
 
-              {/* Session types */}
-              <div style={cardStyle}>
-                <SectionHeader title={t('edit_profile.section_session_types')} />
-                <div className="flex flex-col gap-3">
-                  {([
-                    ['1-on-1 Session',   t('edit_profile.session_1on1')],
-                    ['Group Meetup',     t('edit_profile.session_group')],
-                    ['Online Call',      t('edit_profile.session_online')],
-                    ['Social Experience',t('edit_profile.session_social')],
-                  ] as const).map(([type, label]) => (
-                    <label key={type} className="flex items-center gap-3 cursor-pointer">
-                      <input type="checkbox" checked={form.sessionTypes.includes(type)}
-                        onChange={() => setForm(prev => ({
-                          ...prev,
-                          sessionTypes: prev.sessionTypes.includes(type)
-                            ? prev.sessionTypes.filter((st: string) => st !== type)
-                            : [...prev.sessionTypes, type],
-                        }))}
-                        className="w-4 h-4" style={{ accentColor: '#B8860B' }} />
-                      <span className="text-sm" style={{ color: '#1A0208' }}>{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Schedule & Availability */}
-              <div style={cardStyle}>
-                <SectionHeader title={t('edit_profile.section_schedule')} />
-
-                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
-                  {t('edit_profile.schedule_days')}
-                </p>
-                <div className="flex flex-col gap-2 mb-6">
-                  {DAYS.map(day => {
-                    const slots = availDaySchedule[day] ?? []
-                    const enabled = slots.length > 0
-                    return (
-                      <div key={day} className="rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
-                        <label className="flex items-center gap-3 px-4 py-3 cursor-pointer"
-                          style={{ backgroundColor: enabled ? '#FDF0E0' : '#fff' }}>
-                          <input type="checkbox" checked={enabled}
-                            onChange={() => {
-                              if (enabled) {
-                                setAvailDaySchedule(prev => { const n = { ...prev }; delete n[day]; return n })
-                              } else {
-                                setAvailDaySchedule(prev => ({ ...prev, [day]: [{ from: '', to: '' }] }))
-                              }
-                            }}
-                            className="w-4 h-4 flex-shrink-0" style={{ accentColor: '#5C0A1E' }} />
-                          <span className="text-sm font-medium w-10 flex-shrink-0"
-                            style={{ color: enabled ? '#1A0208' : '#aaa' }}>{day}</span>
-                          {!enabled && <span className="text-xs" style={{ color: '#ccc' }}>Unavailable</span>}
-                        </label>
-                        {enabled && (
-                          <div className="px-4 pb-3 flex flex-col gap-2" style={{ borderTop: '0.5px solid #E8DDD5' }}>
-                            {slots.map((slot, si) => (
-                              <div key={si} className="flex items-center gap-2 pt-2">
-                                <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>From</span>
-                                <select value={slot.from}
-                                  onChange={e => setAvailDaySchedule(prev => ({
-                                    ...prev,
-                                    [day]: prev[day].map((s, i) => i === si ? { ...s, from: e.target.value } : s)
-                                  }))}
-                                  style={{ ...inputStyle, fontSize: '13px', cursor: 'pointer' }}>
-                                  <option value="">—</option>
-                                  {FROM_TIMES.map(ft => <option key={ft} value={ft}>{ft}</option>)}
-                                </select>
-                                <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>To</span>
-                                <select value={slot.to}
-                                  onChange={e => setAvailDaySchedule(prev => ({
-                                    ...prev,
-                                    [day]: prev[day].map((s, i) => i === si ? { ...s, to: e.target.value } : s)
-                                  }))}
-                                  style={{ ...inputStyle, fontSize: '13px', cursor: 'pointer' }}>
-                                  <option value="">—</option>
-                                  {TO_TIMES.map(tt => <option key={tt} value={tt}>{tt}</option>)}
-                                </select>
-                                {slots.length > 1 && (
+              {/* Added optional sections */}
+              {addedSections.map(section => (
+                <CollapsibleSection
+                  key={section}
+                  title={sectionLabels[section]}
+                  summary={sectionSummary(section)}
+                  defaultOpen={openSections.has(section)}
+                  onRemove={() => removeSection(section)}
+                >
+                  {section === 'experience' && (
+                    <>
+                      <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
+                        {['Role / Title', 'Company', 'Years exp.'].map(h => (
+                          <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
+                        ))}
+                      </div>
+                      <div className="flex flex-col gap-3 mb-3">
+                        {experienceEntries.map((entry, i) => (
+                          <div key={i} className="grid grid-cols-3 gap-2 items-start">
+                            <input placeholder="Role" value={entry.role}
+                              onChange={e => setExperienceEntries(prev => prev.map((x, j) => j === i ? { ...x, role: e.target.value } : x))}
+                              style={{ ...inputStyle, fontSize: '13px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <input placeholder="Company" value={entry.company}
+                              onChange={e => setExperienceEntries(prev => prev.map((x, j) => j === i ? { ...x, company: e.target.value } : x))}
+                              style={{ ...inputStyle, fontSize: '13px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <div className="flex gap-2">
+                              <input type="number" placeholder="Years" min={0} max={60} value={entry.years}
+                                onChange={e => setExperienceEntries(prev => prev.map((x, j) => j === i ? { ...x, years: e.target.value } : x))}
+                                style={{ ...inputStyle, fontSize: '13px' }}
+                                onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                                onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                              <button type="button" onClick={() => removeExp(i)}
+                                className="text-xs px-2 rounded-lg flex-shrink-0"
+                                style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button type="button"
+                        onClick={() => setExperienceEntries(prev => [...prev, { role: '', company: '', years: '' }])}
+                        className="text-xs px-4 py-2 rounded-xl"
+                        style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                        {t('edit_profile.add_experience')}
+                      </button>
+                    </>
+                  )}
+                  {section === 'education' && (
+                    <>
+                      <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
+                        {['Degree / Qualification', 'School / Institution', 'Year'].map(h => (
+                          <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
+                        ))}
+                      </div>
+                      <div className="flex flex-col gap-3 mb-3">
+                        {educationEntries.map((entry, i) => (
+                          <div key={i} className="grid grid-cols-3 gap-2 items-start">
+                            <input placeholder="Degree" value={entry.degree}
+                              onChange={e => setEducationEntries(prev => prev.map((x, j) => j === i ? { ...x, degree: e.target.value } : x))}
+                              style={{ ...inputStyle, fontSize: '13px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <input placeholder="School" value={entry.school}
+                              onChange={e => setEducationEntries(prev => prev.map((x, j) => j === i ? { ...x, school: e.target.value } : x))}
+                              style={{ ...inputStyle, fontSize: '13px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <div className="flex gap-2">
+                              <input type="number" placeholder="Year" min={1970} max={new Date().getFullYear()} value={entry.year}
+                                onChange={e => setEducationEntries(prev => prev.map((x, j) => j === i ? { ...x, year: e.target.value } : x))}
+                                style={{ ...inputStyle, fontSize: '13px' }}
+                                onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                                onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                              <button type="button" onClick={() => removeEdu(i)}
+                                className="text-xs px-2 rounded-lg flex-shrink-0"
+                                style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button type="button"
+                        onClick={() => setEducationEntries(prev => [...prev, { degree: '', school: '', year: '' }])}
+                        className="text-xs px-4 py-2 rounded-xl"
+                        style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                        {t('edit_profile.add_education')}
+                      </button>
+                    </>
+                  )}
+                  {section === 'qualifications' && (
+                    <>
+                      <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
+                        {['Certification / Qualification', 'Issued by', 'Year'].map(h => (
+                          <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
+                        ))}
+                      </div>
+                      <div className="flex flex-col gap-3 mb-3">
+                        {qualifications.map((entry, i) => (
+                          <div key={i} className="grid grid-cols-3 gap-2 items-start">
+                            <input placeholder="e.g. TEFL Certificate" value={entry.title}
+                              onChange={e => setQualifications(prev => prev.map((x, j) => j === i ? { ...x, title: e.target.value } : x))}
+                              style={{ ...inputStyle, fontSize: '13px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <input placeholder="e.g. Cambridge" value={entry.issuer}
+                              onChange={e => setQualifications(prev => prev.map((x, j) => j === i ? { ...x, issuer: e.target.value } : x))}
+                              style={{ ...inputStyle, fontSize: '13px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <div className="flex gap-2">
+                              <input type="number" placeholder="Year" min={1970} max={new Date().getFullYear() + 5} value={entry.year}
+                                onChange={e => setQualifications(prev => prev.map((x, j) => j === i ? { ...x, year: e.target.value } : x))}
+                                style={{ ...inputStyle, fontSize: '13px' }}
+                                onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                                onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                              <button type="button" onClick={() => setQualifications(prev => prev.filter((_, j) => j !== i))}
+                                className="text-xs px-2 rounded-lg flex-shrink-0"
+                                style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button type="button"
+                        onClick={() => setQualifications(prev => [...prev, { title: '', issuer: '', year: '' }])}
+                        className="text-xs px-4 py-2 rounded-xl"
+                        style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                        {t('edit_profile.add_qualification')}
+                      </button>
+                    </>
+                  )}
+                  {section === 'achievements' && (
+                    <>
+                      <div className="flex flex-col gap-3 mb-3">
+                        {achievements.map((ach, i) => (
+                          <div key={i} className="flex gap-2 items-start">
+                            <input placeholder={t('edit_profile.achievement_placeholder')} value={ach}
+                              onChange={e => setAchievements(prev => prev.map((x, j) => j === i ? e.target.value : x))}
+                              style={{ ...inputStyle, fontSize: '13px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <button type="button" onClick={() => setAchievements(prev => prev.filter((_, j) => j !== i))}
+                              className="text-xs px-2 py-3 rounded-lg flex-shrink-0"
+                              style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
+                          </div>
+                        ))}
+                      </div>
+                      <button type="button"
+                        onClick={() => setAchievements(prev => [...prev, ''])}
+                        className="text-xs px-4 py-2 rounded-xl"
+                        style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                        {t('edit_profile.add_achievement')}
+                      </button>
+                    </>
+                  )}
+                  {section === 'schedule' && (
+                    <>
+                      <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
+                        {t('edit_profile.schedule_days')}
+                      </p>
+                      <div className="flex flex-col gap-2 mb-6">
+                        {DAYS.map(day => {
+                          const slots = availDaySchedule[day] ?? []
+                          const enabled = slots.length > 0
+                          return (
+                            <div key={day} className="rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
+                              <label className="flex items-center gap-3 px-4 py-3 cursor-pointer"
+                                style={{ backgroundColor: enabled ? '#FDF0E0' : '#fff' }}>
+                                <input type="checkbox" checked={enabled}
+                                  onChange={() => {
+                                    if (enabled) {
+                                      setAvailDaySchedule(prev => { const n = { ...prev }; delete n[day]; return n })
+                                    } else {
+                                      setAvailDaySchedule(prev => ({ ...prev, [day]: [{ from: '', to: '' }] }))
+                                    }
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" style={{ accentColor: '#5C0A1E' }} />
+                                <span className="text-sm font-medium w-10 flex-shrink-0"
+                                  style={{ color: enabled ? '#1A0208' : '#aaa' }}>{day}</span>
+                                {!enabled && <span className="text-xs" style={{ color: '#ccc' }}>Unavailable</span>}
+                              </label>
+                              {enabled && (
+                                <div className="px-4 pb-3 flex flex-col gap-2" style={{ borderTop: '0.5px solid #E8DDD5' }}>
+                                  {slots.map((slot, si) => (
+                                    <div key={si} className="flex items-center gap-2 pt-2">
+                                      <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>From</span>
+                                      <select value={slot.from}
+                                        onChange={e => setAvailDaySchedule(prev => ({
+                                          ...prev,
+                                          [day]: prev[day].map((s, i) => i === si ? { ...s, from: e.target.value } : s)
+                                        }))}
+                                        style={{ ...inputStyle, fontSize: '13px', cursor: 'pointer' }}>
+                                        <option value="">—</option>
+                                        {FROM_TIMES.map(ft => <option key={ft} value={ft}>{ft}</option>)}
+                                      </select>
+                                      <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>To</span>
+                                      <select value={slot.to}
+                                        onChange={e => setAvailDaySchedule(prev => ({
+                                          ...prev,
+                                          [day]: prev[day].map((s, i) => i === si ? { ...s, to: e.target.value } : s)
+                                        }))}
+                                        style={{ ...inputStyle, fontSize: '13px', cursor: 'pointer' }}>
+                                        <option value="">—</option>
+                                        {TO_TIMES.map(tt => <option key={tt} value={tt}>{tt}</option>)}
+                                      </select>
+                                      {slots.length > 1 && (
+                                        <button type="button"
+                                          onClick={() => setAvailDaySchedule(prev => ({
+                                            ...prev,
+                                            [day]: prev[day].filter((_, i) => i !== si)
+                                          }))}
+                                          className="text-xs px-2 py-2 rounded-lg flex-shrink-0"
+                                          style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
+                                      )}
+                                    </div>
+                                  ))}
                                   <button type="button"
                                     onClick={() => setAvailDaySchedule(prev => ({
                                       ...prev,
-                                      [day]: prev[day].filter((_, i) => i !== si)
+                                      [day]: [...prev[day], { from: '', to: '' }]
                                     }))}
-                                    className="text-xs px-2 py-2 rounded-lg flex-shrink-0"
-                                    style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
-                                )}
-                              </div>
-                            ))}
-                            <button type="button"
-                              onClick={() => setAvailDaySchedule(prev => ({
-                                ...prev,
-                                [day]: [...prev[day], { from: '', to: '' }]
-                              }))}
-                              className="text-xs px-3 py-1 rounded-full mt-1 self-start"
-                              style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                              + Add slot
-                            </button>
-                          </div>
-                        )}
+                                    className="text-xs px-3 py-1 rounded-full mt-1 self-start"
+                                    style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                                    + Add slot
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
                       </div>
-                    )
-                  })}
-                </div>
 
-                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
-                  {t('edit_profile.schedule_location_dates')}
-                </p>
-                <div className="flex flex-col gap-3 mb-3">
-                  {availLocationDates.map((entry, idx) => (
-                    <div key={idx} className="flex items-center gap-2 flex-wrap">
-                      <input placeholder={t('edit_profile.schedule_location_dates_placeholder')} value={entry.location}
-                        onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, location: e.target.value } : s))}
-                        style={{ ...inputStyle, fontSize: '13px', flex: '2 1 120px' }}
-                        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                      <input type="date" value={entry.from}
-                        onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, from: e.target.value } : s))}
-                        style={{ ...inputStyle, fontSize: '13px', flex: '1 1 130px' }}
-                        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                      <span className="text-xs flex-shrink-0" style={{ color: '#aaa' }}>–</span>
-                      <input type="date" value={entry.to}
-                        onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, to: e.target.value } : s))}
-                        style={{ ...inputStyle, fontSize: '13px', flex: '1 1 130px' }}
-                        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                      <button type="button" onClick={() => setAvailLocationDates(prev => prev.filter((_, i) => i !== idx))}
-                        className="text-xs px-2 py-2 rounded-lg flex-shrink-0"
-                        style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
-                    </div>
-                  ))}
-                </div>
-                <button type="button" onClick={() => setAvailLocationDates(prev => [...prev, { location: '', from: '', to: '' }])}
-                  className="text-xs px-4 py-2 rounded-xl mb-6"
-                  style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                  + {t('edit_profile.add_location_date')}
-                </button>
+                      <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
+                        {t('edit_profile.schedule_location_dates')}
+                      </p>
+                      <div className="flex flex-col gap-3 mb-3">
+                        {availLocationDates.map((entry, idx) => (
+                          <div key={idx} className="flex items-center gap-2 flex-wrap">
+                            <input placeholder={t('edit_profile.schedule_location_dates_placeholder')} value={entry.location}
+                              onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, location: e.target.value } : s))}
+                              style={{ ...inputStyle, fontSize: '13px', flex: '2 1 120px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <input type="date" value={entry.from}
+                              onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, from: e.target.value } : s))}
+                              style={{ ...inputStyle, fontSize: '13px', flex: '1 1 130px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <span className="text-xs flex-shrink-0" style={{ color: '#aaa' }}>–</span>
+                            <input type="date" value={entry.to}
+                              onChange={e => setAvailLocationDates(prev => prev.map((s, i) => i === idx ? { ...s, to: e.target.value } : s))}
+                              style={{ ...inputStyle, fontSize: '13px', flex: '1 1 130px' }}
+                              onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                              onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                            <button type="button" onClick={() => setAvailLocationDates(prev => prev.filter((_, i) => i !== idx))}
+                              className="text-xs px-2 py-2 rounded-lg flex-shrink-0"
+                              style={{ color: '#aaa', border: '0.5px solid #E8DDD5' }}>✕</button>
+                          </div>
+                        ))}
+                      </div>
+                      <button type="button" onClick={() => setAvailLocationDates(prev => [...prev, { location: '', from: '', to: '' }])}
+                        className="text-xs px-4 py-2 rounded-xl mb-6"
+                        style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                        + {t('edit_profile.add_location_date')}
+                      </button>
 
-                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
-                  {t('edit_profile.schedule_locations')}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {availLocations.map((loc, i) => (
-                    <span key={i} className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full"
-                      style={{ backgroundColor: '#FDF0E0', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                      {loc}
-                      <button type="button" onClick={() => setAvailLocations(prev => prev.filter((_, j) => j !== i))}
-                        className="text-xs opacity-50 hover:opacity-100 ml-0.5">✕</button>
-                    </span>
-                  ))}
+                      <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>
+                        {t('edit_profile.schedule_locations')}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {availLocations.map((loc, i) => (
+                          <span key={i} className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full"
+                            style={{ backgroundColor: '#FDF0E0', color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
+                            {loc}
+                            <button type="button" onClick={() => setAvailLocations(prev => prev.filter((_, j) => j !== i))}
+                              className="text-xs opacity-50 hover:opacity-100 ml-0.5">✕</button>
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <input value={newLocation} onChange={e => setNewLocation(e.target.value)}
+                          placeholder={t('edit_profile.schedule_location_placeholder')}
+                          style={{ ...inputStyle, fontSize: '13px' }}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addLoc() } }}
+                          onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                          onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                        <button type="button" onClick={addLoc}
+                          className="text-sm px-4 py-2 rounded-xl flex-shrink-0 transition-colors"
+                          style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
+                          onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}
+                          onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#5C0A1E')}>
+                          {t('edit_profile.add_location')}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </CollapsibleSection>
+              ))}
+
+              {/* Add more to your profile */}
+              {OPTIONAL_SECTIONS.some(s => !addedSections.includes(s)) && (
+                <div style={cardStyle}>
+                  <p style={sectionTitle}>Add more to your profile</p>
+                  <p className="text-xs mb-3" style={{ color: '#aaa' }}>Optional — builds trust and helps seekers understand your background</p>
+                  <div className="flex flex-wrap gap-2">
+                    {OPTIONAL_SECTIONS.filter(s => !addedSections.includes(s)).map(section => (
+                      <button
+                        key={section}
+                        type="button"
+                        onClick={() => addSection(section)}
+                        className="text-sm px-4 py-2 rounded-full transition-colors"
+                        style={{ color: '#5C0A1E', border: '0.5px solid #5C0A1E', backgroundColor: '#fff' }}
+                        onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF0E0')}
+                        onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}
+                      >
+                        + {sectionLabels[section]}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <input value={newLocation} onChange={e => setNewLocation(e.target.value)}
-                    placeholder={t('edit_profile.schedule_location_placeholder')}
-                    style={{ ...inputStyle, fontSize: '13px' }}
-                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addLoc() } }}
-                    onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
-                    onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                  <button type="button" onClick={addLoc}
-                    className="text-sm px-4 py-2 rounded-xl flex-shrink-0 transition-colors"
-                    style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
-                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}
-                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#5C0A1E')}>
-                    {t('edit_profile.add_location')}
-                  </button>
-                </div>
-              </div>
+              )}
             </>
           )}
 
-          {/* ── Privacy ── */}
-          <div style={cardStyle}>
-            <SectionHeader title={t('edit_profile.section_privacy')} />
-            <div className="flex flex-col gap-3">
-              {[
-                { value: 'public',    label: t('edit_profile.privacy_public') },
-                { value: 'hidden',    label: t('edit_profile.privacy_hidden') },
-                { value: 'anonymous', label: t('edit_profile.privacy_anonymous') },
-              ].map(opt => (
-                <label key={opt.value} className="flex items-center gap-3 cursor-pointer">
-                  <input type="radio" name="privacy" value={opt.value} checked={form.privacy === opt.value}
-                    onChange={() => setForm({ ...form, privacy: opt.value })}
-                    className="w-4 h-4" style={{ accentColor: '#B8860B' }} />
-                  <span className="text-sm" style={{ color: '#1A0208' }}>{opt.label}</span>
-                </label>
-              ))}
+          {/* ── Skills tab (seeker only) ── */}
+          {activeTab === 'skills' && !isProvider && (
+            <div style={cardStyle}>
+              <SectionHeader title={t('edit_profile.seeker_looking_for')} />
+              <p className="text-sm" style={{ color: '#aaa' }}>{t('edit_profile.seeker_looking_for_hint')}</p>
             </div>
-            <hr className="my-4" style={{ borderColor: '#E8DDD5' }} />
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" checked={form.vacationMode}
-                onChange={e => setForm({ ...form, vacationMode: e.target.checked })}
-                className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ accentColor: '#B8860B' }} />
-              <div>
-                <p className="text-sm font-medium" style={{ color: '#1A0208' }}>🏖️ {t('edit_profile.vacation_mode')}</p>
-                <p className="text-xs mt-0.5" style={{ color: '#aaa' }}>{t('edit_profile.vacation_mode_hint')}</p>
+          )}
+
+          {/* ── Social tab ── */}
+          {activeTab === 'social' && (
+            <>
+              {/* Social experience — always visible */}
+              <div style={cardStyle}>
+                <SectionHeader title={t('edit_profile.section_social_skills')} hint={t('edit_profile.social_skills_hint')} />
+                <ChipPicker options={SOCIAL_SKILL_OPTIONS} selected={selectedSocialSkills}
+                  onToggle={v => toggle(selectedSocialSkills, v, setSelectedSocialSkills)}
+                  labels={isJa ? SOCIAL_SKILL_OPTIONS_JA : isZh ? SOCIAL_SKILL_OPTIONS_ZH : undefined} />
               </div>
-            </label>
+
+              {/* Added optional social sections */}
+              {addedSocialSections.map(section => (
+                <CollapsibleSection
+                  key={section}
+                  title={socialSectionLabels[section]}
+                  summary={socialSectionSummary(section)}
+                  defaultOpen={openSocialSections.has(section)}
+                  onRemove={() => removeSocialSection(section)}
+                >
+                  {section === 'personality' && (
+                    <ChipPicker options={PERSONALITY_TRAITS} selected={personalityTraits}
+                      onToggle={v => toggle(personalityTraits, v, setPersonalityTraits)}
+                      labels={isJa ? PERSONALITY_TRAITS_JA : undefined} />
+                  )}
+                  {section === 'insights' && (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <label style={labelStyle}>MBTI type</label>
+                          <select value={mbti} onChange={e => setMbti(e.target.value)}
+                            style={{ ...inputStyle, cursor: 'pointer' }}>
+                            <option value="">— select —</option>
+                            {['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP',
+                              'ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'].map(m => (
+                              <option key={m} value={m}>{m}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label style={labelStyle}>Star sign</label>
+                          <select value={starSign} onChange={e => setStarSign(e.target.value)}
+                            style={{ ...inputStyle, cursor: 'pointer' }}>
+                            <option value="">— select —</option>
+                            {['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+                              'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'].map(s => (
+                              <option key={s} value={s.toLowerCase()}>{s}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <label style={labelStyle}>{t('edit_profile.label_personality_insights')}</label>
+                      <textarea value={personalityInsights} onChange={e => setPersonalityInsights(e.target.value)} rows={3}
+                        placeholder={t('edit_profile.personality_insights_placeholder')}
+                        style={{ ...inputStyle, resize: 'none' }}
+                        onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
+                        onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
+                    </>
+                  )}
+                  {section === 'interests' && (
+                    <ChipPicker options={INTEREST_OPTIONS} selected={interests}
+                      onToggle={v => toggle(interests, v, setInterests)}
+                      labels={isJa ? INTEREST_OPTIONS_JA : undefined} />
+                  )}
+                </CollapsibleSection>
+              ))}
+
+              {/* Add more to your profile */}
+              {SOCIAL_SECTIONS.some(s => !addedSocialSections.includes(s)) && (
+                <div style={cardStyle}>
+                  <p style={sectionTitle}>Add more to your profile</p>
+                  <p className="text-xs mb-3" style={{ color: '#aaa' }}>Optional — helps seekers get to know your personality</p>
+                  <div className="flex flex-wrap gap-2">
+                    {SOCIAL_SECTIONS.filter(s => !addedSocialSections.includes(s)).map(section => (
+                      <button
+                        key={section}
+                        type="button"
+                        onClick={() => addSocialSection(section)}
+                        className="text-sm px-4 py-2 rounded-full transition-colors"
+                        style={{ color: '#5C0A1E', border: '0.5px solid #5C0A1E', backgroundColor: '#fff' }}
+                        onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF0E0')}
+                        onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#fff')}
+                      >
+                        + {socialSectionLabels[section]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* ── Privacy & vacation — always visible ── */}
+          <div style={cardStyle}>
+              <SectionHeader title={t('edit_profile.section_privacy')} />
+              <div className="flex flex-col gap-3">
+                {[
+                  { value: 'public',    label: t('edit_profile.privacy_public') },
+                  { value: 'hidden',    label: t('edit_profile.privacy_hidden') },
+                  { value: 'anonymous', label: t('edit_profile.privacy_anonymous') },
+                ].map(opt => (
+                  <label key={opt.value} className="flex items-center gap-3 cursor-pointer">
+                    <input type="radio" name="privacy" value={opt.value} checked={form.privacy === opt.value}
+                      onChange={() => setForm({ ...form, privacy: opt.value })}
+                      className="w-4 h-4" style={{ accentColor: '#B8860B' }} />
+                    <span className="text-sm" style={{ color: '#1A0208' }}>{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+              <hr className="my-4" style={{ borderColor: '#E8DDD5' }} />
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" checked={form.vacationMode}
+                  onChange={e => setForm({ ...form, vacationMode: e.target.checked })}
+                  className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ accentColor: '#B8860B' }} />
+                <div>
+                  <p className="text-sm font-medium" style={{ color: '#1A0208' }}>🏖️ {t('edit_profile.vacation_mode')}</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#aaa' }}>{t('edit_profile.vacation_mode_hint')}</p>
+                </div>
+              </label>
           </div>
 
           <div className="flex items-center gap-4 pb-4">
