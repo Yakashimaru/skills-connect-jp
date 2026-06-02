@@ -24,8 +24,10 @@ function ScrollToTop() {
     if (!hash) {
       window.scrollTo(0, 0)
     } else {
-      const el = document.querySelector(hash)
-      if (el) el.scrollIntoView()
+      try {
+        const el = document.querySelector(hash)
+        if (el) el.scrollIntoView()
+      } catch {}
     }
   }, [pathname, hash])
   return null
