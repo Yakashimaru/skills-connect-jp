@@ -32,6 +32,19 @@ const SESSION_TYPE_KEYS: Record<string, string> = {
 
 const DURATIONS = [30, 60, 90, 120]
 
+function formatLastActive(ts: string | null, t: (k: string, opts?: Record<string, unknown>) => string): string | null {
+  if (!ts) return null
+  const diff = Date.now() - new Date(ts).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 5) return t('profile.active_now')
+  if (mins < 60) return t('profile.active_mins', { n: mins })
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return t('profile.active_hrs', { n: hrs })
+  const days = Math.floor(hrs / 24)
+  if (days < 30) return t('profile.active_days', { n: days })
+  return null
+}
+
 function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
   provider: Profile; providerProfile: ProviderProfile; seekerId: string; onClose: () => void
 }) {
@@ -315,6 +328,11 @@ export default function ProfilePage() {
           <div className="flex items-center gap-3 text-xs" style={{ color: '#aaa' }}>
             {profile.location && <span>📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : isZh ? (ZH_CITY[profile.location] ?? profile.location) : profile.location}</span>}
             {pp && <span>⭐ {Number(pp.rating).toFixed(1)} ({pp.review_count} {t('profile.reviews')})</span>}
+            {formatLastActive(profile.last_online ?? null, t) && (
+              <span style={{ color: profile.last_online && Date.now() - new Date(profile.last_online).getTime() < 300000 ? '#22c55e' : '#aaa' }}>
+                🕐 {formatLastActive(profile.last_online ?? null, t)}
+              </span>
+            )}
             {pp?.trial_rate && <span className="font-semibold" style={{ color: '#B8860B' }}>{t('profile.trial')} ¥{pp.trial_rate.toLocaleString()}</span>}
             {pp?.online_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.online')} ¥{pp.online_rate.toLocaleString()}{t('profile.per_hr')}</span>}
             {pp?.inperson_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.inperson')} ¥{pp.inperson_rate.toLocaleString()}{t('profile.per_hr')}</span>}
@@ -387,7 +405,7 @@ export default function ProfilePage() {
                           <>
                             <span>·</span>
                             <span style={{ color: '#B8860B' }}>
-                              {isNaN(Number(exp.years)) ? exp.years : `${exp.years} ${Number(exp.years) === 1 ? 'yr' : 'yrs'}`}
+                              {isNaN(Number(exp.years)) ? exp.years : `${exp.years} ${Number(exp.years) === 1 ? t('profile.yr') : t('profile.yrs')}`}
                             </span>
                           </>
                         )}
@@ -407,7 +425,7 @@ export default function ProfilePage() {
                     <div key={edu.id} className="rounded-xl p-3" style={{ backgroundColor: '#FAFAF8', border: '0.5px solid #F0E8E0' }}>
                       <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{edu.school}</p>
                       <p className="text-xs mt-0.5" style={{ color: '#7A6060' }}>
-                        {edu.degree}{edu.year ? <span style={{ color: '#aaa' }}> · Class of {edu.year}</span> : ''}
+                        {edu.degree}{edu.year ? <span style={{ color: '#aaa' }}> · {t('profile.class_of')} {edu.year}</span> : ''}
                       </p>
                     </div>
                   ))}
@@ -458,7 +476,7 @@ export default function ProfilePage() {
                     )}
                     {profile.star_sign && (
                       <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
-                        <span className="text-xs" style={{ color: '#aaa' }}>{isJa ? '星座' : 'Star sign'}</span>
+                        <span className="text-xs" style={{ color: '#aaa' }}>{t('profile.star_sign')}</span>
                         <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>
                           {isJa ? (STAR_SIGN_JA[profile.star_sign] ?? profile.star_sign) : profile.star_sign}
                         </span>
@@ -526,7 +544,7 @@ export default function ProfilePage() {
                           }
                         </div>
                         <div>
-                          <p className="text-xs font-semibold" style={{ color: '#1A0208' }}>{review.reviewer?.name ?? 'Anonymous'}</p>
+                          <p className="text-xs font-semibold" style={{ color: '#1A0208' }}>{review.reviewer?.name ?? t('profile.anonymous')}</p>
                           {review.reviewer?.location && <p className="text-xs" style={{ color: '#aaa' }}>{review.reviewer.location}</p>}
                         </div>
                       </div>
