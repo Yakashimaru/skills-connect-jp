@@ -12,6 +12,7 @@ export interface Profile {
   user_type: UserType
   avatar_url: string | null
   cover_url: string | null
+  photos: string[]
   location: string | null
   bio: string | null
   mbti: string | null

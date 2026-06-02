@@ -484,6 +484,8 @@
     "subtitle": "公開プロフィール情報を更新",
     "back": "← ダッシュボードへ戻る",
     "section_photo": "プロフィール写真",
+    "section_gallery": "ギャラリー",
+    "add_photo": "追加",
     "upload_photo": "新しい写真をアップロード",
     "photo_selected": "写真を選択済み — 保存して適用",
     "photo_hint": "JPG、PNG、またはWEBP。最大5MB。",

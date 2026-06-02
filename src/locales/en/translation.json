@@ -484,6 +484,8 @@
     "subtitle": "Update your public profile information",
     "back": "← Back to dashboard",
     "section_photo": "Profile photo",
+    "section_gallery": "Gallery",
+    "add_photo": "Add",
     "upload_photo": "Upload new photo",
     "photo_selected": "Photo selected — save to apply",
     "photo_hint": "JPG, PNG or WEBP. Max 5MB.",

@@ -514,8 +514,11 @@ export default function EditProfile() {
   })
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
   const [avatarPreview,        setAvatarPreview]        = useState<string>(p?.avatar_url ?? '')
   const [pendingAvatar,        setPendingAvatar]        = useState<File | null>(null)
+  const [galleryPhotos,        setGalleryPhotos]        = useState<string[]>(p?.photos ?? [])
+  const [pendingGallery,       setPendingGallery]       = useState<File[]>([])
 
   const [personalityTraits,    setPersonalityTraits]    = useState<string[]>(p?.personality_traits ?? [])
   const [topTraits,            setTopTraits]            = useState<string[]>(p?.top_traits ?? [])
@@ -618,6 +621,7 @@ export default function EditProfile() {
       setAvailDaySchedule(result2)
     }
     setAvatarPreview(p.avatar_url ?? '')
+    setGalleryPhotos(p.photos ?? [])
     const pp2av = pp2?.availability
     const sections: OptionalSection[] = []
     if (Object.keys(pp2av?.day_schedule ?? {}).length || (pp2av?.days ?? []).length) sections.push('schedule')
@@ -692,12 +696,31 @@ export default function EditProfile() {
       setPendingAvatar(null)
     }
 
+    // Upload any new gallery photos
+    let finalGallery = galleryPhotos.filter(url => !url.startsWith('blob:'))
+    if (pendingGallery.length > 0) {
+      const uploaded: string[] = []
+      for (const file of pendingGallery) {
+        const ext = file.name.split('.').pop() ?? 'jpg'
+        const path = `${user.id}/gallery/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
+        const { error: gErr } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
+        if (!gErr) {
+          const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+          uploaded.push(publicUrl)
+        }
+      }
+      finalGallery = [...finalGallery, ...uploaded]
+      setPendingGallery([])
+    }
+    setGalleryPhotos(finalGallery)
+
     const { error: profileErr } = await updateProfile(user.id, {
       name:          form.name,
       bio:           form.bio,
       location:      form.location,
       user_type:     userType,
       privacy_mode:  form.privacy as 'public' | 'hidden' | 'anonymous',
+      photos:        finalGallery,
     } as any)
     if (profileErr) { setError(profileErr.message); setSaving(false); return }
 
@@ -893,7 +916,17 @@ export default function EditProfile() {
           <div style={cardStyle}>
             <SectionHeader title={t('edit_profile.section_photo')} />
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-            <div className="flex items-center gap-5">
+            <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden"
+              onChange={e => {
+                const files = Array.from(e.target.files ?? [])
+                const remaining = 5 - galleryPhotos.length - pendingGallery.length
+                const toAdd = files.slice(0, remaining)
+                setPendingGallery(prev => [...prev, ...toAdd])
+                e.target.value = ''
+              }} />
+
+            {/* Profile photo */}
+            <div className="flex items-center gap-5 mb-5">
               <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-2xl overflow-hidden"
                 style={{ backgroundColor: '#FDF0E0', border: '2px solid #E8DDD5' }}>
                 {avatarPreview
@@ -909,6 +942,40 @@ export default function EditProfile() {
                   {pendingAvatar ? t('edit_profile.photo_selected') : t('edit_profile.upload_photo')}
                 </button>
                 <p className="text-xs mt-2" style={{ color: '#aaa' }}>{t('edit_profile.photo_hint')}</p>
+              </div>
+            </div>
+
+            {/* Gallery photos */}
+            <div>
+              <p className="text-xs font-semibold mb-2" style={{ color: '#5C0A1E' }}>{t('edit_profile.section_gallery')} <span style={{ color: '#aaa', fontWeight: 400 }}>({galleryPhotos.length + pendingGallery.length}/5)</span></p>
+              <div className="flex flex-wrap gap-2">
+                {galleryPhotos.map((url, i) => (
+                  <div key={url} className="relative w-20 h-20 rounded-xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <button type="button"
+                      onClick={() => setGalleryPhotos(prev => prev.filter((_, j) => j !== i))}
+                      className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs"
+                      style={{ backgroundColor: 'rgba(0,0,0,0.55)', color: '#fff' }}>✕</button>
+                  </div>
+                ))}
+                {pendingGallery.map((file, i) => (
+                  <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden" style={{ border: '0.5px solid #B8860B' }}>
+                    <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
+                    <button type="button"
+                      onClick={() => setPendingGallery(prev => prev.filter((_, j) => j !== i))}
+                      className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs"
+                      style={{ backgroundColor: 'rgba(0,0,0,0.55)', color: '#fff' }}>✕</button>
+                  </div>
+                ))}
+                {(galleryPhotos.length + pendingGallery.length) < 5 && (
+                  <button type="button"
+                    onClick={() => galleryInputRef.current?.click()}
+                    className="w-20 h-20 rounded-xl flex flex-col items-center justify-center text-xs gap-1"
+                    style={{ border: '1px dashed #E8DDD5', color: '#aaa' }}>
+                    <span className="text-lg">+</span>
+                    {t('edit_profile.add_photo')}
+                  </button>
+                )}
               </div>
             </div>
           </div>

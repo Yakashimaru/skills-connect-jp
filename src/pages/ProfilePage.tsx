@@ -340,6 +340,17 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Gallery */}
+        {profile.photos?.length > 0 && (
+          <div className="flex gap-2 flex-wrap mb-6">
+            {profile.photos.map((url: string, i: number) => (
+              <div key={i} className="w-24 h-24 rounded-2xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
+                <img src={url} alt="" className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left column */}
           <div className="lg:col-span-2 flex flex-col gap-8">

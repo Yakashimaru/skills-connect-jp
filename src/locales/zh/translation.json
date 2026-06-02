@@ -484,6 +484,8 @@
     "subtitle": "更新您的公开主页信息",
     "back": "← 返回控制台",
     "section_photo": "头像",
+    "section_gallery": "图片集",
+    "add_photo": "添加",
     "upload_photo": "上传新头像",
     "photo_selected": "已选择照片 — 保存后生效",
     "photo_hint": "JPG、PNG或WEBP格式，最大5MB。",
