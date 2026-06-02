@@ -335,6 +335,7 @@
   "dashboard": {
     "title": "ダッシュボード",
     "welcome": "おかえりなさい、{{name}}さん",
+    "pending_verification": "プロフィールは現在審査中です。承認後24時間以内に他のユーザーに公開されます。",
     "tab_provider": "プロバイダー",
     "tab_seeker": "シーカー",
     "stat_earnings": "総収益",

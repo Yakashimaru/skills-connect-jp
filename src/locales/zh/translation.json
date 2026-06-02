@@ -335,6 +335,7 @@
   "dashboard": {
     "title": "控制台",
     "welcome": "欢迎回来，{{name}}",
+    "pending_verification": "您的个人资料正在审核中，审核通过后将在24小时内对其他用户可见。",
     "tab_provider": "提供者",
     "tab_seeker": "寻找者",
     "stat_earnings": "总收入",

@@ -335,6 +335,7 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome back, {{name}}",
+    "pending_verification": "Your profile is under review. It will be visible to others within 24 hours once approved.",
     "tab_provider": "Provider",
     "tab_seeker": "Seeker",
     "stat_earnings": "Total earnings",
