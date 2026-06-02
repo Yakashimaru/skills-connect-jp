@@ -212,6 +212,11 @@
     "cta_browse": "浏览主页",
     "cta_signup": "免费开始"
   },
+  "subscribe": {
+    "heading": "需要订阅",
+    "body": "聊天和预约需要有效的订阅。请在下方选择您的套餐。",
+    "go_back": "← 返回"
+  },
   "plans": {
     "eyebrow": "定价",
     "heading": "找到适合你的方案",

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getEvents, rsvpToEvent, cancelRsvp, getUserRsvps } from '../lib/events'
+import { getActiveSubscription } from '../lib/subscriptions'
 import type { EventCategory } from '../lib/types'
 
 function formatEventDate(iso: string) {
@@ -21,6 +22,7 @@ export default function Meetups() {
   const [allEvents, setAllEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [rsvpd, setRsvpd] = useState<Set<string>>(new Set())
+  const [hasSubscription, setHasSubscription] = useState(false)
 
   useEffect(() => {
     getEvents({}).then(({ data }) => { setAllEvents(data ?? []); setLoading(false) })
@@ -31,6 +33,7 @@ export default function Meetups() {
     getUserRsvps(user.id).then(({ data }) => {
       if (data) setRsvpd(new Set(data.map((r: any) => r.event_id)))
     })
+    getActiveSubscription(user.id).then(({ data }) => setHasSubscription(!!data))
   }, [user])
 
   const events = useMemo(() => {
@@ -51,6 +54,7 @@ export default function Meetups() {
   const handleRsvp = async (e: React.MouseEvent, eventId: string) => {
     e.stopPropagation()
     if (!user) { navigate('/login'); return }
+    if (!hasSubscription) { navigate('/subscribe'); return }
     if (rsvpd.has(eventId)) {
       const { error } = await cancelRsvp(eventId, user.id)
       if (error) { console.error('Cancel RSVP failed:', error.message); return }

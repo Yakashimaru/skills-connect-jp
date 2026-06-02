@@ -212,6 +212,11 @@
     "cta_browse": "Browse profiles",
     "cta_signup": "Get started free"
   },
+  "subscribe": {
+    "heading": "Subscription required",
+    "body": "Chat and book sessions require an active subscription. Choose a plan below to get started.",
+    "go_back": "← Go back"
+  },
   "plans": {
     "eyebrow": "Pricing",
     "heading": "Find the right plan for you",
