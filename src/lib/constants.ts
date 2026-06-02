@@ -1,6 +1,6 @@
 export const SOCIAL_SKILLS = new Set([
-  'companion', 'conversation', 'companionship', 'dining',
-  'travel partner', 'activity partner', 'event date', 'study partner', 'friendship', 'relationship experience',
+  'companion', 'conversation', 'dining',
+  'travel partner', 'activity partner', 'event date', 'study partner', 'friendship',
 ])
 
 // Japanese display labels for values stored in DB as English strings.
@@ -122,12 +122,37 @@ const SKILLS_JA = [
 ]
 
 const SOCIAL_EN = [
-  'Activity Partner','Companion','Companionship','Conversation',
-  'Dining','Event Date','Friendship','Relationship Experience','Study Partner','Travel Partner',
+  'Activity Partner','Companion','Conversation',
+  'Dining','Event Date','Friendship','Study Partner','Travel Partner',
 ]
 const SOCIAL_JA = [
-  'アクティビティパートナー','コンパニオン','コンパニオンシップ','会話',
-  'ダイニング','イベントデート','フレンドシップ','恋愛サポート','スタディパートナー','トラベルパートナー',
+  'アクティビティパートナー','コンパニオン','会話',
+  'ダイニング','イベントデート','フレンドシップ','スタディパートナー','トラベルパートナー',
+]
+
+const SKILLS_ZH = [
+  '顾问','应用开发','协助',
+  '商业',
+  '辅导','程序员','沟通支持','烹饪','文案写作',
+  '数据分析','设计师','遛狗',
+  '英语','活动策划',
+  '金融','健身','法语',
+  '高尔夫','平面设计',
+  '管家服务',
+  '投资','口译','IT支持',
+  '日语',
+  '韩语',
+  '普通话','营销人员','营销','武术','导师辅导','音乐老师','音乐人',
+  '私人买手','私人训练','摄影师','演讲','私人雇佣',
+  '西班牙语','运动教练',
+  '导游','旅行协助','家教',
+  '视频剪辑','摄像师',
+  '网页开发',
+]
+
+const SOCIAL_ZH = [
+  '活动伙伴','陪伴','对话交流',
+  '餐饮约伴','活动约伴','友谊','学习伙伴','旅行伙伴',
 ]
 
 function buildMap(en: string[], ja: string[]): Record<string, string> {
@@ -279,3 +304,5 @@ export const TRAIT_JA   = buildMap(TRAITS_EN,   TRAITS_JA)
 export const INTEREST_JA = buildMap(INTERESTS_EN, INTERESTS_JA)
 export const SKILL_JA   = buildMap(SKILLS_EN,   SKILLS_JA)
 export const SOCIAL_SKILL_JA = buildMap(SOCIAL_EN, SOCIAL_JA)
+export const SKILL_ZH   = buildMap(SKILLS_EN,   SKILLS_ZH)
+export const SOCIAL_SKILL_ZH = buildMap(SOCIAL_EN, SOCIAL_ZH)
