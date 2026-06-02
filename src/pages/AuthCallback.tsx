@@ -11,7 +11,6 @@ export default function AuthCallback() {
 
   useEffect(() => {
     let mounted = true
-    const code = new URL(window.location.href).searchParams.get('code')
 
     const onSuccess = () => {
       if (!mounted) return
@@ -19,18 +18,28 @@ export default function AuthCallback() {
       setTimeout(() => { if (mounted) navigate('/dashboard', { replace: true }) }, 3000)
     }
 
+    const code = new URL(window.location.href).searchParams.get('code')
+
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (!mounted) return
         if (error) { setError(error.message); setStatus('error') }
         else onSuccess()
       })
-    } else {
+      return () => { mounted = false }
+    }
+
+    // Check if session already exists (handles stripped hash redirects)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return
+      if (session) { onSuccess(); return }
+
+      // Fall back to listening for auth state change (implicit flow)
       const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
         if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) onSuccess()
       })
       return () => subscription.unsubscribe()
-    }
+    })
 
     return () => { mounted = false }
   }, [navigate])
