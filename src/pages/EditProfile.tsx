@@ -798,11 +798,26 @@ export default function EditProfile() {
 
   const sectionSummary = (section: OptionalSection): string => {
     switch (section) {
-      case 'schedule':       return Object.keys(availDaySchedule).length ? `Available: ${Object.keys(availDaySchedule).join(', ')}` : 'When are you available to meet?'
-      case 'experience':     return experienceEntries.length ? `${experienceEntries.length} entr${experienceEntries.length !== 1 ? 'ies' : 'y'} added` : 'Add past roles to build trust'
-      case 'education':      return educationEntries.length ? `${educationEntries.length} entr${educationEntries.length !== 1 ? 'ies' : 'y'} added` : 'Degrees, diplomas, certifications'
-      case 'qualifications': return qualifications.length ? `${qualifications.length} added` : 'Licences, certificates, formal credentials'
-      case 'achievements':   return achievements.filter(Boolean).length ? `${achievements.filter(Boolean).length} added` : 'Awards, milestones, notable work'
+      case 'schedule': {
+        const days = Object.keys(availDaySchedule)
+        return days.length ? t('edit_profile.summary_schedule_set', { days: days.join(', ') }) : t('edit_profile.summary_schedule_empty')
+      }
+      case 'experience': {
+        const n = experienceEntries.length
+        return n ? t('edit_profile.summary_entries', { n, suffix: n !== 1 ? 'ies' : 'y' }) : t('edit_profile.summary_experience_empty')
+      }
+      case 'education': {
+        const n = educationEntries.length
+        return n ? t('edit_profile.summary_entries', { n, suffix: n !== 1 ? 'ies' : 'y' }) : t('edit_profile.summary_education_empty')
+      }
+      case 'qualifications': {
+        const n = qualifications.length
+        return n ? t('edit_profile.summary_count', { n }) : t('edit_profile.summary_qualifications_empty')
+      }
+      case 'achievements': {
+        const n = achievements.filter(Boolean).length
+        return n ? t('edit_profile.summary_count', { n }) : t('edit_profile.summary_achievements_empty')
+      }
     }
   }
 
@@ -1074,8 +1089,8 @@ export default function EditProfile() {
 
               {/* Bookings — always visible (session types + pricing) */}
               <div style={cardStyle}>
-                <SectionHeader title="Bookings" hint="Session types and pricing — seekers need this to book you" />
-                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>Session types</p>
+                <SectionHeader title={t('edit_profile.bookings_title')} hint={t('edit_profile.bookings_hint')} />
+                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>{t('edit_profile.session_types_label')}</p>
                 <div className="flex flex-col gap-3 mb-6">
                   {([
                     ['1-on-1 Session',    t('edit_profile.session_1on1')],
@@ -1096,11 +1111,11 @@ export default function EditProfile() {
                     </label>
                   ))}
                 </div>
-                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>Pricing</p>
+                <p className="text-xs font-semibold mb-3" style={{ color: '#5C0A1E' }}>{t('edit_profile.pricing_label')}</p>
                 {([
-                  ['Online',    'priceOnline',   'Online sessions (video / call)'],
-                  ['In-person', 'priceInPerson', 'Face-to-face sessions'],
-                  ['Trial',     'priceTrial',    'First-session intro price'],
+                  [t('edit_profile.price_online'),    'priceOnline',   t('edit_profile.price_online_hint')],
+                  [t('edit_profile.price_inperson'),  'priceInPerson', t('edit_profile.price_inperson_hint')],
+                  [t('edit_profile.price_trial'),     'priceTrial',    t('edit_profile.price_trial_hint')],
                 ] as const).map(([label, key, hint]) => (
                   <div key={key} className="flex items-center gap-3 mb-4 last:mb-0">
                     <div style={{ width: '90px' }}>
@@ -1114,7 +1129,7 @@ export default function EditProfile() {
                       style={{ ...inputStyle, width: '140px' }}
                       onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                       onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                    <span className="text-sm" style={{ color: '#aaa' }}>/hr</span>
+                    <span className="text-sm" style={{ color: '#aaa' }}>{t('profile.per_hr')}</span>
                   </div>
                 ))}
               </div>
@@ -1422,8 +1437,8 @@ export default function EditProfile() {
               {/* Add more to your profile */}
               {OPTIONAL_SECTIONS.some(s => !addedSections.includes(s)) && (
                 <div style={cardStyle}>
-                  <p style={sectionTitle}>Add more to your profile</p>
-                  <p className="text-xs mb-3" style={{ color: '#aaa' }}>Optional — builds trust and helps seekers understand your background</p>
+                  <p style={sectionTitle}>{t('edit_profile.add_more_title')}</p>
+                  <p className="text-xs mb-3" style={{ color: '#aaa' }}>{t('edit_profile.add_more_hint')}</p>
                   <div className="flex flex-wrap gap-2">
                     {OPTIONAL_SECTIONS.filter(s => !addedSections.includes(s)).map(section => (
                       <button
@@ -1522,8 +1537,8 @@ export default function EditProfile() {
               {/* Add more to your profile */}
               {SOCIAL_SECTIONS.some(s => !addedSocialSections.includes(s)) && (
                 <div style={cardStyle}>
-                  <p style={sectionTitle}>Add more to your profile</p>
-                  <p className="text-xs mb-3" style={{ color: '#aaa' }}>Optional — helps seekers get to know your personality</p>
+                  <p style={sectionTitle}>{t('edit_profile.add_more_title')}</p>
+                  <p className="text-xs mb-3" style={{ color: '#aaa' }}>{t('edit_profile.add_more_social_hint')}</p>
                   <div className="flex flex-wrap gap-2">
                     {SOCIAL_SECTIONS.filter(s => !addedSocialSections.includes(s)).map(section => (
                       <button
