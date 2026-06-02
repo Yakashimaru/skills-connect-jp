@@ -143,7 +143,7 @@
   },
   "hero": {
     "eyebrow": "Connect · Learn · Grow",
-    "headline_1": "Japan No.1",
+    "headline_1": "Japan 1st",
     "headline_2": "personal matching &",
     "headline_3": "community platform.",
     "cta_start": "Get started",
@@ -654,6 +654,10 @@
       {
         "q": "Is it available outside Japan?",
         "a": "The platform is currently focused on Japan but available in English and Japanese. International expansion is planned."
+      },
+      {
+        "q": "How much does it cost?",
+        "a": "Creating an account is free. Providers only incur costs if they choose to promote or boost their profile for additional visibility. For seekers, a subscription fee is required to chat or book a session. Seekers are also responsible for paying providers directly based on the individual rates displayed on each profile."
       }
     ],
     "questions_not_listed": "Questions not listed?",

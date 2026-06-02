@@ -7,7 +7,7 @@ import { getReviews } from '../lib/reviews'
 import { getOrCreateConversation } from '../lib/messages'
 import { createBooking } from '../lib/bookings'
 import type { Profile, ProviderProfile } from '../lib/types'
-import { TRAIT_JA, INTEREST_JA, SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, STAR_SIGN_JA, JA_CITY } from '../lib/constants'
+import { TRAIT_JA, INTEREST_JA, SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, STAR_SIGN_JA, JA_CITY, ZH_CITY } from '../lib/constants'
 
 const SESSION_ICONS: Record<string, string> = {
   '1-on-1 Session': '👤',
@@ -313,7 +313,7 @@ export default function ProfilePage() {
           </div>
           {pp?.title && <p className="text-sm mb-1" style={{ color: '#7A6060' }}>{pp.title}</p>}
           <div className="flex items-center gap-3 text-xs" style={{ color: '#aaa' }}>
-            {profile.location && <span>📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : profile.location}</span>}
+            {profile.location && <span>📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : isZh ? (ZH_CITY[profile.location] ?? profile.location) : profile.location}</span>}
             {pp && <span>⭐ {Number(pp.rating).toFixed(1)} ({pp.review_count} {t('profile.reviews')})</span>}
             {pp?.trial_rate && <span className="font-semibold" style={{ color: '#B8860B' }}>{t('profile.trial')} ¥{pp.trial_rate.toLocaleString()}</span>}
             {pp?.online_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.online')} ¥{pp.online_rate.toLocaleString()}{t('profile.per_hr')}</span>}

@@ -4,6 +4,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
+import { ZH_CITY } from '../lib/constants'
 
 // ─── Project palette (matches rest of app exactly) ────────────────────────────
 const C = {
@@ -555,7 +556,9 @@ function FilterDropdown({ label, options, flatOptions, selected, onChange, onCle
 
 function OptionRow({ item, checked, onChange }: { item: { value: string; label: string }; checked: boolean; onChange: (v: string) => void }) {
   const { t, i18n } = useTranslation()
-  const display = i18n.language === 'ja' ? (JA_CITY[item.label] ?? t(item.label)) : t(item.label)
+  const isJa = i18n.language.startsWith('ja')
+  const isZh = i18n.language.startsWith('zh')
+  const display = isJa ? (JA_CITY[item.label] ?? t(item.label)) : isZh ? (ZH_CITY[item.label] ?? t(item.label)) : t(item.label)
   return (
     <label
       className="flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors"

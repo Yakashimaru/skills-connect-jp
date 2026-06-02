@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, JA_CITY } from '../lib/constants'
+import { SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, JA_CITY, ZH_CITY } from '../lib/constants'
 import type { ProfileWithProvider } from '../lib/types'
 
 const C = {
@@ -118,7 +118,7 @@ export default function ProviderCard({ profile, isSaved, onSaveToggle }: Props) 
           </div>
           {profile.location && (
             <span className="text-xs" style={{ color: '#aaa' }}>
-              📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : profile.location}
+              📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : isZh ? (ZH_CITY[profile.location] ?? profile.location) : profile.location}
             </span>
           )}
         </div>
