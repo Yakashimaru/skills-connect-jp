@@ -660,7 +660,7 @@ export default function ProfilePage() {
                       [pp.availability?.time_from3, pp.availability?.time_to3],
                     ].some(([f, t]) => f || t) && (
                       <div className="mb-3">
-                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>Hours</p>
+                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>{t('profile.avail_hours')}</p>
                         <div className="flex flex-col gap-1">
                           {[
                             [pp.availability?.time_from, pp.availability?.time_to],
@@ -676,7 +676,7 @@ export default function ProfilePage() {
                     )}
                     {pp.availability?.locations?.length > 0 && (
                       <div>
-                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>Locations</p>
+                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>{t('profile.avail_locations')}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {pp.availability.locations.map((l: string) => (
                             <span key={l} className="text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{l}</span>

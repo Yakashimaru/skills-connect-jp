@@ -8,6 +8,7 @@ import {
   addEducation, updateEducation, removeEducation,
   addExperience, updateExperience, removeExperience,
 } from '../lib/profiles'
+import { TRAIT_ZH, INTEREST_ZH, ZH_CITY } from '../lib/constants'
 
 const PERSONALITY_TRAITS = [
   'Adaptable', 'Adventurous', 'Ambitious', 'Ambivert', 'Analytical',
@@ -279,6 +280,7 @@ const SOCIAL_SECTIONS: SocialSection[] = ['personality', 'insights', 'interests'
 function ChipPicker({ options, selected, onToggle, labels }: {
   options: string[]; selected: string[]; onToggle: (v: string) => void; labels?: string[]
 }) {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [custom, setCustom] = useState('')
 
@@ -322,7 +324,7 @@ function ChipPicker({ options, selected, onToggle, labels }: {
       <input
         value={search}
         onChange={e => setSearch(e.target.value)}
-        placeholder="Search…"
+        placeholder={t('edit_profile.search_placeholder')}
         style={{ border: '0.5px solid #E8DDD5', borderRadius: '20px', padding: '7px 14px', fontSize: '13px', outline: 'none', color: '#1A0208', backgroundColor: '#fff' }}
         onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
         onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
@@ -340,21 +342,21 @@ function ChipPicker({ options, selected, onToggle, labels }: {
                 </button>
               )
             })
-          : <p className="text-xs" style={{ color: '#aaa' }}>{q ? 'No matches.' : 'All options selected.'}</p>
+          : <p className="text-xs" style={{ color: '#aaa' }}>{q ? t('edit_profile.no_matches') : t('edit_profile.no_matches')}</p>
         }
       </div>
 
       <div className="flex gap-2">
         <input value={custom} onChange={e => setCustom(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustom() } }}
-          placeholder="Add your own…"
+          placeholder={t('edit_profile.add_custom')}
           style={{ flex: 1, border: '0.5px solid #E8DDD5', borderRadius: '20px', padding: '6px 14px', fontSize: '13px', outline: 'none', color: '#1A0208', backgroundColor: '#fff' }}
           onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
           onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
         <button type="button" onClick={addCustom}
           className="text-sm px-4 py-1.5 rounded-full font-medium"
           style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>
-          + Add
+          {t('edit_profile.add_custom_btn')}
         </button>
       </div>
     </div>
@@ -377,6 +379,7 @@ function CollapsibleSection({ title, summary, children, defaultOpen = false, onR
   defaultOpen?: boolean
   onRemove?: () => void
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div style={{ backgroundColor: '#fff', borderRadius: '16px', border: '0.5px solid #E8DDD5' }}>
@@ -401,7 +404,7 @@ function CollapsibleSection({ title, summary, children, defaultOpen = false, onR
               <button type="button" onClick={onRemove}
                 className="text-xs hover:opacity-60 transition-opacity"
                 style={{ color: '#aaa' }}>
-                Remove section
+                {t('edit_profile.remove_section')}
               </button>
             </div>
           )}
@@ -438,8 +441,8 @@ function DeleteAccountSection() {
 
   return (
     <div className="rounded-2xl p-5 mt-2" style={{ border: '0.5px solid #fca5a5', backgroundColor: '#fff9f9' }}>
-      <p className="text-sm font-semibold mb-1" style={{ color: '#7f1d1d' }}>Danger zone</p>
-      <p className="text-xs mb-4" style={{ color: '#aaa' }}>Once deleted, your account and all data cannot be recovered.</p>
+      <p className="text-sm font-semibold mb-1" style={{ color: '#7f1d1d' }}>{t('edit_profile.danger_zone')}</p>
+      <p className="text-xs mb-4" style={{ color: '#aaa' }}>{t('edit_profile.danger_zone_hint')}</p>
       {!confirming ? (
         <button
           type="button"
@@ -651,8 +654,8 @@ export default function EditProfile() {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    if (!file.type.startsWith('image/')) { setError('Please select an image file'); return }
-    if (file.size > 5 * 1024 * 1024) { setError('Image must be under 5 MB'); return }
+    if (!file.type.startsWith('image/')) { setError(t('edit_profile.image_type_error')); return }
+    if (file.size > 5 * 1024 * 1024) { setError(t('edit_profile.image_size_error')); return }
     setError(null)
     setPendingAvatar(file)
     setAvatarPreview(URL.createObjectURL(file))
@@ -1022,12 +1025,12 @@ export default function EditProfile() {
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')}
                 >
-                  <option value="">— select location —</option>
+                  <option value="">{t('nav.select_location')}</option>
                   {LOCATION_GROUPS.map(group => (
                     <optgroup key={group.group} label={isJa ? group.groupJa : group.group}>
                       {group.items.map(item => (
                         <option key={`${group.group}-${item.value}`} value={item.value}>
-                          {isJa ? item.ja : item.value}
+                          {isJa ? item.ja : isZh ? (ZH_CITY[item.value] ?? item.value) : item.value}
                         </option>
                       ))}
                     </optgroup>
@@ -1047,11 +1050,11 @@ export default function EditProfile() {
                 <label style={labelStyle}>{t('edit_profile.label_gender')}</label>
                 <select value={form.gender} onChange={e => setForm({ ...form, gender: e.target.value })}
                   style={{ ...inputStyle, cursor: 'pointer' }}>
-                  <option value="">— prefer not to say —</option>
+                  <option value="">{t('nav.gender_prefer_not')}</option>
                   <option value="male">{t('nav.gender_male')}</option>
                   <option value="female">{t('nav.gender_female')}</option>
-                  <option value="non-binary">Non-binary</option>
-                  <option value="prefer-not-to-say">Prefer not to say</option>
+                  <option value="non-binary">{t('nav.gender_nonbinary')}</option>
+                  <option value="prefer-not-to-say">{t('nav.gender_prefer_not')}</option>
                 </select>
               </div>
               <div className="col-span-2">
@@ -1146,7 +1149,7 @@ export default function EditProfile() {
                   {section === 'experience' && (
                     <>
                       <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
-                        {['Role / Title', 'Company', 'Years exp.'].map(h => (
+                        {[t('edit_profile.label_role'), t('edit_profile.label_company'), t('edit_profile.label_years_exp')].map(h => (
                           <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
                         ))}
                       </div>
@@ -1187,7 +1190,7 @@ export default function EditProfile() {
                   {section === 'education' && (
                     <>
                       <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
-                        {['Degree / Qualification', 'School / Institution', 'Year'].map(h => (
+                        {[t('edit_profile.label_degree'), t('edit_profile.label_school'), t('edit_profile.label_year')].map(h => (
                           <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
                         ))}
                       </div>
@@ -1228,19 +1231,19 @@ export default function EditProfile() {
                   {section === 'qualifications' && (
                     <>
                       <div className="grid grid-cols-3 gap-2 mb-1 pr-9">
-                        {['Certification / Qualification', 'Issued by', 'Year'].map(h => (
+                        {[t('edit_profile.label_degree'), t('edit_profile.label_issuer'), t('edit_profile.label_year')].map(h => (
                           <p key={h} className="text-xs" style={{ color: '#aaa' }}>{h}</p>
                         ))}
                       </div>
                       <div className="flex flex-col gap-3 mb-3">
                         {qualifications.map((entry, i) => (
                           <div key={i} className="grid grid-cols-3 gap-2 items-start">
-                            <input placeholder="e.g. TEFL Certificate" value={entry.title}
+                            <input placeholder={t('edit_profile.cert_placeholder')} value={entry.title}
                               onChange={e => setQualifications(prev => prev.map((x, j) => j === i ? { ...x, title: e.target.value } : x))}
                               style={{ ...inputStyle, fontSize: '13px' }}
                               onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
                               onBlur={e => (e.currentTarget.style.borderColor = '#E8DDD5')} />
-                            <input placeholder="e.g. Cambridge" value={entry.issuer}
+                            <input placeholder={t('edit_profile.issuer_placeholder')} value={entry.issuer}
                               onChange={e => setQualifications(prev => prev.map((x, j) => j === i ? { ...x, issuer: e.target.value } : x))}
                               style={{ ...inputStyle, fontSize: '13px' }}
                               onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
@@ -1314,13 +1317,13 @@ export default function EditProfile() {
                                   className="w-4 h-4 flex-shrink-0" style={{ accentColor: '#5C0A1E' }} />
                                 <span className="text-sm font-medium w-10 flex-shrink-0"
                                   style={{ color: enabled ? '#1A0208' : '#aaa' }}>{day}</span>
-                                {!enabled && <span className="text-xs" style={{ color: '#ccc' }}>Unavailable</span>}
+                                {!enabled && <span className="text-xs" style={{ color: '#ccc' }}>{t('edit_profile.unavailable')}</span>}
                               </label>
                               {enabled && (
                                 <div className="px-4 pb-3 flex flex-col gap-2" style={{ borderTop: '0.5px solid #E8DDD5' }}>
                                   {slots.map((slot, si) => (
                                     <div key={si} className="flex items-center gap-2 pt-2">
-                                      <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>From</span>
+                                      <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>{t('edit_profile.time_from')}</span>
                                       <select value={slot.from}
                                         onChange={e => setAvailDaySchedule(prev => ({
                                           ...prev,
@@ -1330,7 +1333,7 @@ export default function EditProfile() {
                                         <option value="">—</option>
                                         {FROM_TIMES.map(ft => <option key={ft} value={ft}>{ft}</option>)}
                                       </select>
-                                      <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>To</span>
+                                      <span className="text-xs" style={{ color: '#aaa', whiteSpace: 'nowrap' }}>{t('edit_profile.time_to')}</span>
                                       <select value={slot.to}
                                         onChange={e => setAvailDaySchedule(prev => ({
                                           ...prev,
@@ -1358,7 +1361,7 @@ export default function EditProfile() {
                                     }))}
                                     className="text-xs px-3 py-1 rounded-full mt-1 self-start"
                                     style={{ color: '#5C0A1E', border: '0.5px solid #E8DDD5' }}>
-                                    + Add slot
+                                    {t('edit_profile.add_slot')}
                                   </button>
                                 </div>
                               )}
@@ -1490,16 +1493,16 @@ export default function EditProfile() {
                   {section === 'personality' && (
                     <ChipPicker options={PERSONALITY_TRAITS} selected={personalityTraits}
                       onToggle={v => toggle(personalityTraits, v, setPersonalityTraits)}
-                      labels={isJa ? PERSONALITY_TRAITS_JA : undefined} />
+                      labels={isJa ? PERSONALITY_TRAITS_JA : isZh ? PERSONALITY_TRAITS.map(t => TRAIT_ZH[t] ?? t) : undefined} />
                   )}
                   {section === 'insights' && (
                     <>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                         <div>
-                          <label style={labelStyle}>MBTI type</label>
+                          <label style={labelStyle}>{t('edit_profile.mbti_label')}</label>
                           <select value={mbti} onChange={e => setMbti(e.target.value)}
                             style={{ ...inputStyle, cursor: 'pointer' }}>
-                            <option value="">— select —</option>
+                            <option value="">{t('edit_profile.select_default')}</option>
                             {['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP',
                               'ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'].map(m => (
                               <option key={m} value={m}>{m}</option>
@@ -1507,10 +1510,10 @@ export default function EditProfile() {
                           </select>
                         </div>
                         <div>
-                          <label style={labelStyle}>Star sign</label>
+                          <label style={labelStyle}>{t('edit_profile.star_sign')}</label>
                           <select value={starSign} onChange={e => setStarSign(e.target.value)}
                             style={{ ...inputStyle, cursor: 'pointer' }}>
-                            <option value="">— select —</option>
+                            <option value="">{t('edit_profile.select_default')}</option>
                             {['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                               'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'].map(s => (
                               <option key={s} value={s.toLowerCase()}>{s}</option>
@@ -1529,7 +1532,7 @@ export default function EditProfile() {
                   {section === 'interests' && (
                     <ChipPicker options={INTEREST_OPTIONS} selected={interests}
                       onToggle={v => toggle(interests, v, setInterests)}
-                      labels={isJa ? INTEREST_OPTIONS_JA : undefined} />
+                      labels={isJa ? INTEREST_OPTIONS_JA : isZh ? INTEREST_OPTIONS.map(i => INTEREST_ZH[i] ?? i) : undefined} />
                   )}
                 </CollapsibleSection>
               ))}
