@@ -1,51 +1,125 @@
-# skills-connect-app
+# Kaiyui
 
-A skills-based social matching platform (EN/JP) where users connect through personality, interests, and skill exchange — not just looks or financial status.
+> Japan's skills and social matching platform — connecting people through personality, skills, and shared experiences.
 
-## Concept
+**🌐 Live:** [www.kaiyui.com](https://www.kaiyui.com)
 
-A hybrid platform combining social networking, companionship, and skill exchange. Users connect based on personality, interests, skills, companionship needs, and shared experiences. Enables both social connection and paid services.
+![React](https://img.shields.io/badge/React_19-20232A?style=flat&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)
+![i18n](https://img.shields.io/badge/i18n-EN_|_JA_|_ZH-blue?style=flat)
 
-## Target Market
+---
 
-Japan and English-speaking markets (EN/JP).
+## Overview
 
-## Stack
+Kaiyui is a full-stack web application that lets users discover, connect with, and book sessions with service providers across Japan. It supports both professional skills (coaching, tutoring, language lessons) and social experiences (dining partners, activity partners, travel companions).
 
-- **Frontend:** React + TypeScript + Tailwind CSS + React Router
-- **Backend:** Node.js + Supabase (auth, database, real-time chat, storage)
-- **Payments:** Stripe (subscriptions + session commission)
+The platform is fully multilingual — English, Japanese, and Chinese — and targets the Japanese market with localised city names, skill labels, and UI copy across all three languages.
 
-## Screens
+---
 
-1. **Home** — search bar, greeting, recommended user cards
-2. **Discover** — browse and filter profiles by skill, location, price, gender
-3. **Profile** — full user profile with skills, reviews, booking options
-4. **Chat** — messaging with booking shortcut, voice/video icons
-5. **Meetups** — map/list view of events with RSVP
-6. **Dashboard** — user control center (sessions, bookings, earnings, settings)
+## Tech Stack
 
-## User Types
+| Layer | Technology |
+|-------|-----------|
+| Frontend | ![React](https://img.shields.io/badge/React_19-20232A?style=flat&logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white) |
+| Styling | ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white) |
+| Routing | ![React Router](https://img.shields.io/badge/React_Router_v6-CA4245?style=flat&logo=react-router&logoColor=white) |
+| Backend | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white) PostgreSQL + PostgREST |
+| Auth | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white) Auth — PKCE + implicit flow |
+| Realtime | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white) Realtime — chat subscriptions |
+| Storage | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white) Storage — avatars, gallery |
+| i18n | ![i18next](https://img.shields.io/badge/i18next-26A69A?style=flat&logo=i18next&logoColor=white) EN / JA / ZH |
+| Email | ![Resend](https://img.shields.io/badge/Resend-000000?style=flat&logo=mail.ru&logoColor=white) Custom SMTP |
+| Deployment | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white) CD from `master` |
 
-- **Service Providers** — offer skills, companionship, coaching, mentorship, etc.
-- **Service Seekers** — browse and book sessions with providers
+---
 
-## Dual Profile System
+## Key Features
 
-Each user has two layers:
-1. **Social layer** — who they are (personality, interests, hobbies, MBTI, etc.)
-2. **Skill/Service layer** — what value they offer or are looking for
+### User Profiles
+- Dual-layer profiles: **Skills** (professional offerings) and **Social** (personality, interests, experiences)
+- Progressive disclosure edit form — only relevant sections shown, optional ones added on demand
+- Gallery photo uploads (up to 5), cover photo, last active timestamp
+- Personality traits, MBTI, star sign, interests — all translated across EN/JA/ZH
 
-## Monetization
+### Discovery
+- Filter by skill category, location (all Japan prefectures), price range, age, gender, verified status
+- Skill chips and city names translated to Japanese and Chinese
+- Separate Skills and Social browse pages
 
-- Session commission (10–20% per booking)
-- Subscription tiers for seekers (Standard ¥5,000 / Premium ¥10,000 / Elite ¥50,000 per month)
-- Profile boosts for providers
-- Virtual gifts/tokens
-- Event tickets
+### Bookings & Sessions
+- Book sessions with type (1-on-1, Group, Online, Social), date, time, duration
+- Pricing: online rate, in-person rate, trial rate
+- Session availability schedule per day with time slots
 
-## Development Approach
+### Subscriptions & Payment Gate
+- Seekers require an active subscription to chat or book sessions
+- Events exclusive to members
+- Subscription plans: Standard / Premium / Elite
+- Stripe integration planned
 
-- Solo developer
-- Frontend-first (web app, not mobile)
-- MVP: Home, Discover, Profile, Chat, Meetups screens
+### Chat
+- Real-time messaging via Supabase Realtime
+- Conversation list with relative timestamps
+
+### Events
+- Browse and RSVP to community events
+- Category filters, map view (planned)
+- Member-only access
+
+### Auth
+- Email/password signup with confirmation flow
+- Custom branded confirmation screen at `/auth/callback`
+- Handles both PKCE and implicit Supabase auth flows
+- Custom SMTP via Resend (`noreply@kaiyui.com`)
+
+### Internationalisation
+- Full EN / JA / ZH translations across all pages, components, and form fields
+- Predefined skill, trait, and interest chips translated via lookup maps
+- Location names (all Japan cities/prefectures) translated to JA and ZH
+- Language switcher dropdown in navbar
+
+---
+
+## Screenshots
+
+![Home](https://github.com/user-attachments/assets/374e86b8-1402-4502-b258-c8ed6260b2bb)
+
+---
+
+For implementation details and architectural decisions, see [TECHNICAL.md](TECHNICAL.md).
+
+---
+
+## Project Structure
+
+```
+src/
+├── components/       Navbar, ProviderCard, SubscriptionPlans, CollapsibleSection
+├── pages/            Home, Skills, Social, Profile, EditProfile, Chat, Meetups, Dashboard
+├── lib/              Supabase client, DB helpers (profiles, bookings, events...), constants, types
+├── locales/          en/ ja/ zh/ translation JSON files
+├── context/          AuthContext (session, cached profile, last_online tracking)
+└── i18n.ts           i18next setup with EN/JA/ZH resources
+```
+
+---
+
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Create `.env.local`:
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
