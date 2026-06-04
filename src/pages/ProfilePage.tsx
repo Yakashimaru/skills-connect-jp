@@ -8,7 +8,7 @@ import { getOrCreateConversation } from '../lib/messages'
 import { createBooking } from '../lib/bookings'
 import { getActiveSubscription } from '../lib/subscriptions'
 import type { Profile, ProviderProfile } from '../lib/types'
-import { TRAIT_JA, INTEREST_JA, SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, STAR_SIGN_JA, JA_CITY, ZH_CITY } from '../lib/constants'
+import { TRAIT_JA, TRAIT_ZH, INTEREST_JA, INTEREST_ZH, SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, STAR_SIGN_JA, JA_CITY, ZH_CITY } from '../lib/constants'
 
 const SESSION_ICONS: Record<string, string> = {
   '1-on-1 Session': '👤',
@@ -512,14 +512,14 @@ export default function ProfilePage() {
                 {profile.top_traits?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {profile.top_traits.map((trait: string) => (
-                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
+                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : isZh ? (TRAIT_ZH[trait] ?? trait) : trait}</span>
                     ))}
                   </div>
                 )}
                 {profile.personality_traits?.filter((tr: string) => !profile.top_traits?.includes(tr)).length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {profile.personality_traits.filter((tr: string) => !profile.top_traits?.includes(tr)).map((trait: string) => (
-                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
+                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : isZh ? (TRAIT_ZH[trait] ?? trait) : trait}</span>
                     ))}
                   </div>
                 )}
@@ -535,13 +535,13 @@ export default function ProfilePage() {
                 {profile.top_interests?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {profile.top_interests.map((interest: string) => (
-                      <span key={interest} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
+                      <span key={interest} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : isZh ? (INTEREST_ZH[interest] ?? interest) : interest}</span>
                     ))}
                   </div>
                 )}
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.filter((interest: string) => !profile.top_interests?.includes(interest)).map((interest: string) => (
-                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
+                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : isZh ? (INTEREST_ZH[interest] ?? interest) : interest}</span>
                   ))}
                 </div>
               </section>

@@ -155,6 +155,45 @@ const SOCIAL_ZH = [
   '餐饮约伴','活动约伴','友谊','学习伙伴','旅行伙伴',
 ]
 
+const TRAITS_ZH = [
+  '适应力强','爱冒险','有抱负','双向型','分析型',
+  '冷静','有爱心','开朗','富有同情心','自信','体贴','好奇心强',
+  '注重细节','勤奋','直接','自律',
+  '随和','感性','共情力强','充满活力','外向',
+  '友好',
+  '诚实','谦逊','幽默',
+  '独立','内向',
+  '逻辑性强','忠诚',
+  '思想开放','乐观','有条理',
+  '热情','有耐心','完美主义','坚持不懈',
+  '可靠','内敛','负责任',
+  '敏感','自发','善于支持',
+  '体贴周到',
+]
+
+const INTERESTS_ZH = [
+  '动漫与漫画','艺术',
+  '烘焙','商业',
+  '烹饪','骑行',
+  '舞蹈','潜水','DIY',
+  '经济学',
+  '时尚','金融','健身','美食',
+  '游戏','园艺','高尔夫',
+  '徒步','历史','骑马',
+  '投资',
+  '写日记',
+  '语言',
+  '武术','冥想','音乐',
+  '自然','社交网络',
+  '绘画','宠物','哲学','摄影','诗歌','心理学',
+  '阅读','攀岩','跑步',
+  '科学','唱歌','滑雪','社交','灵性','运动','创业','冲浪','游泳',
+  '科技','网球','旅行',
+  '志愿服务',
+  '健康养生','美酒佳肴','写作',
+  '瑜伽',
+]
+
 function buildMap(en: string[], ja: string[]): Record<string, string> {
   const map: Record<string, string> = {}
   en.forEach((k, i) => { map[k] = ja[i] })
@@ -438,5 +477,7 @@ export const TRAIT_JA   = buildMap(TRAITS_EN,   TRAITS_JA)
 export const INTEREST_JA = buildMap(INTERESTS_EN, INTERESTS_JA)
 export const SKILL_JA   = buildMap(SKILLS_EN,   SKILLS_JA)
 export const SOCIAL_SKILL_JA = buildMap(SOCIAL_EN, SOCIAL_JA)
-export const SKILL_ZH   = buildMap(SKILLS_EN,   SKILLS_ZH)
-export const SOCIAL_SKILL_ZH = buildMap(SOCIAL_EN, SOCIAL_ZH)
+export const SKILL_ZH        = buildMap(SKILLS_EN,    SKILLS_ZH)
+export const SOCIAL_SKILL_ZH = buildMap(SOCIAL_EN,    SOCIAL_ZH)
+export const TRAIT_ZH        = buildMap(TRAITS_EN,    TRAITS_ZH)
+export const INTEREST_ZH     = buildMap(INTERESTS_EN, INTERESTS_ZH)
