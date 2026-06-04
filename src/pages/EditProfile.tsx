@@ -1059,6 +1059,9 @@ export default function EditProfile() {
               </div>
               <div className="col-span-2">
                 <label style={labelStyle}>{t('edit_profile.label_bio')}</label>
+                <p className="text-xs mb-1.5 px-3 py-1.5 rounded-lg" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>
+                  {t('edit_profile.language_tip')}
+                </p>
                 <textarea value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} rows={4}
                   style={{ ...inputStyle, resize: 'none' }}
                   onFocus={e => (e.currentTarget.style.borderColor = '#B8860B')}
@@ -1078,6 +1081,11 @@ export default function EditProfile() {
                   labels={isJa ? SKILL_OPTIONS_JA : isZh ? SKILL_OPTIONS_ZH : undefined} />
                 <div className="mt-5">
                   <label style={labelStyle}>{t('edit_profile.skills_description_label')}</label>
+                  {(isJa || isZh) && (
+                    <p className="text-xs mb-1.5 px-3 py-1.5 rounded-lg" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>
+                      {t('edit_profile.language_tip', { lang: isJa ? '日本語' : '中文' })}
+                    </p>
+                  )}
                   <textarea
                     value={skillsDescription}
                     onChange={e => setSkillsDescription(e.target.value)}

@@ -618,7 +618,8 @@
     "star_sign": "Star sign",
     "mbti_label": "MBTI",
     "image_type_error": "Please select an image file",
-    "image_size_error": "Image must be under 5 MB"
+    "image_size_error": "Image must be under 5 MB",
+    "language_tip": "Tip: Write in the language of your target audience."
   },
   "chat": {
     "title": "Messages",

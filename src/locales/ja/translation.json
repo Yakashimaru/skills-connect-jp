@@ -618,7 +618,8 @@
     "star_sign": "星座",
     "mbti_label": "MBTI",
     "image_type_error": "画像ファイルを選択してください",
-    "image_size_error": "画像は5MB以下にしてください"
+    "image_size_error": "画像は5MB以下にしてください",
+    "language_tip": "ヒント: ターゲットとする読者の言語で入力してください。"
   },
   "chat": {
     "title": "メッセージ",
