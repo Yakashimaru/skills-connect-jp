@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getConversations, getMessages, sendMessage, subscribeToMessages } from '../lib/messages'
 
-function relativeTime(iso: string) {
+function relativeTime(iso: string, t: (k: string, opts?: Record<string, unknown>) => string) {
   const diff = Date.now() - new Date(iso).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return 'just now'
-  if (mins < 60) return `${mins}m ago`
+  if (mins < 1) return t('chat.just_now')
+  if (mins < 60) return t('chat.mins_ago', { n: mins })
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours}h ago`
+  if (hours < 24) return t('chat.hrs_ago', { n: hours })
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
@@ -149,7 +149,7 @@ export default function Chat() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-semibold truncate" style={{ color: '#1A0208' }}>{person?.name ?? '—'}</p>
-                    <span className="text-xs flex-shrink-0 ml-2" style={{ color: '#aaa' }}>{relativeTime(conv.last_message_at)}</span>
+                    <span className="text-xs flex-shrink-0 ml-2" style={{ color: '#aaa' }}>{relativeTime(conv.last_message_at, t)}</span>
                   </div>
                   <p className="text-xs truncate mt-0.5" style={{ color: '#7A6060' }}>
                     {person?.provider_profile?.title ?? person?.location ?? ''}

@@ -12,6 +12,7 @@ export interface Profile {
   user_type: UserType
   avatar_url: string | null
   cover_url: string | null
+  photos: string[]
   location: string | null
   bio: string | null
   mbti: string | null
@@ -27,6 +28,7 @@ export interface Profile {
   privacy_mode: PrivacyMode
   vacation_mode: boolean
   verified: boolean
+  profile_status: 'pending' | 'active' | 'suspended'
   last_online: string | null
   created_at: string
   updated_at: string

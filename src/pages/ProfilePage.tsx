@@ -6,8 +6,9 @@ import { getProfile } from '../lib/profiles'
 import { getReviews } from '../lib/reviews'
 import { getOrCreateConversation } from '../lib/messages'
 import { createBooking } from '../lib/bookings'
+import { getActiveSubscription } from '../lib/subscriptions'
 import type { Profile, ProviderProfile } from '../lib/types'
-import { TRAIT_JA, INTEREST_JA, SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, STAR_SIGN_JA, JA_CITY } from '../lib/constants'
+import { TRAIT_JA, TRAIT_ZH, INTEREST_JA, INTEREST_ZH, SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, STAR_SIGN_JA, JA_CITY, ZH_CITY } from '../lib/constants'
 
 const SESSION_ICONS: Record<string, string> = {
   '1-on-1 Session': '👤',
@@ -31,6 +32,19 @@ const SESSION_TYPE_KEYS: Record<string, string> = {
 }
 
 const DURATIONS = [30, 60, 90, 120]
+
+function formatLastActive(ts: string | null, t: (k: string, opts?: Record<string, unknown>) => string): string | null {
+  if (!ts) return null
+  const diff = Date.now() - new Date(ts).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 5) return t('profile.active_now')
+  if (mins < 60) return t('profile.active_mins', { n: mins })
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return t('profile.active_hrs', { n: hrs })
+  const days = Math.floor(hrs / 24)
+  if (days < 30) return t('profile.active_days', { n: days })
+  return null
+}
 
 function BookSessionModal({ provider, providerProfile, seekerId, onClose }: {
   provider: Profile; providerProfile: ProviderProfile; seekerId: string; onClose: () => void
@@ -228,6 +242,7 @@ export default function ProfilePage() {
   const [notFound, setNotFound] = useState(false)
   const [messageSending, setMessageSending] = useState(false)
   const [bookingOpen, setBookingOpen] = useState(false)
+  const [hasSubscription, setHasSubscription] = useState(false)
 
   useEffect(() => {
     if (!id) { setNotFound(true); setLoading(false); return }
@@ -236,6 +251,11 @@ export default function ProfilePage() {
       setLoading(false)
     })
   }, [id])
+
+  useEffect(() => {
+    if (!user) return
+    getActiveSubscription(user.id).then(({ data }) => setHasSubscription(!!data))
+  }, [user])
 
   if (loading) {
     return (
@@ -261,11 +281,18 @@ export default function ProfilePage() {
 
   const handleSendMessage = async () => {
     if (!user) { navigate('/login'); return }
+    if (!hasSubscription) { navigate('/subscribe'); return }
     if (messageSending) return
     setMessageSending(true)
     await getOrCreateConversation(user.id, profile.id)
     setMessageSending(false)
     navigate('/chat')
+  }
+
+  const handleBookSession = () => {
+    if (!user) { navigate('/login'); return }
+    if (!hasSubscription) { navigate('/subscribe'); return }
+    setBookingOpen(true)
   }
 
   return (
@@ -313,14 +340,30 @@ export default function ProfilePage() {
           </div>
           {pp?.title && <p className="text-sm mb-1" style={{ color: '#7A6060' }}>{pp.title}</p>}
           <div className="flex items-center gap-3 text-xs" style={{ color: '#aaa' }}>
-            {profile.location && <span>📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : profile.location}</span>}
+            {profile.location && <span>📍 {isJa ? (JA_CITY[profile.location] ?? profile.location) : isZh ? (ZH_CITY[profile.location] ?? profile.location) : profile.location}</span>}
             {pp && <span>⭐ {Number(pp.rating).toFixed(1)} ({pp.review_count} {t('profile.reviews')})</span>}
+            {formatLastActive(profile.last_online ?? null, t) && (
+              <span style={{ color: profile.last_online && Date.now() - new Date(profile.last_online).getTime() < 300000 ? '#22c55e' : '#aaa' }}>
+                🕐 {formatLastActive(profile.last_online ?? null, t)}
+              </span>
+            )}
             {pp?.trial_rate && <span className="font-semibold" style={{ color: '#B8860B' }}>{t('profile.trial')} ¥{pp.trial_rate.toLocaleString()}</span>}
             {pp?.online_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.online')} ¥{pp.online_rate.toLocaleString()}{t('profile.per_hr')}</span>}
             {pp?.inperson_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>{t('profile.book_modal.inperson')} ¥{pp.inperson_rate.toLocaleString()}{t('profile.per_hr')}</span>}
             {!pp?.online_rate && !pp?.inperson_rate && pp?.hourly_rate && <span className="font-semibold" style={{ color: '#5C0A1E' }}>¥{pp.hourly_rate.toLocaleString()}{t('profile.per_hr')}</span>}
           </div>
         </div>
+
+        {/* Gallery */}
+        {profile.photos?.length > 0 && (
+          <div className="flex gap-2 flex-wrap mb-6">
+            {profile.photos.map((url: string, i: number) => (
+              <div key={i} className="w-24 h-24 rounded-2xl overflow-hidden" style={{ border: '0.5px solid #E8DDD5' }}>
+                <img src={url} alt="" className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left column */}
@@ -387,7 +430,7 @@ export default function ProfilePage() {
                           <>
                             <span>·</span>
                             <span style={{ color: '#B8860B' }}>
-                              {isNaN(Number(exp.years)) ? exp.years : `${exp.years} ${Number(exp.years) === 1 ? 'yr' : 'yrs'}`}
+                              {isNaN(Number(exp.years)) ? exp.years : `${exp.years} ${Number(exp.years) === 1 ? t('profile.yr') : t('profile.yrs')}`}
                             </span>
                           </>
                         )}
@@ -407,7 +450,7 @@ export default function ProfilePage() {
                     <div key={edu.id} className="rounded-xl p-3" style={{ backgroundColor: '#FAFAF8', border: '0.5px solid #F0E8E0' }}>
                       <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{edu.school}</p>
                       <p className="text-xs mt-0.5" style={{ color: '#7A6060' }}>
-                        {edu.degree}{edu.year ? <span style={{ color: '#aaa' }}> · Class of {edu.year}</span> : ''}
+                        {edu.degree}{edu.year ? <span style={{ color: '#aaa' }}> · {t('profile.class_of')} {edu.year}</span> : ''}
                       </p>
                     </div>
                   ))}
@@ -458,7 +501,7 @@ export default function ProfilePage() {
                     )}
                     {profile.star_sign && (
                       <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: '#FDF0E0', border: '0.5px solid #E8DDD5' }}>
-                        <span className="text-xs" style={{ color: '#aaa' }}>{isJa ? '星座' : 'Star sign'}</span>
+                        <span className="text-xs" style={{ color: '#aaa' }}>{t('profile.star_sign')}</span>
                         <span className="text-sm font-semibold capitalize" style={{ color: '#5C0A1E' }}>
                           {isJa ? (STAR_SIGN_JA[profile.star_sign] ?? profile.star_sign) : profile.star_sign}
                         </span>
@@ -469,14 +512,14 @@ export default function ProfilePage() {
                 {profile.top_traits?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {profile.top_traits.map((trait: string) => (
-                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
+                      <span key={trait} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : isZh ? (TRAIT_ZH[trait] ?? trait) : trait}</span>
                     ))}
                   </div>
                 )}
                 {profile.personality_traits?.filter((tr: string) => !profile.top_traits?.includes(tr)).length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {profile.personality_traits.filter((tr: string) => !profile.top_traits?.includes(tr)).map((trait: string) => (
-                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : trait}</span>
+                      <span key={trait} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (TRAIT_JA[trait] ?? trait) : isZh ? (TRAIT_ZH[trait] ?? trait) : trait}</span>
                     ))}
                   </div>
                 )}
@@ -492,13 +535,13 @@ export default function ProfilePage() {
                 {profile.top_interests?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {profile.top_interests.map((interest: string) => (
-                      <span key={interest} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
+                      <span key={interest} className="text-sm px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : isZh ? (INTEREST_ZH[interest] ?? interest) : interest}</span>
                     ))}
                   </div>
                 )}
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.filter((interest: string) => !profile.top_interests?.includes(interest)).map((interest: string) => (
-                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : interest}</span>
+                    <span key={interest} className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{isJa ? (INTEREST_JA[interest] ?? interest) : isZh ? (INTEREST_ZH[interest] ?? interest) : interest}</span>
                   ))}
                 </div>
               </section>
@@ -526,7 +569,7 @@ export default function ProfilePage() {
                           }
                         </div>
                         <div>
-                          <p className="text-xs font-semibold" style={{ color: '#1A0208' }}>{review.reviewer?.name ?? 'Anonymous'}</p>
+                          <p className="text-xs font-semibold" style={{ color: '#1A0208' }}>{review.reviewer?.name ?? t('profile.anonymous')}</p>
                           {review.reviewer?.location && <p className="text-xs" style={{ color: '#aaa' }}>{review.reviewer.location}</p>}
                         </div>
                       </div>
@@ -617,7 +660,7 @@ export default function ProfilePage() {
                       [pp.availability?.time_from3, pp.availability?.time_to3],
                     ].some(([f, t]) => f || t) && (
                       <div className="mb-3">
-                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>Hours</p>
+                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>{t('profile.avail_hours')}</p>
                         <div className="flex flex-col gap-1">
                           {[
                             [pp.availability?.time_from, pp.availability?.time_to],
@@ -633,7 +676,7 @@ export default function ProfilePage() {
                     )}
                     {pp.availability?.locations?.length > 0 && (
                       <div>
-                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>Locations</p>
+                        <p className="text-xs mb-2" style={{ color: '#aaa' }}>{t('profile.avail_locations')}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {pp.availability.locations.map((l: string) => (
                             <span key={l} className="text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: '#FDF0E0', color: '#7A4A00' }}>{l}</span>
@@ -686,7 +729,7 @@ export default function ProfilePage() {
                 {t('profile.send_message')}
               </button>
               <button
-                onClick={() => { if (!user) { navigate('/login'); return } setBookingOpen(true) }}
+                onClick={handleBookSession}
                 className="font-medium text-sm px-6 py-2.5 rounded-xl transition-colors"
                 style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3A0612')}

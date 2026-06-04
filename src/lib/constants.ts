@@ -155,6 +155,45 @@ const SOCIAL_ZH = [
   '餐饮约伴','活动约伴','友谊','学习伙伴','旅行伙伴',
 ]
 
+const TRAITS_ZH = [
+  '适应力强','爱冒险','有抱负','双向型','分析型',
+  '冷静','有爱心','开朗','富有同情心','自信','体贴','好奇心强',
+  '注重细节','勤奋','直接','自律',
+  '随和','感性','共情力强','充满活力','外向',
+  '友好',
+  '诚实','谦逊','幽默',
+  '独立','内向',
+  '逻辑性强','忠诚',
+  '思想开放','乐观','有条理',
+  '热情','有耐心','完美主义','坚持不懈',
+  '可靠','内敛','负责任',
+  '敏感','自发','善于支持',
+  '体贴周到',
+]
+
+const INTERESTS_ZH = [
+  '动漫与漫画','艺术',
+  '烘焙','商业',
+  '烹饪','骑行',
+  '舞蹈','潜水','DIY',
+  '经济学',
+  '时尚','金融','健身','美食',
+  '游戏','园艺','高尔夫',
+  '徒步','历史','骑马',
+  '投资',
+  '写日记',
+  '语言',
+  '武术','冥想','音乐',
+  '自然','社交网络',
+  '绘画','宠物','哲学','摄影','诗歌','心理学',
+  '阅读','攀岩','跑步',
+  '科学','唱歌','滑雪','社交','灵性','运动','创业','冲浪','游泳',
+  '科技','网球','旅行',
+  '志愿服务',
+  '健康养生','美酒佳肴','写作',
+  '瑜伽',
+]
+
 function buildMap(en: string[], ja: string[]): Record<string, string> {
   const map: Record<string, string> = {}
   en.forEach((k, i) => { map[k] = ja[i] })
@@ -294,6 +333,140 @@ export const JA_CITY: Record<string, string> = {
   Chatan:'北谷町',
 }
 
+export const ZH_CITY: Record<string, string> = {
+  'Online only': '仅线上',
+  Tokyo:'东京',
+  // Hokkaido
+  Sapporo:'札幌市', Asahikawa:'旭川市', Hakodate:'函馆市', Kushiro:'钏路市',
+  Obihiro:'带广市', Kitami:'北见市', Tomakomai:'苫小牧市', Otaru:'小樽市',
+  Ebetsu:'江别市', Chitose:'千岁市', Wakkanai:'稚内市', Nemuro:'根室市',
+  Furano:'富良野市', Noboribetsu:'登别市', Abashiri:'网走市', Yubari:'夕张市',
+  // Aomori
+  Aomori:'青森市', Hachinohe:'八户市', Hirosaki:'弘前市', Towada:'十和田市',
+  Mutsu:'陆奥市', Misawa:'三泽市',
+  // Iwate
+  Morioka:'盛冈市', Ichinoseki:'一关市', Hanamaki:'花卷市', Kamaishi:'釜石市',
+  Miyako:'宫古市', Kuji:'久慈市',
+  // Miyagi
+  Sendai:'仙台市', Ishinomaki:'石卷市', Natori:'名取市', Shiogama:'盐竈市',
+  Kesennuma:'气仙沼市',
+  // Akita
+  Akita:'秋田市', Yokote:'横手市', Noshiro:'能代市', Kazuno:'鹿角市',
+  // Yamagata
+  Yamagata:'山形市', Yonezawa:'米泽市', Tsuruoka:'鹤冈市', Sakata:'酒田市',
+  // Fukushima
+  Fukushima:'福岛市', Koriyama:'郡山市', Iwaki:'磐城市', Aizuwakamatsu:'会津若松市',
+  Shirakawa:'白河市',
+  // Ibaraki
+  Mito:'水户市', Tsukuba:'筑波市', Hitachi:'日立市', Tsuchiura:'土浦市',
+  Toride:'取手市',
+  // Tochigi
+  Utsunomiya:'宇都宫市', Ashikaga:'足利市', Sano:'佐野市', Nikko:'日光市',
+  // Gunma
+  Maebashi:'前桥市', Takasaki:'高崎市', Isesaki:'伊势崎市', Kiryu:'桐生市',
+  // Saitama
+  Saitama:'埼玉市', Kawaguchi:'川口市', Kawagoe:'川越市', Koshigaya:'越谷市',
+  Tokorozawa:'所泽市', Kumagaya:'熊谷市', Iruma:'入间市', Kuki:'久喜市',
+  // Chiba
+  Chiba:'千叶市', Funabashi:'船桥市', Matsudo:'松户市', Kashiwa:'柏市',
+  Ichikawa:'市川市', Urayasu:'浦安市', Narita:'成田市', Tateyama:'馆山市',
+  // Tokyo wards
+  Shinjuku:'新宿区', Shibuya:'涩谷区', Minato:'港区', Chiyoda:'千代田区',
+  Chuo:'中央区', Bunkyo:'文京区', Toshima:'丰岛区', Sumida:'墨田区',
+  Koto:'江东区', Taito:'台东区', Nerima:'练马区', Nakano:'中野区',
+  Suginami:'杉并区', Setagaya:'世田谷区', Shinagawa:'品川区', Adachi:'足立区',
+  Edogawa:'江户川区',
+  // Tokyo cities
+  Hachioji:'八王子市', Machida:'町田市', Tachikawa:'立川市', Fuchu:'府中市',
+  Musashino:'武藏野市', Mitaka:'三鹰市', Ome:'青梅市',
+  // Kanagawa
+  Yokohama:'横滨市', Kawasaki:'川崎市', Sagamihara:'相模原市', Fujisawa:'藤泽市',
+  Yokosuka:'横须贺市', Hiratsuka:'平冢市', Odawara:'小田原市', Kamakura:'镰仓市',
+  Ebina:'海老名市', Zushi:'逗子市',
+  // Niigata
+  Niigata:'新潟市', Nagaoka:'长冈市', Joetsu:'上越市', Sanjo:'三条市',
+  // Toyama
+  Toyama:'富山市', Takaoka:'高冈市', Himi:'冰见市', Kurobe:'黑部市',
+  // Ishikawa
+  Kanazawa:'金泽市', Komatsu:'小松市', Nanao:'七尾市', Wajima:'轮岛市',
+  // Fukui
+  Fukui:'福井市', Sabae:'鲭江市', Tsuruga:'敦贺市', Obama:'小浜市',
+  // Yamanashi
+  Kofu:'甲府市', Fujiyoshida:'富士吉田市',
+  // Nagano
+  Nagano:'长野市', Matsumoto:'松本市', Ueda:'上田市', Iida:'饭田市',
+  Suwa:'诹访市', Saku:'佐久市', Azumino:'安昙野市', Shiojiri:'盐尻市',
+  // Gifu
+  Gifu:'岐阜市', Ogaki:'大垣市', Tajimi:'多治见市', Takayama:'高山市', Seki:'关市',
+  // Shizuoka
+  Shizuoka:'静冈市', Hamamatsu:'滨松市', Numazu:'沼津市', Fuji:'富士市',
+  Mishima:'三岛市', Atami:'热海市', Kakegawa:'掛川市',
+  // Aichi
+  Nagoya:'名古屋市', Toyota:'丰田市', Okazaki:'冈崎市', Toyohashi:'丰桥市',
+  Ichinomiya:'一宫市', Kasugai:'春日井市', Anjo:'安城市', Seto:'濑户市',
+  Gamagori:'蒲郡市',
+  // Mie
+  Tsu:'津市', Yokkaichi:'四日市市', Ise:'伊势市', Suzuka:'铃鹿市',
+  // Shiga
+  Otsu:'大津市', Kusatsu:'草津市', Nagahama:'长滨市', Moriyama:'守山市',
+  // Kyoto
+  Kyoto:'京都市', Uji:'宇治市', Maizuru:'舞鶴市', Kameoka:'龟冈市',
+  Fukuchiyama:'福知山市',
+  // Osaka
+  Osaka:'大阪市', Sakai:'堺市', Higashiosaka:'东大阪市', Hirakata:'枚方市',
+  Toyonaka:'豊中市', Suita:'吹田市', Takatsuki:'高槻市', Neyagawa:'寝屋川市',
+  Kishiwada:'岸和田市',
+  // Hyogo
+  Kobe:'神户市', Amagasaki:'尼崎市', Nishinomiya:'西宫市', Himeji:'姬路市',
+  Akashi:'明石市', Takarazuka:'宝冢市', Itami:'伊丹市', Ashiya:'芦屋市',
+  Awaji:'淡路市', Toyooka:'丰冈市',
+  // Nara
+  Nara:'奈良市', Kashihara:'橿原市', Ikoma:'生驹市', Tenri:'天理市',
+  // Wakayama
+  Wakayama:'和歌山市', Shingu:'新宫市', Tanabe:'田边市',
+  // Tottori
+  Tottori:'鳥取市', Yonago:'米子市',
+  // Shimane
+  Matsue:'松江市', Izumo:'出云市', Hamada:'浜田市',
+  // Okayama
+  Okayama:'冈山市', Kurashiki:'仓敷市', Tsuyama:'津山市',
+  // Hiroshima
+  Hiroshima:'广岛市', Fukuyama:'福山市', Kure:'吴市', Onomichi:'尾道市',
+  Hatsukaichi:'廿日市市',
+  // Yamaguchi
+  Yamaguchi:'山口市', Shimonoseki:'下关市', Ube:'宇部市', Iwakuni:'岩国市',
+  Hagi:'萩市',
+  // Tokushima
+  Tokushima:'德岛市', Naruto:'鸣门市', Anan:'阿南市',
+  // Kagawa
+  Takamatsu:'高松市', Marugame:'丸龟市', Kanonji:'观音寺市',
+  // Ehime
+  Matsuyama:'松山市', Imabari:'今治市', Niihama:'新居滨市', Uwajima:'宇和岛市',
+  // Kochi
+  Kochi:'高知市', Nankoku:'南国市', Shimanto:'四万十市',
+  // Fukuoka
+  Fukuoka:'福冈市', Kitakyushu:'北九州市', Kurume:'久留米市', Dazaifu:'太宰府市',
+  Onojo:'大野城市', Yanagawa:'柳川市',
+  // Saga
+  Saga:'佐贺市', Karatsu:'唐津市', Tosu:'鸟栖市',
+  // Nagasaki
+  Nagasaki:'长崎市', Sasebo:'佐世保市', Isahaya:'谏早市', Goto:'五岛市',
+  Tsushima:'对马市',
+  // Kumamoto
+  Kumamoto:'熊本市', Yatsushiro:'八代市', Aso:'阿苏市', Yamaga:'山鹿市',
+  // Oita
+  Oita:'大分市', Beppu:'别府市', Nakatsu:'中津市', Yufu:'由布市',
+  // Miyazaki
+  Miyazaki:'宫崎市', Miyakonojo:'都城市', Nobeoka:'延冈市', Hyuga:'日向市',
+  // Kagoshima
+  Kagoshima:'鹿儿岛市', Kirishima:'雾岛市', Kanoya:'鹿屋市', Amami:'奄美市',
+  Yakushima:'屋久岛', Ibusuki:'指宿市',
+  // Okinawa
+  Naha:'那霸市', 'Okinawa City':'冲绳市', Urasoe:'浦添市', Ginowan:'宜野湾市',
+  Nago:'名护市', Miyakojima:'宫古岛市', Ishigaki:'石垣市', Yonaguni:'与那国町',
+  Chatan:'北谷町',
+}
+
 export const STAR_SIGN_JA: Record<string, string> = {
   aries: '牡羊座', taurus: '牡牛座', gemini: '双子座', cancer: '蟹座',
   leo: '獅子座', virgo: '乙女座', libra: '天秤座', scorpio: '蠍座',
@@ -304,5 +477,7 @@ export const TRAIT_JA   = buildMap(TRAITS_EN,   TRAITS_JA)
 export const INTEREST_JA = buildMap(INTERESTS_EN, INTERESTS_JA)
 export const SKILL_JA   = buildMap(SKILLS_EN,   SKILLS_JA)
 export const SOCIAL_SKILL_JA = buildMap(SOCIAL_EN, SOCIAL_JA)
-export const SKILL_ZH   = buildMap(SKILLS_EN,   SKILLS_ZH)
-export const SOCIAL_SKILL_ZH = buildMap(SOCIAL_EN, SOCIAL_ZH)
+export const SKILL_ZH        = buildMap(SKILLS_EN,    SKILLS_ZH)
+export const SOCIAL_SKILL_ZH = buildMap(SOCIAL_EN,    SOCIAL_ZH)
+export const TRAIT_ZH        = buildMap(TRAITS_EN,    TRAITS_ZH)
+export const INTEREST_ZH     = buildMap(INTERESTS_EN, INTERESTS_ZH)

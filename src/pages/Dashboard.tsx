@@ -691,6 +691,11 @@ export default function Dashboard() {
               </button>
             </div>
             <p className="text-sm mt-1" style={{ color: '#aaa' }}>{t('dashboard.welcome', { name: profile?.name ?? '…' })}</p>
+            {profile?.profile_status === 'pending' && (
+              <div className="mt-3 px-4 py-3 rounded-xl text-sm" style={{ backgroundColor: '#FEF9C3', color: '#854D0E', border: '0.5px solid #FDE047' }}>
+                ⏳ {t('dashboard.pending_verification')}
+              </div>
+            )}
           </div>
           <div className="flex items-center p-1 rounded-full" style={{ backgroundColor: '#fff', border: '0.5px solid #E8DDD5' }}>
             {([['provider', t('dashboard.tab_provider')], ['seeker', t('dashboard.tab_seeker')]] as const).map(([v, label]) => (

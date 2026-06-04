@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getEvents, rsvpToEvent, cancelRsvp, getUserRsvps } from '../lib/events'
+import { getActiveSubscription } from '../lib/subscriptions'
 import type { EventCategory } from '../lib/types'
 
 function formatEventDate(iso: string) {
@@ -21,6 +22,7 @@ export default function Meetups() {
   const [allEvents, setAllEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [rsvpd, setRsvpd] = useState<Set<string>>(new Set())
+  const [hasSubscription, setHasSubscription] = useState(false)
 
   useEffect(() => {
     getEvents({}).then(({ data }) => { setAllEvents(data ?? []); setLoading(false) })
@@ -31,6 +33,7 @@ export default function Meetups() {
     getUserRsvps(user.id).then(({ data }) => {
       if (data) setRsvpd(new Set(data.map((r: any) => r.event_id)))
     })
+    getActiveSubscription(user.id).then(({ data }) => setHasSubscription(!!data))
   }, [user])
 
   const events = useMemo(() => {
@@ -51,6 +54,7 @@ export default function Meetups() {
   const handleRsvp = async (e: React.MouseEvent, eventId: string) => {
     e.stopPropagation()
     if (!user) { navigate('/login'); return }
+    if (!hasSubscription) { navigate('/subscribe'); return }
     if (rsvpd.has(eventId)) {
       const { error } = await cancelRsvp(eventId, user.id)
       if (error) { console.error('Cancel RSVP failed:', error.message); return }
@@ -150,7 +154,7 @@ export default function Meetups() {
                             style={event.price === 0
                               ? { backgroundColor: '#B8860B', color: '#3A2400' }
                               : { backgroundColor: 'rgba(255,255,255,0.92)', color: '#5C0A1E' }}>
-                            {event.price === 0 ? 'Free' : `¥${event.price.toLocaleString()}`}
+                            {event.price === 0 ? t('meetups.event_free') : `¥${event.price.toLocaleString()}`}
                           </span>
                         </div>
                       </div>
@@ -209,14 +213,14 @@ export default function Meetups() {
                               ? { backgroundColor: '#FDF0E0', color: '#7A4A00' }
                               : { backgroundColor: '#5C0A1E', color: '#fff' }}
                             onMouseEnter={e => {
-                              if (hasRsvpd) { e.currentTarget.style.backgroundColor = '#FEE2E2'; e.currentTarget.style.color = '#991B1B'; e.currentTarget.textContent = '✕ Cancel' }
+                              if (hasRsvpd) { e.currentTarget.style.backgroundColor = '#FEE2E2'; e.currentTarget.style.color = '#991B1B'; e.currentTarget.textContent = t('meetups.rsvp_cancel') }
                               else if (!isFull) e.currentTarget.style.backgroundColor = '#3A0612'
                             }}
                             onMouseLeave={e => {
-                              if (hasRsvpd) { e.currentTarget.style.backgroundColor = '#FDF0E0'; e.currentTarget.style.color = '#7A4A00'; e.currentTarget.textContent = '✓ Going' }
+                              if (hasRsvpd) { e.currentTarget.style.backgroundColor = '#FDF0E0'; e.currentTarget.style.color = '#7A4A00'; e.currentTarget.textContent = t('meetups.rsvp_going') }
                               else if (!isFull) e.currentTarget.style.backgroundColor = '#5C0A1E'
                             }}>
-                            {hasRsvpd ? '✓ Going' : isFull ? 'Full' : t('meetups.rsvp')}
+                            {hasRsvpd ? t('meetups.rsvp_going') : isFull ? t('meetups.event_full') : t('meetups.rsvp')}
                           </button>
                         </div>
                       </div>

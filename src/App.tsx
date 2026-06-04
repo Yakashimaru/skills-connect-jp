@@ -17,6 +17,7 @@ import Signup from './pages/Signup'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import AuthCallback from './pages/AuthCallback'
+import Subscribe from './pages/Subscribe'
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation()
@@ -57,6 +58,7 @@ function App() {
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path="/subscribe" element={<Subscribe />} />
         </Routes>
       </div>
     </BrowserRouter>
