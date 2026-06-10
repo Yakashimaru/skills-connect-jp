@@ -138,7 +138,7 @@ export default function Skills() {
       <Helmet>
         <title>Find English Tutors &amp; Skills in Japan – Kaiyui</title>
         <meta name="description" content="Browse English tutors, language teachers, and skilled providers across Japan. Find the right person for English lessons, 英会話, and tutoring on Kaiyui." />
-        <meta name="keywords" content="english tutor japan, english tutor tokyo, english tutor osaka, english tutor okinawa, english lessons japan, english language japan, mandarin tutor japan, language exchange japan, english job japan, jobs that dont require japanese, 英語チューター 日本, 英語チューター 東京, 英語チューター 大阪, 英語チューター 沖縄, 英語レッスン 日本, 英語 日本, 中国語チューター 日本, 言語交換 日本, 英語 仕事 日本, 日本語不要 仕事" />
+        <meta name="keywords" content="english tutor japan, english tutor tokyo, english tutor osaka, english tutor okinawa, english lessons japan, english language japan, private english tutor japan, online english tutor japan, english conversation class japan, english only jobs japan, jobs for foreigners japan, english speaking jobs japan, work in japan no japanese, jobs that dont require japanese, mandarin tutor japan, japanese tutor for foreigners, learn japanese in japan, language exchange japan, english job japan, 英語チューター 日本, 英語チューター 東京, 英語チューター 大阪, 英語チューター 沖縄, 英語レッスン 日本, 英語 日本, 英語 プライベートレッスン 日本, 中国語チューター 日本, 日本語レッスン 外国人向け, 言語交換 日本, 英語 仕事 日本, 日本語不要 仕事, 英語のみ 仕事 日本, 外国人 仕事 日本, 日本語不要 求人" />
         <link rel="canonical" href="https://www.kaiyui.com/skills" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
