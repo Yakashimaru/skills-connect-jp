@@ -134,9 +134,9 @@ export default function Social() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
       <Helmet>
-        <title>English Community &amp; Social in Japan – Kaiyui</title>
-        <meta name="description" content="Join Japan's English-speaking social community. Find friends, conversation partners, and networking events. 英語, 英会話, コミュニティ, 国際友好 — connect in Japan with Kaiyui." />
-        <meta name="keywords" content="english community japan, 英語 コミュニティ, 英会話 japan, 社交 networking japan, 友達 japan, 国際的 community, 国際友好, english speaking friends japan" />
+        <title>Foreign Friends, International Community &amp; Social in Japan – Kaiyui</title>
+        <meta name="description" content="Find foreign friends, international connections, language exchange partners, and social events in Japan. Connect with expats and locals — 外国人 友達, 国際友達, マッチング 日本." />
+        <meta name="keywords" content="foreign friends japan, international friends japan, expat community japan, english speaking community japan, language exchange japan, matching japan, foreigner japan, networking japan, 外国人 友達 日本, 国際友達, 外国人コミュニティ 日本, 言語交換 日本, マッチング 日本, 英語 コミュニティ 日本, 国際的, 国際友好, 英会話, 社交" />
         <link rel="canonical" href="https://www.kaiyui.com/social" />
       </Helmet>
       <div className="max-w-6xl mx-auto px-6 py-10">
