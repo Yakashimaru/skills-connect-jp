@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Helmet } from 'react-helmet-async'
 import { useAuth } from '../context/AuthContext'
 import { getEvents, rsvpToEvent, cancelRsvp, getUserRsvps } from '../lib/events'
 import { getActiveSubscription } from '../lib/subscriptions'
@@ -74,6 +75,20 @@ export default function Meetups() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
+      <Helmet>
+        <title>English Meetups, Networking &amp; Events in Japan – Kaiyui</title>
+        <meta name="description" content="Discover English-speaking meetups, expat events, golf communities, business networking, and social gatherings across Japan. Meet foreigners and locals on Kaiyui." />
+        <meta name="keywords" content="english meetups japan, expat community japan, networking japan, business community japan, golf japan, golf community japan, foreigner japan, foreign friends japan, international friends japan, matching japan, 英語 ミートアップ 日本, 外国人コミュニティ 日本, ネットワーキング 日本, ビジネス コミュニティ 日本, ゴルフ 日本, ゴルフ コミュニティ 日本, 外国人 日本, 外国人 友達 日本, マッチング 日本" />
+        <link rel="canonical" href="https://www.kaiyui.com/meetups" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EventSeries",
+          "name": "Kaiyui Community Meetups in Japan",
+          "url": "https://www.kaiyui.com/meetups",
+          "description": "English-speaking community meetups and events across Japan",
+          "location": { "@type": "Country", "name": "Japan" }
+        })}</script>
+      </Helmet>
 
       <div className="max-w-6xl mx-auto px-6 pt-10 pb-6">
         <div className="flex items-end justify-between mb-6">

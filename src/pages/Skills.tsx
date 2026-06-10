@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Helmet } from 'react-helmet-async'
 import { searchProfiles, saveProfile, unsaveProfile, getSavedProfiles } from '../lib/profiles'
 import { useAuth } from '../context/AuthContext'
 import ProviderCard from '../components/ProviderCard'
@@ -25,7 +26,6 @@ export default function Skills() {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
 
-  useEffect(() => { document.title = t('skills.heading') }, [t])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allProfiles, setAllProfiles] = useState<any[]>([])
@@ -135,6 +135,12 @@ export default function Skills() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
+      <Helmet>
+        <title>Find English Tutors &amp; Skills in Japan – Kaiyui</title>
+        <meta name="description" content="Browse English tutors, language teachers, and skilled providers across Japan. Find the right person for English lessons, 英会話, and tutoring on Kaiyui." />
+        <meta name="keywords" content="english tutor japan, english tutor tokyo, english tutor osaka, english tutor okinawa, english lessons japan, english language japan, mandarin tutor japan, language exchange japan, english job japan, jobs that dont require japanese, 英語チューター 日本, 英語チューター 東京, 英語チューター 大阪, 英語チューター 沖縄, 英語レッスン 日本, 英語 日本, 中国語チューター 日本, 言語交換 日本, 英語 仕事 日本, 日本語不要 仕事" />
+        <link rel="canonical" href="https://www.kaiyui.com/skills" />
+      </Helmet>
       <div className="max-w-6xl mx-auto px-6 py-10">
 
         <div className="mb-8">

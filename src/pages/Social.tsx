@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Helmet } from 'react-helmet-async'
 import { searchProfiles, saveProfile, unsaveProfile, getSavedProfiles } from '../lib/profiles'
 import { useAuth } from '../context/AuthContext'
 import ProviderCard from '../components/ProviderCard'
@@ -23,7 +24,6 @@ export default function Social() {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
 
-  useEffect(() => { document.title = t('social.heading') }, [t])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allProfiles, setAllProfiles] = useState<any[]>([])
@@ -133,6 +133,12 @@ export default function Social() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
+      <Helmet>
+        <title>Foreign Friends, International Community &amp; Social in Japan – Kaiyui</title>
+        <meta name="description" content="Find foreign friends, international connections, language exchange partners, and social events in Japan. Connect with expats and locals — 外国人 友達, 国際友達, マッチング 日本." />
+        <meta name="keywords" content="foreign friends japan, international friends japan, expat community japan, english speaking community japan, language exchange japan, matching japan, foreigner japan, networking japan, 外国人 友達 日本, 国際友達, 外国人コミュニティ 日本, 言語交換 日本, マッチング 日本, 英語 コミュニティ 日本, 国際的, 国際友好, 英会話, 社交" />
+        <link rel="canonical" href="https://www.kaiyui.com/social" />
+      </Helmet>
       <div className="max-w-6xl mx-auto px-6 py-10">
 
         <div className="mb-8">
