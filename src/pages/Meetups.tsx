@@ -78,7 +78,7 @@ export default function Meetups() {
       <Helmet>
         <title>English Meetups, Networking &amp; Events in Japan – Kaiyui</title>
         <meta name="description" content="Discover English-speaking meetups, expat events, golf communities, business networking, and social gatherings across Japan. Meet foreigners and locals on Kaiyui." />
-        <meta name="keywords" content="english meetups japan, expat community japan, networking japan, business community japan, golf japan, golf community japan, foreigner japan, foreign friends japan, international friends japan, matching japan, 英語 ミートアップ 日本, 外国人コミュニティ 日本, ネットワーキング 日本, ビジネス コミュニティ 日本, ゴルフ 日本, ゴルフ コミュニティ 日本, 外国人 日本, 外国人 友達 日本, マッチング 日本" />
+        <meta name="keywords" content="english meetups japan, expat community japan, expat community tokyo, expat community osaka, expat community okinawa, expat community fukuoka, networking japan, business community japan, golf japan, golf community japan, golf partner japan, tennis partner japan, hiking group japan expat, sports community japan, foreigner japan, foreigners in okinawa, english speakers fukuoka, foreign friends japan, international friends japan, make friends in japan, meet locals in japan, matching japan, 英語 ミートアップ 日本, 外国人コミュニティ 日本, 外国人コミュニティ 東京, 外国人コミュニティ 大阪, 外国人コミュニティ 沖縄, ネットワーキング 日本, ビジネス コミュニティ 日本, ゴルフ 日本, ゴルフ コミュニティ 日本, ゴルフ パートナー 日本, スポーツ コミュニティ 日本, 外国人 日本, 外国人 友達 日本, 日本で友達を作る, 外国人と友達になりたい, 国際交流 日本, マッチング 日本" />
         <link rel="canonical" href="https://www.kaiyui.com/meetups" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
