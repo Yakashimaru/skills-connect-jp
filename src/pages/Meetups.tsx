@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Helmet } from 'react-helmet-async'
 import { useAuth } from '../context/AuthContext'
 import { getEvents, rsvpToEvent, cancelRsvp, getUserRsvps } from '../lib/events'
 import { getActiveSubscription } from '../lib/subscriptions'
@@ -74,6 +75,19 @@ export default function Meetups() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
+      <Helmet>
+        <title>Meetups &amp; Events in Japan – Kaiyui</title>
+        <meta name="description" content="Discover English-speaking meetups, community events, and gatherings across Japan. Meet new people, practice English, and build connections at Kaiyui events." />
+        <link rel="canonical" href="https://www.kaiyui.com/meetups" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EventSeries",
+          "name": "Kaiyui Community Meetups in Japan",
+          "url": "https://www.kaiyui.com/meetups",
+          "description": "English-speaking community meetups and events across Japan",
+          "location": { "@type": "Country", "name": "Japan" }
+        })}</script>
+      </Helmet>
 
       <div className="max-w-6xl mx-auto px-6 pt-10 pb-6">
         <div className="flex items-end justify-between mb-6">

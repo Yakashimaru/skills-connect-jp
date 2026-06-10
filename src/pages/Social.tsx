@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Helmet } from 'react-helmet-async'
 import { searchProfiles, saveProfile, unsaveProfile, getSavedProfiles } from '../lib/profiles'
 import { useAuth } from '../context/AuthContext'
 import ProviderCard from '../components/ProviderCard'
@@ -133,6 +134,12 @@ export default function Social() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
+      <Helmet>
+        <title>English Community &amp; Social in Japan – Kaiyui</title>
+        <meta name="description" content="Join Japan's English-speaking social community. Find friends, conversation partners, and networking events. 英語, 英会話, コミュニティ, 国際友好 — connect in Japan with Kaiyui." />
+        <meta name="keywords" content="english community japan, 英語 コミュニティ, 英会話 japan, 社交 networking japan, 友達 japan, 国際的 community, 国際友好, english speaking friends japan" />
+        <link rel="canonical" href="https://www.kaiyui.com/social" />
+      </Helmet>
       <div className="max-w-6xl mx-auto px-6 py-10">
 
         <div className="mb-8">

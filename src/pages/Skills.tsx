@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Helmet } from 'react-helmet-async'
 import { searchProfiles, saveProfile, unsaveProfile, getSavedProfiles } from '../lib/profiles'
 import { useAuth } from '../context/AuthContext'
 import ProviderCard from '../components/ProviderCard'
@@ -135,6 +136,12 @@ export default function Skills() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
+      <Helmet>
+        <title>Find English Tutors &amp; Skills in Japan – Kaiyui</title>
+        <meta name="description" content="Browse English tutors, language teachers, and skilled providers across Japan. Find the right person for English lessons, 英会話, and tutoring on Kaiyui." />
+        <meta name="keywords" content="english tutor japan, english language japan, 英語 tutor, 英会話 japan, english lessons japan, language teacher japan, 国際的 skills" />
+        <link rel="canonical" href="https://www.kaiyui.com/skills" />
+      </Helmet>
       <div className="max-w-6xl mx-auto px-6 py-10">
 
         <div className="mb-8">
