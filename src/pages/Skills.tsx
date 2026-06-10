@@ -140,6 +140,16 @@ export default function Skills() {
         <meta name="description" content="Browse English tutors, language teachers, and skilled providers across Japan. Find the right person for English lessons, 英会話, and tutoring on Kaiyui." />
         <meta name="keywords" content="english tutor japan, english tutor tokyo, english tutor osaka, english tutor okinawa, english lessons japan, english language japan, mandarin tutor japan, language exchange japan, english job japan, jobs that dont require japanese, 英語チューター 日本, 英語チューター 東京, 英語チューター 大阪, 英語チューター 沖縄, 英語レッスン 日本, 英語 日本, 中国語チューター 日本, 言語交換 日本, 英語 仕事 日本, 日本語不要 仕事" />
         <link rel="canonical" href="https://www.kaiyui.com/skills" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "English Tutors & Skills in Japan",
+          "url": "https://www.kaiyui.com/skills",
+          "description": "Find English tutors, language teachers, and skilled providers across Japan on Kaiyui.",
+          "provider": { "@type": "Organization", "name": "Kaiyui", "url": "https://www.kaiyui.com" },
+          "areaServed": { "@type": "Country", "name": "Japan" },
+          "serviceType": ["English Tutoring", "Language Exchange", "Mandarin Tutoring", "Skills Matching"]
+        })}</script>
       </Helmet>
       <div className="max-w-6xl mx-auto px-6 py-10">
 

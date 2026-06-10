@@ -138,6 +138,15 @@ export default function Social() {
         <meta name="description" content="Find foreign friends, international connections, language exchange partners, and social events in Japan. Connect with expats and locals — 外国人 友達, 国際友達, マッチング 日本." />
         <meta name="keywords" content="foreign friends japan, international friends japan, expat community japan, english speaking community japan, language exchange japan, matching japan, foreigner japan, networking japan, 外国人 友達 日本, 国際友達, 外国人コミュニティ 日本, 言語交換 日本, マッチング 日本, 英語 コミュニティ 日本, 国際的, 国際友好, 英会話, 社交" />
         <link rel="canonical" href="https://www.kaiyui.com/social" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Kaiyui Social Community Japan",
+          "url": "https://www.kaiyui.com/social",
+          "description": "International community connecting foreign friends, expats, and locals across Japan.",
+          "areaServed": { "@type": "Country", "name": "Japan" },
+          "keywords": "foreign friends japan, expat community japan, international friends japan, language exchange japan"
+        })}</script>
       </Helmet>
       <div className="max-w-6xl mx-auto px-6 py-10">
 
