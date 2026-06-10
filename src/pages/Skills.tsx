@@ -26,7 +26,6 @@ export default function Skills() {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
 
-  useEffect(() => { document.title = t('skills.heading') }, [t])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allProfiles, setAllProfiles] = useState<any[]>([])

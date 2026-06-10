@@ -24,7 +24,6 @@ export default function Social() {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
 
-  useEffect(() => { document.title = t('social.heading') }, [t])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allProfiles, setAllProfiles] = useState<any[]>([])
