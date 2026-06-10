@@ -6,8 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "postbuild": "react-snap || true",
     "lint": "eslint .",
     "preview": "vite preview"
+  },
+  "reactSnap": {
+    "source": "dist",
+    "destinationDir": "dist",
+    "include": ["/", "/skills", "/social", "/meetups", "/how-it-works", "/contact"],
+    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
+    "crawl": false,
+    "inlineCss": false
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
@@ -30,6 +39,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "react-snap": "^1.23.0",
     "tailwindcss": "^4.2.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.56.1",
