@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getBookingsForUser } from '../lib/bookings'
 import { getSavedProfiles } from '../lib/profiles'
-import { getActiveSubscription } from '../lib/subscriptions'
+import { getActiveSubscription, cancelSubscription } from '../lib/subscriptions'
 import { createReview } from '../lib/reviews'
 import { TRAIT_JA, INTEREST_JA, SKILL_JA, SOCIAL_SKILL_JA, JA_CITY } from '../lib/constants'
 
@@ -149,8 +149,6 @@ function ProviderDashboard({ bookings, subscription, providerProfile, userId }: 
   const completedThisMonth = past.filter(b => new Date(b.scheduled_at) >= startOfMonth)
   const earnings = completedThisMonth.reduce((sum: number, b: any) => sum + (b.rate ?? 0), 0)
 
-  const plan = subscription ? PLAN_LABELS[subscription.plan] : null
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 flex flex-col gap-6">
@@ -214,7 +212,7 @@ function ProviderDashboard({ bookings, subscription, providerProfile, userId }: 
         </div>
       </div>
 
-      <RightColumn profile={null} providerProfile={providerProfile} plan={plan} navigate={navigate} tr={tr} role="provider" />
+      <RightColumn profile={null} providerProfile={providerProfile} subscription={subscription} navigate={navigate} tr={tr} role="provider" />
     </div>
   )
 }
@@ -230,7 +228,6 @@ function SeekerDashboard({ bookings, savedProfiles, subscription, userId }: {
   const now = new Date()
   const upcoming = bookings.filter(b => ['pending', 'confirmed'].includes(b.status) && new Date(b.scheduled_at) > now)
   const past = bookings.filter(b => b.status === 'completed')
-  const plan = subscription ? PLAN_LABELS[subscription.plan] : null
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -313,7 +310,7 @@ function SeekerDashboard({ bookings, savedProfiles, subscription, userId }: {
         </div>
       </div>
 
-      <RightColumn profile={null} providerProfile={null} plan={plan} navigate={navigate} tr={tr} role="seeker" />
+      <RightColumn profile={null} providerProfile={null} subscription={subscription} navigate={navigate} tr={tr} role="seeker" />
     </div>
   )
 }
@@ -387,12 +384,33 @@ function SectionRow({ title, children }: { title: string; children: React.ReactN
   )
 }
 
-function RightColumn({ plan, navigate, tr, role }: {
-  profile: any; providerProfile: any; plan: typeof PLAN_LABELS[string] | null;
+function RightColumn({ subscription: initialSub, navigate, tr, role }: {
+  profile: any; providerProfile: any; subscription: any;
   navigate: ReturnType<typeof useNavigate>; tr: any; role: 'provider' | 'seeker'
 }) {
   const { profile, signOut } = useAuth()
   const { i18n } = useTranslation()
+  const [sub, setSub] = useState<any>(initialSub)
+  const [confirmCancel, setConfirmCancel] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelError, setCancelError] = useState<string | null>(null)
+
+  const plan = sub ? PLAN_LABELS[sub.plan] : null
+  const renewsAt = sub?.renews_at ? new Date(sub.renews_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null
+  const alreadyCancelledAtPeriodEnd = sub?.status === 'active' && !!sub?.cancelled_at
+
+  const handleCancel = async () => {
+    setCancelling(true)
+    setCancelError(null)
+    const result = await cancelSubscription()
+    setCancelling(false)
+    if ('error' in result) {
+      setCancelError(result.error)
+      return
+    }
+    setSub((prev: any) => ({ ...prev, cancelled_at: new Date().toISOString() }))
+    setConfirmCancel(false)
+  }
   const isJa = i18n.language === 'ja'
   const pp = (profile as any)?.provider_profile
   const p = profile as any
@@ -553,21 +571,81 @@ function RightColumn({ plan, navigate, tr, role }: {
         <h3 className="font-semibold mb-1" style={{ color: '#1A0208' }}>{tr('dashboard.subscription')}</h3>
         <p className="text-xs mb-3" style={{ color: '#aaa' }}>{tr('dashboard.current_plan')}</p>
         {plan ? (
-          <div className="rounded-xl p-4 text-center" style={{ backgroundColor: plan.bg, border: '1px solid #B8860B' }}>
-            <p className="font-bold text-lg text-white">{plan.label}</p>
-            <p className="text-xs mt-0.5" style={{ color: '#B8860B' }}>{plan.price}</p>
-          </div>
+          <>
+            <div className="rounded-xl p-4 text-center" style={{ backgroundColor: plan.bg, border: '1px solid #B8860B' }}>
+              <p className="font-bold text-lg text-white">{plan.label}</p>
+              <p className="text-xs mt-0.5" style={{ color: '#B8860B' }}>{plan.price}</p>
+            </div>
+            {renewsAt && (
+              <p className="text-xs text-center mt-2" style={{ color: alreadyCancelledAtPeriodEnd ? '#f87171' : '#aaa' }}>
+                {alreadyCancelledAtPeriodEnd ? `Access ends ${renewsAt}` : `Renews ${renewsAt}`}
+              </p>
+            )}
+            {cancelError && (
+              <p className="text-xs mt-2 text-center" style={{ color: '#f87171' }}>{cancelError}</p>
+            )}
+            {!alreadyCancelledAtPeriodEnd && !confirmCancel && (
+              <button
+                onClick={() => setConfirmCancel(true)}
+                className="w-full mt-3 text-xs py-2 rounded-xl transition-colors"
+                style={{ border: '0.5px solid #E8DDD5', color: '#aaa', backgroundColor: 'transparent' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#aaa')}
+              >
+                {tr('dashboard.cancel_subscription', 'Cancel subscription')}
+              </button>
+            )}
+            {confirmCancel && (
+              <div className="mt-3 rounded-xl p-3" style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5' }}>
+                <p className="text-xs text-center mb-3" style={{ color: '#1A0208' }}>
+                  {tr('dashboard.cancel_confirm', 'Your access continues until')} {renewsAt ?? 'end of billing period'}.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleCancel}
+                    disabled={cancelling}
+                    className="flex-1 text-xs py-2 rounded-lg disabled:opacity-60"
+                    style={{ backgroundColor: '#f87171', color: '#fff' }}
+                  >
+                    {cancelling ? '...' : tr('dashboard.confirm_cancel', 'Yes, cancel')}
+                  </button>
+                  <button
+                    onClick={() => { setConfirmCancel(false); setCancelError(null) }}
+                    disabled={cancelling}
+                    className="flex-1 text-xs py-2 rounded-lg"
+                    style={{ border: '0.5px solid #E8DDD5', color: '#5C0A1E', backgroundColor: 'transparent' }}
+                  >
+                    {tr('dashboard.keep_plan', 'Keep plan')}
+                  </button>
+                </div>
+              </div>
+            )}
+            {alreadyCancelledAtPeriodEnd && (
+              <button
+                onClick={() => navigate('/subscribe')}
+                className="w-full mt-3 text-xs py-2 rounded-xl transition-colors"
+                style={{ border: '0.5px solid #B8860B', color: '#B8860B', backgroundColor: 'transparent' }}
+              >
+                {tr('dashboard.resubscribe', 'Resubscribe')}
+              </button>
+            )}
+          </>
         ) : (
-          <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#F5F5F5' }}>
-            <p className="text-sm font-medium" style={{ color: '#aaa' }}>{tr('dashboard.no_plan')}</p>
-          </div>
+          <>
+            <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#F5F5F5' }}>
+              <p className="text-sm font-medium" style={{ color: '#aaa' }}>{tr('dashboard.no_plan')}</p>
+            </div>
+            <button
+              onClick={() => navigate('/subscribe')}
+              className="w-full mt-3 text-sm py-2 rounded-xl transition-colors"
+              style={{ border: '0.5px solid #B8860B', color: '#B8860B', backgroundColor: 'transparent' }}
+              onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(184,134,11,0.06)')}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+            >
+              {tr('dashboard.subscribe_now', 'Subscribe now')}
+            </button>
+          </>
         )}
-        <button className="w-full mt-3 text-sm py-2 rounded-xl transition-colors"
-          style={{ border: '0.5px solid #E8DDD5', color: '#5C0A1E', backgroundColor: 'transparent' }}
-          onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#FDF8F2')}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}>
-          {tr('dashboard.manage_plan')}
-        </button>
       </div>
 
       {/* Session options */}

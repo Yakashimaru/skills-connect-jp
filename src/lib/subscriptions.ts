@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { Subscription } from './types'
+import type { SubscriptionPlan } from './types'
 
 export async function getActiveSubscription(userId: string) {
   return supabase
@@ -10,15 +10,26 @@ export async function getActiveSubscription(userId: string) {
     .maybeSingle()
 }
 
-export async function createSubscription(
-  subscription: Omit<Subscription, 'id' | 'started_at'>
-) {
-  return supabase.from('subscriptions').insert(subscription).select().single()
+export async function createCheckoutSession(plan: SubscriptionPlan): Promise<{ url: string } | { error: string }> {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Not authenticated' }
+
+  const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+    body: { plan },
+  })
+  if (error) return { error: error.message }
+  return data as { url: string }
 }
 
-export async function cancelSubscription(id: string) {
-  return supabase
-    .from('subscriptions')
-    .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
-    .eq('id', id)
+// Cancels via Stripe (cancel_at_period_end: true) then records cancelled_at in DB.
+// Status stays 'active' until the billing period ends, at which point the
+// stripe-webhook sets it to 'cancelled'. Do NOT update the DB directly here —
+// only Stripe should be the source of truth for subscription state.
+export async function cancelSubscription(): Promise<{ success: true } | { error: string }> {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Not authenticated' }
+
+  const { data, error } = await supabase.functions.invoke('cancel-subscription')
+  if (error) return { error: error.message }
+  return (data as { success: true }) ?? { success: true }
 }

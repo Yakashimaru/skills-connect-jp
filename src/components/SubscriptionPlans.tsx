@@ -1,4 +1,9 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { createCheckoutSession } from '../lib/subscriptions'
+import type { SubscriptionPlan } from '../lib/types'
 
 const prices     = ['¥5,000', '¥10,000', '¥50,000']
 const trialPrices = ['¥2,500',  '¥5,000', '¥25,000']
@@ -12,6 +17,20 @@ const cardStyle = {
 
 export default function SubscriptionPlans() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const [loading, setLoading] = useState<SubscriptionPlan | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleSelect(plan: SubscriptionPlan) {
+    if (!user) { navigate('/login'); return }
+    setLoading(plan)
+    setError(null)
+    const result = await createCheckoutSession(plan)
+    setLoading(null)
+    if ('error' in result) { setError(result.error); return }
+    window.location.href = result.url
+  }
 
   const plans = styleKeys.map((key, i) => ({
     style: key,
@@ -32,6 +51,10 @@ export default function SubscriptionPlans() {
           <h2 className="text-4xl font-bold mb-4" style={{ color: '#1A0208' }}>{t('plans.heading')}</h2>
           <p className="text-sm max-w-md mx-auto" style={{ color: '#7A6060' }}>{t('plans.subheading')}</p>
         </div>
+
+        {error && (
+          <p className="text-center text-sm mb-6" style={{ color: '#f87171' }}>{error}</p>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           {plans.map((plan) => (
@@ -66,13 +89,16 @@ export default function SubscriptionPlans() {
               <p className="text-xs mb-4" style={{ color: plan.style === 'standard' ? '#aaa' : 'rgba(255,255,255,0.35)' }}>{t('plans.trial_note')}</p>
 
               <button
-                className="w-full py-3 rounded-xl font-medium text-sm transition-colors"
+                disabled={loading !== null}
+                onClick={() => handleSelect(plan.style as SubscriptionPlan)}
+                className="w-full py-3 rounded-xl font-medium text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 style={
                   plan.style === 'standard'
                     ? { backgroundColor: 'transparent', color: '#B8860B', border: '1px solid #B8860B' }
                     : { backgroundColor: '#B8860B', color: '#3A2400' }
                 }
                 onMouseEnter={e => {
+                  if (loading !== null) return
                   if (plan.style === 'standard') {
                     e.currentTarget.style.backgroundColor = 'rgba(184,134,11,0.08)'
                   } else {
@@ -87,7 +113,7 @@ export default function SubscriptionPlans() {
                   }
                 }}
               >
-                {plan.cta}
+                {loading === plan.style ? '...' : plan.cta}
               </button>
             </div>
           ))}

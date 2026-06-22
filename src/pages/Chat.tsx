@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getConversations, getMessages, sendMessage, subscribeToMessages } from '../lib/messages'
+import { getActiveSubscription } from '../lib/subscriptions'
 
 function relativeTime(iso: string, t: (k: string, opts?: Record<string, unknown>) => string) {
   const diff = Date.now() - new Date(iso).getTime()
@@ -32,6 +34,7 @@ function Avatar({ profile, size = 'w-10 h-10', textSize = 'text-sm' }: { profile
 export default function Chat() {
   const { t } = useTranslation()
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   const [convList, setConvList] = useState<any[]>([])
   const [activeConv, setActiveConv] = useState<any>(null)
@@ -40,13 +43,18 @@ export default function Chat() {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list')
+  const [hasSubscription, setHasSubscription] = useState<boolean | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   // Fetch conversations on mount
   useEffect(() => {
     if (!user) return
-    getConversations(user.id).then(({ data }) => {
-      setConvList(data ?? [])
+    Promise.all([
+      getConversations(user.id),
+      getActiveSubscription(user.id),
+    ]).then(([{ data: convs }, { data: sub }]) => {
+      setConvList(convs ?? [])
+      setHasSubscription(!!sub)
       setLoading(false)
     })
   }, [user])
@@ -81,6 +89,7 @@ export default function Chat() {
 
   const handleSend = async () => {
     if (!input.trim() || !activeConv || !user || sending) return
+    if (!hasSubscription) { navigate('/subscribe'); return }
     const text = input.trim()
     setInput('')
     setSending(true)
@@ -217,21 +226,32 @@ export default function Chat() {
             </div>
 
             {/* Input bar */}
-            <div className="px-6 py-4 flex items-center gap-3" style={{ borderTop: '0.5px solid #E8DDD5', backgroundColor: '#fff' }}>
-              <button className="text-xl" style={{ color: '#B8860B' }}>📎</button>
-              <input type="text" value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={t('chat.input_placeholder')}
-                className="flex-1 rounded-full px-5 py-2.5 text-sm outline-none"
-                style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5', color: '#1A0208' }} />
-              <button className="text-xl" style={{ color: '#B8860B' }}>🎤</button>
-              <button onClick={handleSend} disabled={!input.trim() || sending}
-                className="w-10 h-10 rounded-full flex items-center justify-center transition-colors disabled:opacity-50"
-                style={{ backgroundColor: input.trim() ? '#B8860B' : '#E8DDD5' }}>
-                <span style={{ color: input.trim() ? '#3A2400' : '#aaa', fontSize: '14px' }}>➤</span>
-              </button>
-            </div>
+            {hasSubscription === false ? (
+              <div className="px-6 py-4 flex items-center justify-between gap-3" style={{ borderTop: '0.5px solid #E8DDD5', backgroundColor: '#FDF8F2' }}>
+                <p className="text-sm" style={{ color: '#7A6060' }}>{t('chat.subscription_required', 'A subscription is required to send messages.')}</p>
+                <button onClick={() => navigate('/subscribe')}
+                  className="text-xs font-medium px-4 py-2 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: '#5C0A1E', color: '#fff' }}>
+                  {t('chat.subscribe', 'Subscribe')}
+                </button>
+              </div>
+            ) : (
+              <div className="px-6 py-4 flex items-center gap-3" style={{ borderTop: '0.5px solid #E8DDD5', backgroundColor: '#fff' }}>
+                <button className="text-xl" style={{ color: '#B8860B' }}>📎</button>
+                <input type="text" value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={t('chat.input_placeholder')}
+                  className="flex-1 rounded-full px-5 py-2.5 text-sm outline-none"
+                  style={{ backgroundColor: '#FDF8F2', border: '0.5px solid #E8DDD5', color: '#1A0208' }} />
+                <button className="text-xl" style={{ color: '#B8860B' }}>🎤</button>
+                <button onClick={handleSend} disabled={!input.trim() || sending}
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-colors disabled:opacity-50"
+                  style={{ backgroundColor: input.trim() ? '#B8860B' : '#E8DDD5' }}>
+                  <span style={{ color: input.trim() ? '#3A2400' : '#aaa', fontSize: '14px' }}>➤</span>
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

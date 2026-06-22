@@ -71,3 +71,47 @@ ALTER TABLE public.profiles
   ADD COLUMN IF NOT EXISTS phone                    text,
   ADD COLUMN IF NOT EXISTS event_preferences        text[]   DEFAULT '{}',
   ADD COLUMN IF NOT EXISTS notification_preferences jsonb    DEFAULT '{}';
+
+
+-- ------------------------------------------------------------
+-- 5. Stripe idempotency — unique constraint on subscription ID
+--    Prevents duplicate rows if Stripe retries a webhook event.
+-- ------------------------------------------------------------
+ALTER TABLE public.subscriptions
+  ADD CONSTRAINT IF NOT EXISTS subscriptions_stripe_subscription_id_key
+  UNIQUE (stripe_subscription_id);
+
+
+-- ------------------------------------------------------------
+-- 6. Stripe webhook — atomic cancel + activate subscription
+--    Runs both operations in one transaction so a partial failure
+--    cannot leave the user with no active subscription.
+-- ------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.activate_subscription(
+  p_user_id          uuid,
+  p_plan             text,
+  p_amount_monthly   integer,
+  p_stripe_sub_id    text,
+  p_stripe_cust_id   text,
+  p_renews_at        timestamptz
+) RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Cancel any existing active subscription for this user
+  UPDATE public.subscriptions
+     SET status       = 'cancelled',
+         cancelled_at = now()
+   WHERE user_id = p_user_id
+     AND status  = 'active';
+
+  -- Insert the new active subscription
+  INSERT INTO public.subscriptions
+    (user_id, plan, amount_monthly, status,
+     stripe_subscription_id, stripe_customer_id, renews_at)
+  VALUES
+    (p_user_id, p_plan, p_amount_monthly, 'active',
+     p_stripe_sub_id, p_stripe_cust_id, p_renews_at);
+END;
+$$;
