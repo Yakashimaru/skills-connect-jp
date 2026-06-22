@@ -8,13 +8,17 @@ import SubscriptionPlans from '../components/SubscriptionPlans'
 export default function Subscribe() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { user } = useAuth()
-  const [isReturning, setIsReturning] = useState(false)
+  const { user, loading: authLoading } = useAuth()
+  // null = still resolving; true/false = known. We don't render plan cards
+  // until this is resolved so a returning subscriber never sees trial prices
+  // flash before the DB query comes back.
+  const [isReturning, setIsReturning] = useState<boolean | null>(null)
 
   useEffect(() => {
-    if (!user) return
+    if (authLoading) return
+    if (!user) { setIsReturning(false); return }
     hasSubscribedBefore(user.id).then(setIsReturning)
-  }, [user])
+  }, [user, authLoading])
 
   return (
     <div className="min-h-screen bg-white">
@@ -36,7 +40,10 @@ export default function Subscribe() {
           {t('subscribe.go_back', '← Go back')}
         </button>
       </div>
-      <SubscriptionPlans isReturning={isReturning} />
+      {isReturning === null
+        ? <div className="py-20 text-center text-sm" style={{ color: '#B8860B' }}>…</div>
+        : <SubscriptionPlans isReturning={isReturning} />
+      }
     </div>
   )
 }

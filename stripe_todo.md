@@ -53,7 +53,7 @@ The UI advertises a 50% first-month discount. This must be backed by a real Stri
 
 ---
 
-## 3. Supabase — Run SQL Migrations
+## 4. Supabase — Run SQL Migrations
 
 In Supabase dashboard → **SQL Editor**, run sections **5, 6, and 7** from `extras.sql`:
 
@@ -75,7 +75,7 @@ ALTER TABLE public.subscriptions
 
 ---
 
-## 4. Supabase — Set Edge Function Secrets
+## 5. Supabase — Set Edge Function Secrets
 
 In Supabase dashboard → **Edge Functions → Manage secrets**, add all of these:
 
@@ -93,7 +93,7 @@ In Supabase dashboard → **Edge Functions → Manage secrets**, add all of thes
 
 ---
 
-## 5. Deploy Edge Functions
+## 6. Deploy Edge Functions
 
 Run these from the project root (requires Supabase CLI logged in):
 
@@ -105,7 +105,7 @@ supabase functions deploy cancel-subscription
 
 ---
 
-## 6. Test the Full Flow (Test Mode)
+## 7. Test the Full Flow (Test Mode)
 
 1. Run the app locally (`npm run dev`)
 2. Log in as a test user and go to `/subscribe`
@@ -141,12 +141,12 @@ supabase functions deploy cancel-subscription
 
 ---
 
-## 7. Go Live
+## 8. Go Live
 
 When ready to accept real payments:
 
 1. In Stripe dashboard, **switch to Live mode** (toggle top-left)
-2. Repeat steps 1–4 (products, coupon, webhook, and price IDs in Live mode)
+2. Repeat steps 1–5 (products, coupon, webhook, SQL migrations, and secrets in Live mode)
 3. In Supabase, update all secrets with the **live** values (live secret key, live webhook secret, live price IDs, live coupon ID)
 4. Update `SITE_URL` to your production URL if it isn't already
 5. Redeploy the edge functions so they pick up the updated secrets:
