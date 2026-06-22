@@ -2,12 +2,17 @@ import { supabase } from './supabase'
 import type { SubscriptionPlan } from './types'
 
 export async function getActiveSubscription(userId: string) {
-  return supabase
+  // Use order + limit(1) instead of maybeSingle() so that legacy users who
+  // ended up with multiple active rows (from the pre-fix re-subscribe bug)
+  // don't get a PGRST116 error that silently makes them appear unsubscribed.
+  const { data, error } = await supabase
     .from('subscriptions')
     .select('*')
     .eq('user_id', userId)
     .eq('status', 'active')
-    .maybeSingle()
+    .order('started_at', { ascending: false })
+    .limit(1)
+  return { data: data?.[0] ?? null, error }
 }
 
 export async function createCheckoutSession(plan: SubscriptionPlan): Promise<{ url: string } | { error: string }> {

@@ -27,49 +27,45 @@ Deno.serve(async (req) => {
     )
     if (authError || !user) return new Response('Unauthorized', { status: 401 })
 
-    // Always look up by user_id from JWT — never trust a subscription ID from
-    // the request body, as a user could cancel someone else's subscription.
-    const { data: sub } = await supabase
+    // Issue 4 fix: use select() not maybeSingle() — a user may have multiple
+    // active rows due to a re-subscribe race (Issue 1). maybeSingle() throws
+    // PGRST116 when >1 row is returned, causing a silent 500 and leaving the
+    // user unable to cancel. We cancel ALL active subscriptions instead.
+    const { data: subs } = await supabase
       .from('subscriptions')
       .select('id, stripe_subscription_id, cancelled_at')
       .eq('user_id', user.id)
       .eq('status', 'active')
-      .maybeSingle()
 
-    if (!sub) {
+    if (!subs || subs.length === 0) {
       return new Response(JSON.stringify({ error: 'No active subscription found' }), {
         status: 404,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       })
     }
 
-    if (sub.cancelled_at) {
-      return new Response(JSON.stringify({ error: 'Subscription already cancelled' }), {
-        status: 409,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+    for (const sub of subs) {
+      if (sub.cancelled_at) continue
+
+      if (!sub.stripe_subscription_id) {
+        // Orphaned DB row with no Stripe backing — just mark it cancelled.
+        await supabase
+          .from('subscriptions')
+          .update({ cancelled_at: new Date().toISOString() })
+          .eq('id', sub.id)
+        continue
+      }
+
+      // Cancel at period end: user keeps access until renews_at.
+      await stripe.subscriptions.update(sub.stripe_subscription_id, {
+        cancel_at_period_end: true,
       })
+
+      await supabase
+        .from('subscriptions')
+        .update({ cancelled_at: new Date().toISOString() })
+        .eq('id', sub.id)
     }
-
-    if (!sub.stripe_subscription_id) {
-      return new Response(JSON.stringify({ error: 'No Stripe subscription linked' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      })
-    }
-
-    // Cancel at period end: user keeps access until renews_at, no more renewals.
-    // Stripe fires customer.subscription.deleted at period end, which sets
-    // status = 'cancelled' in our DB via the webhook.
-    await stripe.subscriptions.update(sub.stripe_subscription_id, {
-      cancel_at_period_end: true,
-    })
-
-    // Record when user requested cancellation. Status stays 'active' so the
-    // user keeps access until the end of the billing period.
-    await supabase
-      .from('subscriptions')
-      .update({ cancelled_at: new Date().toISOString() })
-      .eq('id', sub.id)
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },

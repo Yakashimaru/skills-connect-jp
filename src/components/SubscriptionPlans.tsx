@@ -86,7 +86,7 @@ export default function SubscriptionPlans() {
                 ))}
               </ul>
 
-              <p className="text-xs mb-4" style={{ color: plan.style === 'standard' ? '#aaa' : 'rgba(255,255,255,0.35)' }}>{t('plans.trial_note')}</p>
+              <p className="text-xs font-medium mb-4" style={{ color: plan.style === 'standard' ? '#5C0A1E' : 'rgba(255,255,255,0.85)' }}>{t('plans.trial_note')}</p>
 
               <button
                 disabled={loading !== null}

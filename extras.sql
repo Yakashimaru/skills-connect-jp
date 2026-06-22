@@ -74,7 +74,17 @@ ALTER TABLE public.profiles
 
 
 -- ------------------------------------------------------------
--- 5. Stripe idempotency — unique constraint on subscription ID
+-- 5. Drop the INSERT RLS policy on subscriptions.
+--    This policy allowed any authenticated user to insert a row
+--    directly and grant themselves a free active subscription.
+--    Subscriptions must only be created by the webhook via the
+--    service role key, which bypasses RLS entirely.
+-- ------------------------------------------------------------
+DROP POLICY IF EXISTS "Users can insert own subscriptions" ON public.subscriptions;
+
+
+-- ------------------------------------------------------------
+-- 6. Stripe idempotency — unique constraint on subscription ID
 --    Prevents duplicate rows if Stripe retries a webhook event.
 -- ------------------------------------------------------------
 ALTER TABLE public.subscriptions
@@ -83,7 +93,7 @@ ALTER TABLE public.subscriptions
 
 
 -- ------------------------------------------------------------
--- 6. Stripe webhook — atomic cancel + activate subscription
+-- 7. Stripe webhook — atomic cancel + activate subscription
 --    Runs both operations in one transaction so a partial failure
 --    cannot leave the user with no active subscription.
 -- ------------------------------------------------------------

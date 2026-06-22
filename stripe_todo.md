@@ -17,7 +17,24 @@
 
 ---
 
-## 2. Stripe Dashboard — Create Webhook Endpoint
+## 2. Stripe Dashboard — Create Trial Coupon
+
+The UI advertises a 50% first-month discount. This must be backed by a real Stripe coupon, otherwise customers see ¥2,500 but are charged ¥5,000.
+
+1. Navigate to **Product catalogue → Coupons → Create coupon**
+2. Set:
+   - **Type**: Percentage discount
+   - **Percentage off**: 50
+   - **Duration**: Once (applies to first invoice only)
+   - **Name**: First month 50% off (or similar)
+3. Copy the **Coupon ID** (e.g. `FIRSTMONTH50`)
+4. Add it as an edge function secret: `STRIPE_TRIAL_COUPON_ID = <coupon-id>`
+
+> If you do **not** want a trial discount, remove the `trialPrices` and trial badge from `src/components/SubscriptionPlans.tsx` so the UI matches what Stripe actually charges.
+
+---
+
+## 3. Stripe Dashboard — Create Webhook Endpoint
 
 1. Navigate to **Developers → Webhooks → Add endpoint**
 2. Set the endpoint URL to:
@@ -40,14 +57,21 @@
 
 In Supabase dashboard → **SQL Editor**, run sections **5 and 6** from `extras.sql`:
 
-**Section 5** — unique constraint (paste and run):
+Run these sections from `extras.sql` in order:
+
+**Section 5** — drop the dangerous INSERT policy:
+```sql
+DROP POLICY IF EXISTS "Users can insert own subscriptions" ON public.subscriptions;
+```
+
+**Section 6** — unique constraint:
 ```sql
 ALTER TABLE public.subscriptions
   ADD CONSTRAINT IF NOT EXISTS subscriptions_stripe_subscription_id_key
   UNIQUE (stripe_subscription_id);
 ```
 
-**Section 6** — atomic activate function (paste and run the full `CREATE OR REPLACE FUNCTION` block from `extras.sql`).
+**Section 7** — atomic activate function (paste and run the full `CREATE OR REPLACE FUNCTION` block from `extras.sql`).
 
 ---
 
@@ -63,6 +87,7 @@ In Supabase dashboard → **Edge Functions → Manage secrets**, add all of thes
 | `STRIPE_PREMIUM_PRICE_ID`    | Stripe → Product catalogue → Premium Plan → price ID  |
 | `STRIPE_ELITE_PRICE_ID`      | Stripe → Product catalogue → Elite Plan → price ID    |
 | `SITE_URL`                   | Your app's URL, e.g. `https://www.kaiyui.com`      |
+| `STRIPE_TRIAL_COUPON_ID`     | Stripe coupon ID from Step 2 (50% off first month) |
 
 > For local/staging testing, set `SITE_URL` to your staging URL or `http://localhost:5173`.
 
@@ -98,6 +123,22 @@ supabase functions deploy cancel-subscription
 1. In Stripe dashboard → Webhooks → your endpoint → find a `checkout.session.completed` event → **Resend**
 2. The function should return `{ received: true, skipped: true }` and no duplicate row should appear in the DB
 
+### Test re-subscribe (double-billing guard)
+1. Subscribe with one plan → confirm row in DB
+2. Subscribe again (same or different plan) without cancelling first
+3. In Stripe dashboard → Customers → confirm the **old subscription is cancelled** in Stripe (not just in your DB)
+4. Confirm only one active subscription row exists in Supabase
+
+### Test trial coupon
+1. Complete a checkout and check the first invoice in Stripe → should show 50% discount applied
+2. Check the second renewal → should charge the full price
+
+### Test payment failure (past_due guard)
+1. Use Stripe test card `4000 0000 0000 0341` (always fails) to create a subscription
+2. Stripe marks it `past_due` and fires `customer.subscription.updated`
+3. Confirm the user's `status` in DB stays `active` (not changed to expired)
+4. User should still be able to use the app while Stripe retries
+
 ---
 
 ## 7. Go Live
@@ -105,11 +146,19 @@ supabase functions deploy cancel-subscription
 When ready to accept real payments:
 
 1. In Stripe dashboard, **switch to Live mode** (toggle top-left)
-2. Repeat steps 1–2 (create the same products and webhook endpoint in Live mode)
-3. In Supabase, update all secrets with the **live** values (live secret key, live webhook secret, live price IDs)
+2. Repeat steps 1–4 (products, coupon, webhook, and price IDs in Live mode)
+3. In Supabase, update all secrets with the **live** values (live secret key, live webhook secret, live price IDs, live coupon ID)
 4. Update `SITE_URL` to your production URL if it isn't already
 5. Redeploy the edge functions so they pick up the updated secrets:
    ```bash
    supabase functions deploy create-checkout-session
    supabase functions deploy stripe-webhook
+   supabase functions deploy cancel-subscription
    ```
+
+---
+
+## Known Limitations / Future Work
+
+- **`invoice.payment_failed`** is not handled as a webhook event. Stripe retries failed renewals automatically (3–4 times over ~8 days). Access is only revoked when `customer.subscription.deleted` fires after all retries fail. If you want to notify the user earlier (e.g. send an email to update their card), add a handler for this event.
+- **Plan upgrades mid-cycle** are not supported — the app creates a new subscription rather than using Stripe's subscription update API. A proper upgrade flow would use `stripe.subscriptions.update()` with proration. For now, users who want to upgrade must cancel and resubscribe.

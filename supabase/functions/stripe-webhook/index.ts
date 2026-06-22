@@ -7,15 +7,11 @@ const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')!
 Deno.serve(async (req) => {
   const body = await req.text()
 
-  // Explicit null check: a missing signature header means the request did not
-  // come from Stripe (or a proxy stripped it). Reject before touching the DB.
   const sig = req.headers.get('stripe-signature')
   if (!sig) return new Response('Missing Stripe-Signature header', { status: 400 })
 
   let event: Stripe.Event
   try {
-    // constructEventAsync verifies the HMAC-SHA256 signature AND rejects events
-    // with a timestamp older than 5 minutes, blocking replay attacks.
     event = await stripe.webhooks.constructEventAsync(body, sig, webhookSecret)
   } catch (err) {
     console.error('Webhook signature verification failed:', err)
@@ -35,9 +31,7 @@ Deno.serve(async (req) => {
     const stripeSubId = session.subscription as string
     const customerId = session.customer as string
 
-    // Idempotency check: if this stripe_subscription_id is already in the DB,
-    // this event was already processed (Stripe retry or duplicate delivery).
-    // Return 200 immediately — Stripe will stop retrying.
+    // Idempotency: already processed → skip.
     const { data: alreadyProcessed } = await supabase
       .from('subscriptions')
       .select('id')
@@ -50,16 +44,30 @@ Deno.serve(async (req) => {
       })
     }
 
+    // Issue 1 fix: find any existing active Stripe subscriptions for this user
+    // that are NOT the new one and cancel them in Stripe immediately.
+    // The DB rows are cleaned up by activate_subscription() below, but without
+    // this step the old Stripe subscription would keep billing indefinitely.
+    const { data: oldSubs } = await supabase
+      .from('subscriptions')
+      .select('stripe_subscription_id')
+      .eq('user_id', user_id)
+      .eq('status', 'active')
+      .not('stripe_subscription_id', 'eq', stripeSubId)
+      .not('stripe_subscription_id', 'is', null)
+
+    for (const old of oldSubs ?? []) {
+      try {
+        await stripe.subscriptions.cancel(old.stripe_subscription_id)
+      } catch (e) {
+        // Log but don't fail — the sub may already be cancelled in Stripe.
+        console.error('Failed to cancel old Stripe subscription:', old.stripe_subscription_id, e)
+      }
+    }
+
     const stripeSub = await stripe.subscriptions.retrieve(stripeSubId)
     const renewsAt = new Date(stripeSub.current_period_end * 1000).toISOString()
 
-    // activate_subscription() runs both the cancel and the insert in a single
-    // Postgres transaction. If either step fails the whole thing rolls back,
-    // so we can never be left with a cancelled-but-not-yet-activated state.
-    // The unique constraint on stripe_subscription_id means a race-condition
-    // duplicate will fail at the DB level on insert rather than creating a
-    // duplicate row, and the resulting 500 causes Stripe to retry, which then
-    // hits the idempotency check above.
     const { error: rpcError } = await supabase.rpc('activate_subscription', {
       p_user_id:        user_id,
       p_plan:           plan,
@@ -71,16 +79,12 @@ Deno.serve(async (req) => {
 
     if (rpcError) {
       console.error('activate_subscription RPC failed:', rpcError)
-      // Return 500 so Stripe retries. The idempotency check above ensures
-      // that if the RPC actually succeeded but the response timed out, the
-      // retry will be skipped harmlessly.
       return new Response('DB error', { status: 500 })
     }
   }
 
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription
-    // Naturally idempotent: UPDATE to 'cancelled' twice produces the same row.
     await supabase
       .from('subscriptions')
       .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
@@ -90,12 +94,30 @@ Deno.serve(async (req) => {
   if (event.type === 'customer.subscription.updated') {
     const sub = event.data.object as Stripe.Subscription
     const renewsAt = new Date(sub.current_period_end * 1000).toISOString()
-    const status = sub.status === 'active' ? 'active' : sub.status === 'canceled' ? 'cancelled' : 'expired'
-    // Naturally idempotent: same UPDATE applied twice produces the same row.
-    await supabase
-      .from('subscriptions')
-      .update({ renews_at: renewsAt, status })
-      .eq('stripe_subscription_id', sub.id)
+
+    // Issue 5 fix: only map statuses we explicitly understand.
+    // past_due means Stripe is retrying payment — do NOT revoke access yet.
+    // Access is only revoked when customer.subscription.deleted fires (all
+    // retries exhausted) or when the customer cancels intentionally.
+    if (sub.status === 'active') {
+      await supabase
+        .from('subscriptions')
+        .update({ status: 'active', renews_at: renewsAt })
+        .eq('stripe_subscription_id', sub.id)
+    } else if (sub.status === 'canceled') {
+      await supabase
+        .from('subscriptions')
+        .update({ status: 'cancelled', renews_at: renewsAt })
+        .eq('stripe_subscription_id', sub.id)
+    }
+    // past_due, incomplete, trialing, unpaid: update renews_at only,
+    // leave status as-is so the user keeps access during Stripe's retry window.
+    else {
+      await supabase
+        .from('subscriptions')
+        .update({ renews_at: renewsAt })
+        .eq('stripe_subscription_id', sub.id)
+    }
   }
 
   return new Response(JSON.stringify({ received: true }), {
