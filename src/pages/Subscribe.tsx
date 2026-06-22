@@ -1,10 +1,20 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { hasSubscribedBefore } from '../lib/subscriptions'
 import SubscriptionPlans from '../components/SubscriptionPlans'
 
 export default function Subscribe() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const [isReturning, setIsReturning] = useState(false)
+
+  useEffect(() => {
+    if (!user) return
+    hasSubscribedBefore(user.id).then(setIsReturning)
+  }, [user])
 
   return (
     <div className="min-h-screen bg-white">
@@ -26,7 +36,7 @@ export default function Subscribe() {
           {t('subscribe.go_back', '← Go back')}
         </button>
       </div>
-      <SubscriptionPlans />
+      <SubscriptionPlans isReturning={isReturning} />
     </div>
   )
 }

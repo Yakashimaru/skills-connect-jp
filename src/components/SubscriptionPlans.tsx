@@ -15,7 +15,7 @@ const cardStyle = {
   elite: { background: '#1A0208', border: '0.5px solid rgba(184,134,11,0.25)' },
 }
 
-export default function SubscriptionPlans() {
+export default function SubscriptionPlans({ isReturning = false }: { isReturning?: boolean }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -36,6 +36,7 @@ export default function SubscriptionPlans() {
     style: key,
     price: prices[i],
     trialPrice: trialPrices[i],
+    showTrial: !isReturning,
     name: t(`plans.${key}.name`),
     description: t(`plans.${key}.description`),
     cta: t(`plans.${key}.cta`),
@@ -65,16 +66,22 @@ export default function SubscriptionPlans() {
             >
               <div className="flex items-center justify-between mb-1">
                 <p className="text-sm font-semibold" style={{ color: '#B8860B' }}>{plan.name}</p>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#B8860B', color: '#fff' }}>{t('plans.trial_badge')}</span>
+                {plan.showTrial && (
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#B8860B', color: '#fff' }}>{t('plans.trial_badge')}</span>
+                )}
               </div>
               <div className="flex items-end gap-1.5 mb-1">
-                <span className="text-4xl font-bold" style={{ color: plan.style === 'standard' ? '#1A0208' : '#fff' }}>{plan.trialPrice}</span>
+                <span className="text-4xl font-bold" style={{ color: plan.style === 'standard' ? '#1A0208' : '#fff' }}>
+                  {plan.showTrial ? plan.trialPrice : plan.price}
+                </span>
                 <span className="text-sm mb-1" style={{ color: 'rgba(184,134,11,0.7)' }}>{t('plans.period')}</span>
               </div>
-              <p className="text-xs mb-2" style={{ color: plan.style === 'standard' ? '#aaa' : 'rgba(255,255,255,0.4)' }}>
-                <span className="line-through">{plan.price}</span>
-                {' '}{t('plans.period')}
-              </p>
+              {plan.showTrial && (
+                <p className="text-xs mb-2" style={{ color: plan.style === 'standard' ? '#aaa' : 'rgba(255,255,255,0.4)' }}>
+                  <span className="line-through">{plan.price}</span>
+                  {' '}{t('plans.period')}
+                </p>
+              )}
               <p className="text-sm mb-6 leading-relaxed" style={{ color: plan.style === 'standard' ? '#7A6060' : 'rgba(255,255,255,0.5)' }}>{plan.description}</p>
 
               <ul className="flex flex-col gap-2.5 mb-8">
@@ -86,7 +93,9 @@ export default function SubscriptionPlans() {
                 ))}
               </ul>
 
-              <p className="text-xs font-medium mb-4" style={{ color: plan.style === 'standard' ? '#5C0A1E' : 'rgba(255,255,255,0.85)' }}>{t('plans.trial_note')}</p>
+              {plan.showTrial && (
+                <p className="text-xs font-medium mb-4" style={{ color: plan.style === 'standard' ? '#5C0A1E' : 'rgba(255,255,255,0.85)' }}>{t('plans.trial_note')}</p>
+              )}
 
               <button
                 disabled={loading !== null}

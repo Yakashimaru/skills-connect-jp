@@ -55,7 +55,7 @@ The UI advertises a 50% first-month discount. This must be backed by a real Stri
 
 ## 3. Supabase — Run SQL Migrations
 
-In Supabase dashboard → **SQL Editor**, run sections **5 and 6** from `extras.sql`:
+In Supabase dashboard → **SQL Editor**, run sections **5, 6, and 7** from `extras.sql`:
 
 Run these sections from `extras.sql` in order:
 

@@ -15,6 +15,18 @@ export async function getActiveSubscription(userId: string) {
   return { data: data?.[0] ?? null, error }
 }
 
+// Checks any subscription row regardless of status — used to determine
+// whether a user is a returning subscriber so the UI shows correct pricing.
+export async function hasSubscribedBefore(userId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from('subscriptions')
+    .select('id')
+    .eq('user_id', userId)
+    .limit(1)
+    .maybeSingle()
+  return !!data
+}
+
 export async function createCheckoutSession(plan: SubscriptionPlan): Promise<{ url: string } | { error: string }> {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return { error: 'Not authenticated' }
