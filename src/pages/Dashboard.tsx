@@ -329,12 +329,12 @@ function SettingsMenu({ navigate, signOut, tr }: {
     {
       key: 'setting_notifications',
       label: tr('dashboard.setting_notifications'),
-      action: () => { setComingSoon('Notifications'); setTimeout(() => setComingSoon(null), 2500) },
+      action: () => navigate('/settings/notifications'),
     },
     {
       key: 'setting_privacy',
       label: tr('dashboard.setting_privacy'),
-      action: () => navigate('/edit-profile'),
+      action: () => navigate('/settings/privacy'),
     },
     {
       key: 'setting_payment',

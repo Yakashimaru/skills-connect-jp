@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet-async'
 import { searchProfiles, saveProfile, unsaveProfile, getSavedProfiles } from '../lib/profiles'
 import { useAuth } from '../context/AuthContext'
 import ProviderCard from '../components/ProviderCard'
-import { SOCIAL_SKILLS } from '../lib/constants'
+import { SOCIAL_SKILLS, DISCOVER_FILTER_CATEGORIES } from '../lib/constants'
 
 const toLabel = (value: string): string => {
   if (value === 'online') return 'online only'
@@ -32,6 +32,8 @@ export default function Skills() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const { i18n } = useTranslation()
 
   useEffect(() => {
     searchProfiles({}).then(({ data, error: err }) => {
@@ -130,8 +132,29 @@ export default function Skills() {
 
     if (verifiedOnly) result = result.filter(p => p.verified)
 
+    if (activeCategory) {
+      const cat = DISCOVER_FILTER_CATEGORIES.find(c => c.key === activeCategory)
+      if (cat?.key === 'online') {
+        result = result.filter(p => (p.location ?? '').toLowerCase().includes('online'))
+      } else if (cat?.skills) {
+        const catSkills = cat.skills.map(s => s.toLowerCase())
+        result = result.filter(p => {
+          const skills: string[] = (p.provider_profile?.skills ?? []).map((s: string) => s.toLowerCase())
+          return skills.some(s => catSkills.includes(s))
+        })
+      } else if (cat?.key === 'others') {
+        const allCatSkills = new Set(
+          DISCOVER_FILTER_CATEGORIES.flatMap(c => c.skills ?? []).map(s => s.toLowerCase())
+        )
+        result = result.filter(p => {
+          const skills: string[] = (p.provider_profile?.skills ?? []).map((s: string) => s.toLowerCase())
+          return skills.some(s => !allCatSkills.has(s) && !SOCIAL_SKILLS.has(s))
+        })
+      }
+    }
+
     return result
-  }, [allProfiles, query, locationParam, skillsParam, priceParam, ageParam, genderParam, verifiedOnly])
+  }, [allProfiles, query, locationParam, skillsParam, priceParam, ageParam, genderParam, verifiedOnly, activeCategory])
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FDF8F2' }}>
@@ -153,8 +176,39 @@ export default function Skills() {
       </Helmet>
       <div className="max-w-6xl mx-auto px-6 py-10">
 
-        <div className="mb-8">
-          <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: '#5C0A1E' }}>{t('skills.eyebrow')}</p>
+        <div className="mb-6">
+          <p className="text-xs font-semibold tracking-widest uppercase mb-4" style={{ color: '#5C0A1E' }}>{t('skills.eyebrow')}</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setActiveCategory(null)}
+              className="text-xs font-medium px-4 py-1.5 rounded-full transition-all"
+              style={{
+                backgroundColor: activeCategory === null ? '#5C0A1E' : 'transparent',
+                color: activeCategory === null ? '#fff' : '#5C0A1E',
+                border: '1px solid #5C0A1E',
+              }}
+            >
+              {i18n.language.startsWith('ja') ? 'すべて' : i18n.language.startsWith('zh') ? '全部' : 'All'}
+            </button>
+            {DISCOVER_FILTER_CATEGORIES.map(cat => {
+              const label = i18n.language.startsWith('ja') ? cat.labelJa : i18n.language.startsWith('zh') ? cat.labelZh : cat.label
+              const isActive = activeCategory === cat.key
+              return (
+                <button
+                  key={cat.key}
+                  onClick={() => setActiveCategory(isActive ? null : cat.key)}
+                  className="text-xs font-medium px-4 py-1.5 rounded-full transition-all"
+                  style={{
+                    backgroundColor: isActive ? '#5C0A1E' : 'transparent',
+                    color: isActive ? '#fff' : '#5C0A1E',
+                    border: '1px solid #5C0A1E',
+                  }}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {loading ? (

@@ -37,6 +37,11 @@ export default function ProviderCard({ profile, isSaved, onSaveToggle }: Props) 
   const isJa = i18n.language.startsWith('ja')
   const isZh = i18n.language.startsWith('zh')
   const online = formatLastOnline(profile.last_online ?? null)
+  const pp = profile.provider_profile
+  const displayRate = pp ? Math.min(
+    ...[pp.hourly_rate, pp.online_rate, pp.inperson_rate, pp.trial_rate]
+      .filter((r): r is number => r != null && r > 0)
+  ) : null
 
   return (
     <div
@@ -76,10 +81,10 @@ export default function ProviderCard({ profile, isSaved, onSaveToggle }: Props) 
         )}
 
         {/* Price */}
-        {profile.provider_profile?.hourly_rate && (
+        {displayRate != null && isFinite(displayRate) && (
           <div className="absolute bottom-3 left-3">
             <span className="text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.92)', color: C.brand }}>
-              ¥{profile.provider_profile.hourly_rate.toLocaleString()}/hr
+              From ¥{displayRate.toLocaleString()}/hr
             </span>
           </div>
         )}
@@ -101,9 +106,16 @@ export default function ProviderCard({ profile, isSaved, onSaveToggle }: Props) 
       <div className="p-4">
         <div className="flex items-start justify-between mb-1">
           <p className="font-bold" style={{ color: C.text }}>{profile.name}</p>
-          {(profile.provider_profile?.rating ?? 0) > 0 && (
-            <span className="text-xs" style={{ color: '#aaa' }}>⭐ {Number(profile.provider_profile?.rating).toFixed(1)}</span>
-          )}
+          <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+            {displayRate != null && isFinite(displayRate) && (
+              <span className="text-xs font-semibold" style={{ color: C.brand }}>
+                From ¥{displayRate.toLocaleString()}/hr
+              </span>
+            )}
+            {(profile.provider_profile?.rating ?? 0) > 0 && (
+              <span className="text-xs" style={{ color: '#aaa' }}>⭐ {Number(profile.provider_profile?.rating).toFixed(1)}</span>
+            )}
+          </div>
         </div>
         {profile.provider_profile?.title && (
           <p className="text-xs mb-3" style={{ color: C.muted }}>{profile.provider_profile.title}</p>

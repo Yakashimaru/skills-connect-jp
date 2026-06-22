@@ -8,7 +8,7 @@ import {
   addEducation, updateEducation, removeEducation,
   addExperience, updateExperience, removeExperience,
 } from '../lib/profiles'
-import { TRAIT_ZH, INTEREST_ZH, ZH_CITY } from '../lib/constants'
+import { TRAIT_ZH, INTEREST_ZH, ZH_CITY, SKILL_CATEGORIES } from '../lib/constants'
 
 const PERSONALITY_TRAITS = [
   'Adaptable', 'Adventurous', 'Ambitious', 'Ambivert', 'Analytical',
@@ -89,43 +89,45 @@ const INTEREST_OPTIONS_JA = [
 ]
 
 const SKILL_OPTIONS = [
-  'Advisory', 'App development', 'Assistance',
+  'Advisory', 'App Developer', 'App development', 'Artist', 'Assistance',
   'Business',
-  'Coaching', 'Coder', 'Communication support', 'Cooking', 'Copywriting',
-  'Data analysis', 'Designer', 'Dog Walker',
-  'English', 'Event planning',
+  'Chef', 'Coaching', 'Coder', 'Communication support', 'Cooking', 'Copywriting',
+  'Data analysis', 'Designer', 'Dog Walker', 'Driver',
+  'English', 'Entertainer', 'Event planning',
   'Finance', 'Fitness', 'French',
   'Golf', 'Graphic design',
-  'Housekeeper',
-  'Investing', 'Interpreter', 'IT support',
+  'Host/MC', 'Housekeeper',
+  'Instructor', 'Interpreter', 'Investing', 'IT support',
   'Japanese',
   'Korean',
-  'Mandarin', 'Marketer', 'Marketing', 'Martial arts', 'Mentorship', 'Music instructor', 'Musician',
-  'Personal Shopper', 'Personal training', 'Photographer', 'Presentation', 'Private Hire',
+  'Mandarin', 'Marketer', 'Marketing', 'Martial arts', 'Mentorship', 'Model', 'Music instructor', 'Musician',
+  'Other language',
+  'Performer', 'Personal Shopper', 'Personal training', 'Pet Sitter', 'Photographer', 'Presentation', 'Private Hire', 'Programmer',
   'Spanish', 'Sports instructor',
-  'Tour guide', 'Travel assistance', 'Tutor',
+  'Tour guide', 'Trainer', 'Travel Advisor', 'Travel assistance', 'Tutor',
   'Video editing', 'Videographer',
-  'Web development',
+  'Web Developer', 'Web development',
 ]
 
 const SKILL_OPTIONS_JA = [
-  'アドバイザリー', 'アプリ開発', 'アシスタンス',
+  'アドバイザリー', 'アプリ開発者', 'アプリ開発', 'アーティスト', 'アシスタンス',
   'ビジネス',
-  'コーチング', 'コーダー', 'コミュニケーションサポート', '料理', 'コピーライティング',
-  'データ分析', 'デザイナー', 'ドッグウォーカー',
-  '英語', 'イベント企画',
+  'シェフ', 'コーチング', 'コーダー', 'コミュニケーションサポート', '料理', 'コピーライティング',
+  'データ分析', 'デザイナー', 'ドッグウォーカー', 'ドライバー',
+  '英語', 'エンターテイナー', 'イベント企画',
   'ファイナンス', 'フィットネス', 'フランス語',
   'ゴルフ', 'グラフィックデザイン',
-  'ハウスキーパー',
-  '投資', '通訳', 'ITサポート',
+  'ホスト・MC', 'ハウスキーパー',
+  'インストラクター', '通訳', '投資', 'ITサポート',
   '日本語',
   '韓国語',
-  '中国語', 'マーケター', 'マーケティング', '武道', 'メンタリング', '音楽インストラクター', 'ミュージシャン',
-  'パーソナルショッパー', 'パーソナルトレーニング', 'フォトグラファー', 'プレゼンテーション', 'プライベートハイヤー',
+  '中国語', 'マーケター', 'マーケティング', '武道', 'メンタリング', 'モデル', '音楽インストラクター', 'ミュージシャン',
+  'その他の言語',
+  'パフォーマー', 'パーソナルショッパー', 'パーソナルトレーニング', 'ペットシッター', 'フォトグラファー', 'プレゼンテーション', 'プライベートハイヤー', 'プログラマー',
   'スペイン語', 'スポーツインストラクター',
-  'ツアーガイド', '旅行サポート', '個別指導',
+  'ツアーガイド', 'トレーナー', 'トラベルアドバイザー', '旅行サポート', '個別指導',
   '動画編集', 'ビデオグラファー',
-  'ウェブ開発',
+  'ウェブ開発者', 'ウェブ開発',
 ]
 
 const SOCIAL_SKILL_OPTIONS = [
@@ -139,23 +141,24 @@ const SOCIAL_SKILL_OPTIONS_JA = [
 ]
 
 const SKILL_OPTIONS_ZH = [
-  '顾问', '应用开发', '协助',
+  '顾问', '应用开发者', '应用开发', '艺术家', '协助',
   '商业',
-  '辅导', '程序员', '沟通支持', '烹饪', '文案写作',
-  '数据分析', '设计师', '遛狗',
-  '英语', '活动策划',
+  '厨师', '辅导', '程序员', '沟通支持', '烹饪', '文案写作',
+  '数据分析', '设计师', '遛狗', '司机',
+  '英语', '艺人', '活动策划',
   '金融', '健身', '法语',
   '高尔夫', '平面设计',
-  '管家服务',
-  '投资', '口译', 'IT支持',
+  '主持人/司仪', '管家服务',
+  '讲师', '口译', '投资', 'IT支持',
   '日语',
   '韩语',
-  '普通话', '营销人员', '营销', '武术', '导师辅导', '音乐老师', '音乐人',
-  '私人买手', '私人训练', '摄影师', '演讲', '私人雇佣',
+  '普通话', '营销人员', '营销', '武术', '导师辅导', '模特', '音乐老师', '音乐人',
+  '其他语言',
+  '表演者', '私人买手', '私人训练', '宠物看护', '摄影师', '演讲', '私人雇佣', '编程员',
   '西班牙语', '运动教练',
-  '导游', '旅行协助', '家教',
+  '导游', '培训师', '旅行顾问', '旅行协助', '家教',
   '视频剪辑', '摄像师',
-  '网页开发',
+  '网页开发者', '网页开发',
 ]
 
 const SOCIAL_SKILL_OPTIONS_ZH = [
@@ -573,6 +576,7 @@ export default function EditProfile() {
     return s
   })
   const [openSocialSections, setOpenSocialSections] = useState<Set<SocialSection>>(new Set())
+  const [eventPreferences, setEventPreferences] = useState<string[]>((p as any)?.event_preferences ?? [])
 
   useEffect(() => {
     if (!p) return
@@ -740,6 +744,7 @@ export default function EditProfile() {
       star_sign:            starSign || null,
       qualifications,
       achievements,
+      event_preferences:    eventPreferences,
     } as any).catch(() => {})
 
     const saves: Promise<unknown>[] = []
@@ -1076,9 +1081,21 @@ export default function EditProfile() {
               {/* Skills — always visible */}
               <div style={cardStyle}>
                 <SectionHeader title={t('edit_profile.section_skills')} />
-                <ChipPicker options={SKILL_OPTIONS} selected={selectedSkills}
-                  onToggle={v => toggle(selectedSkills, v, setSelectedSkills)}
-                  labels={isJa ? SKILL_OPTIONS_JA : isZh ? SKILL_OPTIONS_ZH : undefined} />
+                {SKILL_CATEGORIES.map(cat => {
+                  const catLabel = isJa ? cat.labelJa : isZh ? cat.labelZh : cat.label
+                  const catOptions = cat.skills.filter(s => SKILL_OPTIONS.includes(s))
+                  const catLabels = isJa ? catOptions.map(s => SKILL_OPTIONS_JA[SKILL_OPTIONS.indexOf(s)] ?? s)
+                    : isZh ? catOptions.map(s => SKILL_OPTIONS_ZH[SKILL_OPTIONS.indexOf(s)] ?? s)
+                    : undefined
+                  return (
+                    <div key={cat.label} className="mb-4">
+                      <p className="text-xs font-semibold mb-2 uppercase tracking-wide" style={{ color: '#5C0A1E' }}>{catLabel}</p>
+                      <ChipPicker options={catOptions} selected={selectedSkills}
+                        onToggle={v => toggle(selectedSkills, v, setSelectedSkills)}
+                        labels={catLabels} />
+                    </div>
+                  )
+                })}
                 <div className="mt-5">
                   <label style={labelStyle}>{t('edit_profile.skills_description_label')}</label>
                   {(isJa || isZh) && (
@@ -1544,6 +1561,98 @@ export default function EditProfile() {
                   )}
                 </CollapsibleSection>
               ))}
+
+              {/* Events group preferences */}
+              <div style={cardStyle}>
+                <SectionHeader title={t('edit_profile.section_event_groups', 'Event groups')} hint={t('edit_profile.event_groups_hint', 'Select groups you want to join and receive event alerts for.')} />
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    'Golf', 'Social', 'Networking', 'Church', 'Language',
+                    'Mahjong', 'Business',
+                  ].map(grp => {
+                    const active = eventPreferences.includes(grp)
+                    return (
+                      <button
+                        key={grp}
+                        type="button"
+                        onClick={() => setEventPreferences(prev =>
+                          active ? prev.filter(g => g !== grp) : [...prev, grp]
+                        )}
+                        className="text-xs px-3 py-1.5 rounded-full transition-all"
+                        style={{
+                          backgroundColor: active ? '#5C0A1E' : '#FDF0E0',
+                          color: active ? '#fff' : '#7A4A00',
+                          border: `0.5px solid ${active ? '#5C0A1E' : '#E8DDD5'}`,
+                        }}
+                      >
+                        {grp}
+                      </button>
+                    )
+                  })}
+                </div>
+                <p className="text-xs mt-3" style={{ color: '#aaa' }}>
+                  {t('edit_profile.exclusive_events_note', 'Exclusive events are available to Premium and Elite members only.')}
+                </p>
+              </div>
+
+              {/* Subscription info */}
+              <div style={cardStyle}>
+                <SectionHeader title={t('edit_profile.section_subscription', 'Subscription')} />
+                <div className="flex flex-col gap-3">
+                  {[
+                    {
+                      plan: 'Standard',
+                      price: t('plans.standard_price', 'Free'),
+                      features: [
+                        t('plans.standard_f1', '5 connections per month'),
+                        t('plans.standard_f2', 'Access to community events'),
+                        t('plans.standard_f3', 'Connect with members in the Standard network'),
+                      ],
+                    },
+                    {
+                      plan: 'Premium',
+                      price: t('plans.premium_price', '¥2,980/mo'),
+                      features: [
+                        t('plans.premium_f1', 'Unlimited standard profile connections'),
+                        t('plans.premium_f2', 'Priority matching suggestions'),
+                        t('plans.premium_f3', 'Access to exclusive events'),
+                      ],
+                    },
+                    {
+                      plan: 'Elite',
+                      price: t('plans.elite_price', '¥7,980/mo'),
+                      features: [
+                        t('plans.elite_f1', 'Everything in Premium'),
+                        t('plans.elite_f2', 'Connect with Elite providers'),
+                        t('plans.elite_f3', 'VIP event invitations'),
+                        t('plans.elite_f4', 'Personalized matchmaking recommendations'),
+                      ],
+                    },
+                  ].map(tier => (
+                    <div key={tier.plan} className="p-4 rounded-xl" style={{ border: '0.5px solid #E8DDD5' }}>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold" style={{ color: '#1A0208' }}>{tier.plan}</p>
+                        <p className="text-xs font-medium" style={{ color: '#B8860B' }}>{tier.price}</p>
+                      </div>
+                      <ul className="flex flex-col gap-1">
+                        {tier.features.map(f => (
+                          <li key={f} className="text-xs flex items-start gap-1.5" style={{ color: '#7A6060' }}>
+                            <span style={{ color: '#B8860B', flexShrink: 0 }}>✔</span> {f}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/subscribe')}
+                    className="text-sm font-semibold py-2.5 rounded-xl transition-opacity"
+                    style={{ backgroundColor: '#5C0A1E', color: '#fff' }}
+                  >
+                    {t('edit_profile.change_subscription', 'Change subscription')}
+                  </button>
+                </div>
+              </div>
 
               {/* Add more to your profile */}
               {SOCIAL_SECTIONS.some(s => !addedSocialSections.includes(s)) && (

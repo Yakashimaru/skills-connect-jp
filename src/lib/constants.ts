@@ -83,42 +83,44 @@ const INTERESTS_JA = [
 ]
 
 const SKILLS_EN = [
-  'Advisory','App development','Assistance',
+  'Advisory','App Developer','App development','Artist','Assistance',
   'Business',
-  'Coaching','Coder','Communication support','Cooking','Copywriting',
-  'Data analysis','Designer','Dog Walker',
-  'English','Event planning',
+  'Chef','Coaching','Coder','Communication support','Cooking','Copywriting',
+  'Data analysis','Designer','Dog Walker','Driver',
+  'English','Entertainer','Event planning',
   'Finance','Fitness','French',
   'Golf','Graphic design',
-  'Housekeeper',
-  'Investing','Interpreter','IT support',
+  'Host/MC','Housekeeper',
+  'Instructor','Interpreter','Investing','IT support',
   'Japanese',
   'Korean',
-  'Mandarin','Marketer','Marketing','Martial arts','Mentorship','Music instructor','Musician',
-  'Personal Shopper','Personal training','Photographer','Presentation','Private Hire',
+  'Mandarin','Marketer','Marketing','Martial arts','Mentorship','Model','Music instructor','Musician',
+  'Other language',
+  'Performer','Personal Shopper','Personal training','Pet Sitter','Photographer','Presentation','Private Hire','Programmer',
   'Spanish','Sports instructor',
-  'Tour guide','Travel assistance','Tutor',
+  'Tour guide','Trainer','Travel Advisor','Travel assistance','Tutor',
   'Video editing','Videographer',
-  'Web development',
+  'Web Developer','Web development',
 ]
 const SKILLS_JA = [
-  'アドバイザリー','アプリ開発','アシスタンス',
+  'アドバイザリー','アプリ開発者','アプリ開発','アーティスト','アシスタンス',
   'ビジネス',
-  'コーチング','コーダー','コミュニケーションサポート','料理','コピーライティング',
-  'データ分析','デザイナー','ドッグウォーカー',
-  '英語','イベント企画',
+  'シェフ','コーチング','コーダー','コミュニケーションサポート','料理','コピーライティング',
+  'データ分析','デザイナー','ドッグウォーカー','ドライバー',
+  '英語','エンターテイナー','イベント企画',
   'ファイナンス','フィットネス','フランス語',
   'ゴルフ','グラフィックデザイン',
-  'ハウスキーパー',
-  '投資','通訳','ITサポート',
+  'ホスト・MC','ハウスキーパー',
+  'インストラクター','通訳','投資','ITサポート',
   '日本語',
   '韓国語',
-  '中国語','マーケター','マーケティング','武道','メンタリング','音楽インストラクター','ミュージシャン',
-  'パーソナルショッパー','パーソナルトレーニング','フォトグラファー','プレゼンテーション','プライベートハイヤー',
+  '中国語','マーケター','マーケティング','武道','メンタリング','モデル','音楽インストラクター','ミュージシャン',
+  'その他の言語',
+  'パフォーマー','パーソナルショッパー','パーソナルトレーニング','ペットシッター','フォトグラファー','プレゼンテーション','プライベートハイヤー','プログラマー',
   'スペイン語','スポーツインストラクター',
-  'ツアーガイド','旅行サポート','個別指導',
+  'ツアーガイド','トレーナー','トラベルアドバイザー','旅行サポート','個別指導',
   '動画編集','ビデオグラファー',
-  'ウェブ開発',
+  'ウェブ開発者','ウェブ開発',
 ]
 
 const SOCIAL_EN = [
@@ -131,23 +133,24 @@ const SOCIAL_JA = [
 ]
 
 const SKILLS_ZH = [
-  '顾问','应用开发','协助',
+  '顾问','应用开发者','应用开发','艺术家','协助',
   '商业',
-  '辅导','程序员','沟通支持','烹饪','文案写作',
-  '数据分析','设计师','遛狗',
-  '英语','活动策划',
+  '厨师','辅导','程序员','沟通支持','烹饪','文案写作',
+  '数据分析','设计师','遛狗','司机',
+  '英语','艺人','活动策划',
   '金融','健身','法语',
   '高尔夫','平面设计',
-  '管家服务',
-  '投资','口译','IT支持',
+  '主持人/司仪','管家服务',
+  '讲师','口译','投资','IT支持',
   '日语',
   '韩语',
-  '普通话','营销人员','营销','武术','导师辅导','音乐老师','音乐人',
-  '私人买手','私人训练','摄影师','演讲','私人雇佣',
+  '普通话','营销人员','营销','武术','导师辅导','模特','音乐老师','音乐人',
+  '其他语言',
+  '表演者','私人买手','私人训练','宠物看护','摄影师','演讲','私人雇佣','编程员',
   '西班牙语','运动教练',
-  '导游','旅行协助','家教',
+  '导游','培训师','旅行顾问','旅行协助','家教',
   '视频剪辑','摄像师',
-  '网页开发',
+  '网页开发者','网页开发',
 ]
 
 const SOCIAL_ZH = [
@@ -481,3 +484,83 @@ export const SKILL_ZH        = buildMap(SKILLS_EN,    SKILLS_ZH)
 export const SOCIAL_SKILL_ZH = buildMap(SOCIAL_EN,    SOCIAL_ZH)
 export const TRAIT_ZH        = buildMap(TRAITS_EN,    TRAITS_ZH)
 export const INTEREST_ZH     = buildMap(INTERESTS_EN, INTERESTS_ZH)
+
+export const SKILL_CATEGORIES: { label: string; labelJa: string; labelZh: string; skills: string[] }[] = [
+  {
+    label: 'Language',
+    labelJa: '語学',
+    labelZh: '语言',
+    skills: ['English', 'Mandarin', 'Japanese', 'Korean', 'Spanish', 'French', 'Interpreter', 'Communication support', 'Other language'],
+  },
+  {
+    label: 'Learning & Coaching',
+    labelJa: '学習・コーチング',
+    labelZh: '学习与辅导',
+    skills: ['Tutor', 'Advisory', 'Trainer', 'Instructor', 'Mentorship', 'Coaching'],
+  },
+  {
+    label: 'Technology & Development',
+    labelJa: 'テクノロジー・開発',
+    labelZh: '技术与开发',
+    skills: ['Programmer', 'Web Developer', 'App Developer', 'Coder', 'IT support', 'Data analysis', 'Web development', 'App development'],
+  },
+  {
+    label: 'Creative & Media',
+    labelJa: 'クリエイティブ・メディア',
+    labelZh: '创意与媒体',
+    skills: ['Graphic design', 'Photographer', 'Video editing', 'Marketer', 'Designer', 'Videographer', 'Copywriting', 'Marketing'],
+  },
+  {
+    label: 'Lifestyle Services',
+    labelJa: 'ライフスタイルサービス',
+    labelZh: '生活服务',
+    skills: ['Housekeeper', 'Personal Shopper', 'Dog Walker', 'Pet Sitter', 'Driver', 'Chef', 'Travel Advisor', 'Tour guide', 'Travel assistance', 'Cooking'],
+  },
+  {
+    label: 'Entertainment',
+    labelJa: 'エンターテインメント',
+    labelZh: '娱乐',
+    skills: ['Entertainer', 'Musician', 'Artist', 'Model', 'Host/MC', 'Performer', 'Music instructor'],
+  },
+  {
+    label: 'Business & Finance',
+    labelJa: 'ビジネス・ファイナンス',
+    labelZh: '商业与金融',
+    skills: ['Business', 'Finance', 'Investing', 'Event planning', 'Presentation'],
+  },
+  {
+    label: 'Health & Fitness',
+    labelJa: '健康・フィットネス',
+    labelZh: '健康与健身',
+    skills: ['Fitness', 'Personal training', 'Sports instructor', 'Martial arts', 'Golf'],
+  },
+]
+
+export const DISCOVER_FILTER_CATEGORIES: { label: string; labelJa: string; labelZh: string; key: string; skills?: string[] }[] = [
+  {
+    key: 'language',
+    label: 'Language',
+    labelJa: '語学',
+    labelZh: '语言',
+    skills: ['English', 'Mandarin', 'Japanese', 'Korean', 'Spanish', 'French', 'Interpreter', 'Communication support', 'Other language'],
+  },
+  {
+    key: 'learning',
+    label: 'Learning',
+    labelJa: '学習',
+    labelZh: '学习',
+    skills: ['Tutor', 'Advisory', 'Trainer', 'Instructor', 'Mentorship', 'Coaching'],
+  },
+  {
+    key: 'online',
+    label: 'Online',
+    labelJa: 'オンライン',
+    labelZh: '线上',
+  },
+  {
+    key: 'others',
+    label: 'Others',
+    labelJa: 'その他',
+    labelZh: '其他',
+  },
+]
