@@ -1,9 +1,10 @@
-// CTABanner.tsx — updated to project maroon color scheme
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../context/AuthContext'
 
 export default function CTABanner() {
   const { t } = useTranslation()
+  const { isLoggedIn } = useAuth()
   return (
     <section className="py-20" style={{ backgroundColor: '#fff' }}>
       <div className="max-w-6xl mx-auto px-6">
@@ -39,7 +40,7 @@ export default function CTABanner() {
           {/* CTA buttons */}
           <div className="relative z-10 flex flex-col gap-3 flex-shrink-0">
             <NavLink
-              to="/signup"
+              to={isLoggedIn ? '/dashboard' : '/signup'}
               className="px-8 py-3.5 rounded-xl font-semibold text-sm text-center transition-colors"
               style={{ backgroundColor: '#B8860B', color: '#3A2400' }}
               onMouseOver={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#9A6F09'}

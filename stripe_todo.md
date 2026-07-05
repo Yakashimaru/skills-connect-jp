@@ -158,6 +158,40 @@ When ready to accept real payments:
 
 ---
 
+## Common Mistakes (from test setup — avoid on prod)
+
+### Secrets
+
+| Mistake | What to do instead |
+|---|---|
+| Named the `SITE_URL` secret `localhost` | Name must be exactly `SITE_URL` |
+| Pasted the **product** ID (`prod_...`) into price secrets | Open the product → scroll to Pricing → copy the `price_...` ID, not the product ID on the right |
+| Pasted the coupon **name** (e.g. `FIRSTMONTH50`) into `STRIPE_TRIAL_COUPON_ID` | Go to Product catalogue → Coupons → click the coupon → copy the **Coupon ID** (random string, not the name you typed) |
+
+### Webhook setup
+
+- The new Stripe Workbench UI calls webhooks "event destinations" — it's the same thing
+- When creating the endpoint, the API version dropdown only shows current versions — `2024-04-10` is not available. Use `2026-06-24.dahlia`. This only affects the webhook payload format, not your edge function API calls — the fields we use are stable across versions
+- Select scope **Your account** (not Connected accounts)
+
+### Deploying edge functions
+
+- Deploy all **3** functions, not just the ones that handle user-facing requests:
+  ```bash
+  supabase functions deploy create-checkout-session
+  supabase functions deploy cancel-subscription
+  supabase functions deploy stripe-webhook --no-verify-jwt
+  ```
+- `stripe-webhook` **must** be deployed with `--no-verify-jwt`. Stripe has no Supabase JWT so the request gets blocked before reaching the function. The webhook is secured by Stripe's signing secret instead — the function verifies it itself. This is correct for production too.
+- If you forget to deploy `stripe-webhook`, payments will go through in Stripe but subscriptions will never activate in your DB (webhook fires but gets 404, so 0 deliveries show in Stripe dashboard)
+
+### General
+
+- Do a fresh test purchase after fixing each issue — Stripe will not re-deliver past webhook events automatically (you can manually resend from Stripe → Webhooks → Event deliveries, but easier to just re-test)
+- When Stripe checkout redirects back to your app, the subscription may take 1–2 seconds to appear in the DB (webhook is async). The `/subscribe/success` page polls for this — wait for it to confirm before checking the DB
+
+---
+
 ## Known Limitations / Future Work
 
 - **`invoice.payment_failed`** is not handled as a webhook event. Stripe retries failed renewals automatically (3–4 times over ~8 days). Access is only revoked when `customer.subscription.deleted` fires after all retries fail. If you want to notify the user earlier (e.g. send an email to update their card), add a handler for this event.

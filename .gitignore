@@ -19,6 +19,12 @@ package-lock.json
 .env.production
 .env.development
 
+# Supabase local state
+supabase/.temp/
+
+# Claude session data
+.claude/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

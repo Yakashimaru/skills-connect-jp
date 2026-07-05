@@ -66,7 +66,10 @@ Deno.serve(async (req) => {
     }
 
     const stripeSub = await stripe.subscriptions.retrieve(stripeSubId)
-    const renewsAt = new Date(stripeSub.current_period_end * 1000).toISOString()
+    const rawSubEnd = stripeSub.current_period_end ?? (stripeSub as any).billing_cycle_anchor ?? null
+    const renewsAt = rawSubEnd
+      ? new Date(rawSubEnd * 1000).toISOString()
+      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
 
     const { error: rpcError } = await supabase.rpc('activate_subscription', {
       p_user_id:        user_id,
@@ -93,7 +96,16 @@ Deno.serve(async (req) => {
 
   if (event.type === 'customer.subscription.updated') {
     const sub = event.data.object as Stripe.Subscription
-    const renewsAt = new Date(sub.current_period_end * 1000).toISOString()
+    // current_period_end was removed from the top-level subscription object in
+    // newer Stripe API versions. Fall back to billing_cycle_anchor if missing.
+    const rawEnd = sub.current_period_end ?? (sub as any).billing_cycle_anchor ?? null
+    if (!rawEnd) {
+      console.error('customer.subscription.updated: no period end field found', sub)
+      return new Response(JSON.stringify({ received: true }), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+    const renewsAt = new Date(rawEnd * 1000).toISOString()
 
     // Issue 5 fix: only map statuses we explicitly understand.
     // past_due means Stripe is retrying payment — do NOT revoke access yet.

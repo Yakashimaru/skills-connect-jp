@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
 
 function fmt(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1).replace('.0', '')}K+`
@@ -11,6 +12,7 @@ function fmt(n: number): string {
 
 export default function HeroV2() {
   const { t } = useTranslation()
+  const { isLoggedIn } = useAuth()
 
   const [stats, setStats] = useState({
     hosts:       '—',
@@ -112,7 +114,7 @@ export default function HeroV2() {
           {/* CTAs */}
           <div className="flex flex-wrap items-center gap-3 mb-8">
             <NavLink
-              to="/signup"
+              to={isLoggedIn ? '/dashboard' : '/signup'}
               className="px-8 py-3.5 rounded-full font-bold text-sm transition-all"
               style={{ backgroundColor: '#B8860B', color: '#1A0208' }}
               onMouseOver={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#9A6F09'}
