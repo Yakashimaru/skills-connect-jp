@@ -20,8 +20,9 @@ const ResetPassword  = lazy(() => import('./pages/ResetPassword'))
 const AuthCallback   = lazy(() => import('./pages/AuthCallback'))
 const Subscribe            = lazy(() => import('./pages/Subscribe'))
 const SubscribeSuccess     = lazy(() => import('./pages/SubscribeSuccess'))
-const PrivacySettings      = lazy(() => import('./pages/PrivacySettings'))
-const NotificationSettings = lazy(() => import('./pages/NotificationSettings'))
+const PrivacySettings          = lazy(() => import('./pages/PrivacySettings'))
+const NotificationSettings     = lazy(() => import('./pages/NotificationSettings'))
+const SubscriptionSettings     = lazy(() => import('./pages/SubscriptionSettings'))
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation()
@@ -67,6 +68,7 @@ function App() {
             <Route path="/subscribe/success" element={<ProtectedRoute><SubscribeSuccess /></ProtectedRoute>} />
             <Route path="/settings/privacy" element={<ProtectedRoute><PrivacySettings /></ProtectedRoute>} />
             <Route path="/settings/notifications" element={<ProtectedRoute><NotificationSettings /></ProtectedRoute>} />
+            <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionSettings /></ProtectedRoute>} />
           </Routes>
         </Suspense>
       </div>

@@ -67,7 +67,7 @@ DROP POLICY IF EXISTS "Users can insert own subscriptions" ON public.subscriptio
 **Section 6** — unique constraint:
 ```sql
 ALTER TABLE public.subscriptions
-  ADD CONSTRAINT IF NOT EXISTS subscriptions_stripe_subscription_id_key
+  ADD CONSTRAINT subscriptions_stripe_subscription_id_key
   UNIQUE (stripe_subscription_id);
 ```
 

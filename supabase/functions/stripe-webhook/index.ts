@@ -44,10 +44,9 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Issue 1 fix: find any existing active Stripe subscriptions for this user
-    // that are NOT the new one and cancel them in Stripe immediately.
-    // The DB rows are cleaned up by activate_subscription() below, but without
-    // this step the old Stripe subscription would keep billing indefinitely.
+    // Cancel any prior active Stripe subscriptions for this user that are not
+    // the new one. The DB rows are cleaned up by activate_subscription() below,
+    // but without this step the old Stripe subscription keeps billing.
     const { data: oldSubs } = await supabase
       .from('subscriptions')
       .select('stripe_subscription_id')
@@ -107,7 +106,7 @@ Deno.serve(async (req) => {
     }
     const renewsAt = new Date(rawEnd * 1000).toISOString()
 
-    // Issue 5 fix: only map statuses we explicitly understand.
+    // Only map statuses we explicitly understand.
     // past_due means Stripe is retrying payment — do NOT revoke access yet.
     // Access is only revoked when customer.subscription.deleted fires (all
     // retries exhausted) or when the customer cancels intentionally.

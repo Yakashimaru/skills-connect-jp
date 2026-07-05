@@ -894,6 +894,7 @@ export default function Navbar() {
                     { to: '/dashboard', label: t('nav.dashboard') },
                     { to: `/profile/${user?.id}`, label: t('nav.my_profile') },
                     { to: '/chat', label: t('nav.messages') },
+                    { to: '/settings/subscription', label: t('nav.subscription', 'Subscription') },
                   ].map(item => (
                     <NavLink key={item.to} to={item.to} onClick={() => setAvatarOpen(false)}
                       className="block px-4 py-2.5 text-sm transition-colors"
@@ -970,6 +971,13 @@ export default function Navbar() {
               </a>
             ))}
           </div>
+          {isLoggedIn && (
+            <div className="flex flex-col gap-2 pt-2" style={{ borderTop: `0.5px solid ${C.border}` }}>
+              <NavLink to="/dashboard" onClick={() => setMobileOpen(false)} className="text-sm" style={{ color: C.muted }}>{t('nav.dashboard')}</NavLink>
+              <NavLink to="/chat" onClick={() => setMobileOpen(false)} className="text-sm" style={{ color: C.muted }}>{t('nav.messages')}</NavLink>
+              <NavLink to="/settings/subscription" onClick={() => setMobileOpen(false)} className="text-sm" style={{ color: C.muted }}>{t('nav.subscription', 'Subscription')}</NavLink>
+            </div>
+          )}
           {!isLoggedIn && (
             <div className="flex gap-3 pt-2" style={{ borderTop: `0.5px solid ${C.border}` }}>
               <NavLink to="/login" onClick={() => setMobileOpen(false)} className="text-sm" style={{ color: C.muted }}>{t('nav.login')}</NavLink>

@@ -27,8 +27,8 @@ Deno.serve(async (req) => {
     )
     if (authError || !user) return new Response('Unauthorized', { status: 401 })
 
-    // Issue 4 fix: use select() not maybeSingle() — a user may have multiple
-    // active rows due to a re-subscribe race (Issue 1). maybeSingle() throws
+    // Use select() not maybeSingle() — a user may have multiple active rows if
+    // they resubscribed before the old row was cancelled. maybeSingle() throws
     // PGRST116 when >1 row is returned, causing a silent 500 and leaving the
     // user unable to cancel. We cancel ALL active subscriptions instead.
     const { data: subs } = await supabase
