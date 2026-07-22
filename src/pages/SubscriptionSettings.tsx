@@ -146,6 +146,18 @@ export default function SubscriptionSettings() {
                 </div>
               )}
 
+              {!alreadyCancelledAtPeriodEnd && !confirmCancel && (
+                <button
+                  onClick={() => navigate('/subscribe')}
+                  className="w-full py-2.5 rounded-xl text-sm transition-colors"
+                  style={{ border: `0.5px solid ${C.gold}`, color: C.gold, backgroundColor: 'transparent' }}
+                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(184,134,11,0.06)')}
+                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+                >
+                  Change plan
+                </button>
+              )}
+
               {alreadyCancelledAtPeriodEnd && (
                 <button
                   onClick={() => navigate('/subscribe')}

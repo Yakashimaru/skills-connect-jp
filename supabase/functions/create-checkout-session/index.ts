@@ -19,10 +19,9 @@ const AMOUNTS: Record<string, number> = {
 // Do not accept this from the request body — callers cannot be trusted.
 const SITE_URL = Deno.env.get('SITE_URL')!
 
-// Issue 3 fix: if set, apply this coupon to the checkout session so the
-// advertised trial price is actually charged. Create a "50% off first invoice"
-// coupon in Stripe dashboard and set its ID as this secret.
-// If not set, the full price is charged — which would mismatch the UI.
+// If set, apply this coupon to the checkout session so the advertised trial
+// price is actually charged. Without it the UI shows ¥2,500 but Stripe charges
+// the full ¥5,000. Create a "50% off first invoice" coupon in Stripe dashboard.
 const TRIAL_COUPON_ID = Deno.env.get('STRIPE_TRIAL_COUPON_ID') ?? null
 
 Deno.serve(async (req) => {
@@ -52,17 +51,25 @@ Deno.serve(async (req) => {
     const { plan } = await req.json() as { plan: string }
     if (!PRICE_IDS[plan]) return new Response('Invalid plan', { status: 400 })
 
-    // Check for any prior subscription (any status) to determine whether this
-    // is a first-time subscriber. The trial coupon is for new customers only —
-    // applying it to re-subscribers charges them ¥2,500 indefinitely on every
-    // re-subscribe, costing revenue and creating false price expectations.
+    // Check for any prior subscription to determine first-timer status and
+    // whether they already have an active subscription. Active subscribers must
+    // use the change-subscription function instead — creating a new Checkout
+    // session would start a second billing cycle and double-charge the user.
     const { data: priorSub } = await supabase
       .from('subscriptions')
-      .select('id, stripe_customer_id')
+      .select('id, stripe_customer_id, status, cancelled_at')
       .eq('user_id', user.id)
       .order('started_at', { ascending: false })
       .limit(1)
       .maybeSingle()
+
+    const isActive = priorSub?.status === 'active'
+    if (isActive) {
+      return new Response(JSON.stringify({ error: 'already_subscribed' }), {
+        status: 409,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      })
+    }
 
     const customerId = priorSub?.stripe_customer_id ?? undefined
     const isFirstTimeSubscriber = !priorSub

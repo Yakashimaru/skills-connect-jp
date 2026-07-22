@@ -99,8 +99,9 @@ Run these from the project root (requires Supabase CLI logged in):
 
 ```bash
 supabase functions deploy create-checkout-session
-supabase functions deploy stripe-webhook
+supabase functions deploy change-subscription
 supabase functions deploy cancel-subscription
+supabase functions deploy stripe-webhook --no-verify-jwt
 ```
 
 ---

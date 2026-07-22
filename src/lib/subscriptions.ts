@@ -38,6 +38,17 @@ export async function createCheckoutSession(plan: SubscriptionPlan): Promise<{ u
   return data as { url: string }
 }
 
+export async function changeSubscriptionPlan(plan: SubscriptionPlan): Promise<{ success: true; isUpgrade: boolean } | { error: string }> {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Not authenticated' }
+
+  const { data, error } = await supabase.functions.invoke('change-subscription', {
+    body: { plan },
+  })
+  if (error) return { error: error.message }
+  return data as { success: true; isUpgrade: boolean }
+}
+
 // Cancels via Stripe (cancel_at_period_end: true) then records cancelled_at in DB.
 // Status stays 'active' until the billing period ends, at which point the
 // stripe-webhook sets it to 'cancelled'. Do NOT update the DB directly here —

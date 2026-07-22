@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { createCheckoutSession } from '../lib/subscriptions'
+import { createCheckoutSession, changeSubscriptionPlan } from '../lib/subscriptions'
 import type { SubscriptionPlan } from '../lib/types'
 
 const prices     = ['¥5,000', '¥10,000', '¥50,000']
@@ -15,33 +15,72 @@ const cardStyle = {
   elite: { background: '#1A0208', border: '0.5px solid rgba(184,134,11,0.25)' },
 }
 
-export default function SubscriptionPlans({ isReturning = false }: { isReturning?: boolean }) {
+const PLAN_ORDER: Record<string, number> = { standard: 1, premium: 2, elite: 3 }
+
+export default function SubscriptionPlans({
+  isReturning = false,
+  currentPlan,
+}: {
+  isReturning?: boolean
+  currentPlan?: string
+}) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user } = useAuth()
   const [loading, setLoading] = useState<SubscriptionPlan | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [successMsg, setSuccessMsg] = useState<string | null>(null)
 
   async function handleSelect(plan: SubscriptionPlan) {
     if (!user) { navigate('/login'); return }
     setLoading(plan)
     setError(null)
+    setSuccessMsg(null)
+
+    if (currentPlan) {
+      const result = await changeSubscriptionPlan(plan)
+      setLoading(null)
+      if ('error' in result) { setError(result.error); return }
+      setSuccessMsg(
+        result.isUpgrade
+          ? t('plans.upgrade_success', 'Plan upgraded! The prorated difference has been charged.')
+          : t('plans.downgrade_success', 'Plan will switch to {{plan}} at your next renewal.', { plan: t(`plans.${plan}.name`) })
+      )
+      // Reload after a moment so the page reflects the new plan
+      setTimeout(() => window.location.reload(), 2000)
+      return
+    }
+
     const result = await createCheckoutSession(plan)
     setLoading(null)
     if ('error' in result) { setError(result.error); return }
     window.location.href = result.url
   }
 
-  const plans = styleKeys.map((key, i) => ({
-    style: key,
-    price: prices[i],
-    trialPrice: trialPrices[i],
-    showTrial: !isReturning,
-    name: t(`plans.${key}.name`),
-    description: t(`plans.${key}.description`),
-    cta: t(`plans.${key}.cta`),
-    features: t(`plans.${key}.features`, { returnObjects: true }) as string[],
-  }))
+  const plans = styleKeys.map((key, i) => {
+    const isCurrent = currentPlan === key
+    const isUpgrade = currentPlan ? (PLAN_ORDER[key] ?? 0) > (PLAN_ORDER[currentPlan] ?? 0) : false
+    const isDowngrade = currentPlan ? (PLAN_ORDER[key] ?? 0) < (PLAN_ORDER[currentPlan] ?? 0) : false
+
+    let ctaLabel = t(`plans.${key}.cta`)
+    if (isCurrent) ctaLabel = t('plans.current_plan', 'Current plan')
+    else if (isUpgrade) ctaLabel = t('plans.upgrade', 'Upgrade')
+    else if (isDowngrade) ctaLabel = t('plans.downgrade', 'Downgrade')
+
+    return {
+      style: key,
+      price: prices[i],
+      trialPrice: trialPrices[i],
+      showTrial: !isReturning && !currentPlan,
+      isCurrent,
+      isUpgrade,
+      isDowngrade,
+      ctaLabel,
+      name: t(`plans.${key}.name`),
+      description: t(`plans.${key}.description`),
+      features: t(`plans.${key}.features`, { returnObjects: true }) as string[],
+    }
+  })
 
   return (
     <section className="bg-white py-20">
@@ -56,6 +95,9 @@ export default function SubscriptionPlans({ isReturning = false }: { isReturning
         {error && (
           <p className="text-center text-sm mb-6" style={{ color: '#f87171' }}>{error}</p>
         )}
+        {successMsg && (
+          <p className="text-center text-sm mb-6 font-medium" style={{ color: '#22c55e' }}>{successMsg}</p>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           {plans.map((plan) => (
@@ -66,7 +108,12 @@ export default function SubscriptionPlans({ isReturning = false }: { isReturning
             >
               <div className="flex items-center justify-between mb-1">
                 <p className="text-sm font-semibold" style={{ color: '#B8860B' }}>{plan.name}</p>
-                {plan.showTrial && (
+                {plan.isCurrent && (
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#22c55e', color: '#fff' }}>
+                    {t('plans.current_badge', 'Active')}
+                  </span>
+                )}
+                {plan.showTrial && !plan.isCurrent && (
                   <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#B8860B', color: '#fff' }}>{t('plans.trial_badge')}</span>
                 )}
               </div>
@@ -96,18 +143,25 @@ export default function SubscriptionPlans({ isReturning = false }: { isReturning
               {plan.showTrial && (
                 <p className="text-xs font-medium mb-4" style={{ color: plan.style === 'standard' ? '#5C0A1E' : 'rgba(255,255,255,0.85)' }}>{t('plans.trial_note')}</p>
               )}
+              {plan.isDowngrade && (
+                <p className="text-xs mb-4" style={{ color: plan.style === 'standard' ? '#7A6060' : 'rgba(255,255,255,0.5)' }}>
+                  {t('plans.downgrade_note', 'Takes effect at next renewal')}
+                </p>
+              )}
 
               <button
-                disabled={loading !== null}
+                disabled={loading !== null || plan.isCurrent}
                 onClick={() => handleSelect(plan.style as SubscriptionPlan)}
                 className="w-full py-3 rounded-xl font-medium text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 style={
-                  plan.style === 'standard'
-                    ? { backgroundColor: 'transparent', color: '#B8860B', border: '1px solid #B8860B' }
-                    : { backgroundColor: '#B8860B', color: '#3A2400' }
+                  plan.isCurrent
+                    ? { backgroundColor: 'rgba(34,197,94,0.1)', color: '#22c55e', border: '1px solid #22c55e' }
+                    : plan.style === 'standard'
+                      ? { backgroundColor: 'transparent', color: '#B8860B', border: '1px solid #B8860B' }
+                      : { backgroundColor: '#B8860B', color: '#3A2400' }
                 }
                 onMouseEnter={e => {
-                  if (loading !== null) return
+                  if (loading !== null || plan.isCurrent) return
                   if (plan.style === 'standard') {
                     e.currentTarget.style.backgroundColor = 'rgba(184,134,11,0.08)'
                   } else {
@@ -115,6 +169,7 @@ export default function SubscriptionPlans({ isReturning = false }: { isReturning
                   }
                 }}
                 onMouseLeave={e => {
+                  if (plan.isCurrent) return
                   if (plan.style === 'standard') {
                     e.currentTarget.style.backgroundColor = 'transparent'
                   } else {
@@ -122,7 +177,7 @@ export default function SubscriptionPlans({ isReturning = false }: { isReturning
                   }
                 }}
               >
-                {loading === plan.style ? '...' : plan.cta}
+                {loading === plan.style ? '...' : plan.ctaLabel}
               </button>
             </div>
           ))}
