@@ -6,7 +6,6 @@ import { getProfile } from '../lib/profiles'
 import { getReviews } from '../lib/reviews'
 import { getOrCreateConversation } from '../lib/messages'
 import { createBooking } from '../lib/bookings'
-import { getActiveSubscription } from '../lib/subscriptions'
 import type { Profile, ProviderProfile } from '../lib/types'
 import { TRAIT_JA, TRAIT_ZH, INTEREST_JA, INTEREST_ZH, SKILL_JA, SKILL_ZH, SOCIAL_SKILL_JA, SOCIAL_SKILL_ZH, STAR_SIGN_JA, JA_CITY, ZH_CITY } from '../lib/constants'
 
@@ -242,8 +241,6 @@ export default function ProfilePage() {
   const [notFound, setNotFound] = useState(false)
   const [messageSending, setMessageSending] = useState(false)
   const [bookingOpen, setBookingOpen] = useState(false)
-  const [hasSubscription, setHasSubscription] = useState(false)
-
   useEffect(() => {
     if (!id) { setNotFound(true); setLoading(false); return }
     Promise.all([getProfile(id), getReviews(id)]).then(([p, { data: r }]) => {
@@ -251,11 +248,6 @@ export default function ProfilePage() {
       setLoading(false)
     })
   }, [id])
-
-  useEffect(() => {
-    if (!user) return
-    getActiveSubscription(user.id).then(({ data }) => setHasSubscription(!!data))
-  }, [user])
 
   if (loading) {
     return (
@@ -281,7 +273,6 @@ export default function ProfilePage() {
 
   const handleSendMessage = async () => {
     if (!user) { navigate('/login'); return }
-    if (!hasSubscription) { navigate('/subscribe'); return }
     if (messageSending) return
     setMessageSending(true)
     await getOrCreateConversation(user.id, profile.id)
@@ -291,7 +282,6 @@ export default function ProfilePage() {
 
   const handleBookSession = () => {
     if (!user) { navigate('/login'); return }
-    if (!hasSubscription) { navigate('/subscribe'); return }
     setBookingOpen(true)
   }
 
