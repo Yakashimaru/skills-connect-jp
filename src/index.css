@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+/* ── Premium redesign tokens ───────────────────────────────────────────────
+   Used by the new marketing pages (src/pages/premium, src/components/premium).
+   Legacy pages keep their own inline colours. */
+@theme {
+  --color-ink: #17090D;
+  --color-ink-soft: #2A1418;
+  --color-ivory: #F6F1E9;
+  --color-paper: #FBF8F3;
+  --color-maroon: #5C0A1E;
+  --color-maroon-deep: #3A0612;
+  --color-gold: #B08D57;
+  --color-gold-light: #D9BF8C;
+  --color-line: #E3D8C8;
+  --color-muted: #6E625C;
+
+  --font-display: 'Cormorant Garamond', 'Noto Serif JP', Georgia, serif;
+  --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -12,4 +31,51 @@
     font-family: 'Segoe UI', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+}
+
+/* Cormorant defaults to old-style figures; prices need lining numerals */
+.font-display {
+  font-variant-numeric: lining-nums;
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.95rem 2rem;
+    background: var(--color-gold);
+    color: var(--color-ink);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: background 0.2s ease;
+  }
+  .btn-gold:hover { background: var(--color-gold-light); }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.95rem 2rem;
+    border: 1px solid currentColor;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .btn-outline:hover { background: rgba(176, 141, 87, 0.12); }
 }

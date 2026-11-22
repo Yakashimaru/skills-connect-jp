@@ -1,9 +1,19 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useEffect, lazy, Suspense } from 'react'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
+import PremiumLayout from './components/premium/PremiumLayout'
 
-const Home         = lazy(() => import('./pages/Home'))
+// Premium membership site
+const PremiumHome  = lazy(() => import('./pages/premium/Home'))
+const Philosophy   = lazy(() => import('./pages/premium/Philosophy'))
+const Services     = lazy(() => import('./pages/premium/Services'))
+const Membership   = lazy(() => import('./pages/premium/Membership'))
+const Coaches      = lazy(() => import('./pages/premium/Coaches'))
+const Experiences  = lazy(() => import('./pages/premium/Experiences'))
+const Apply        = lazy(() => import('./pages/premium/Apply'))
+
+// Legacy skills marketplace
 const Skills       = lazy(() => import('./pages/Skills'))
 const Social       = lazy(() => import('./pages/Social'))
 const ProfilePage  = lazy(() => import('./pages/ProfilePage'))
@@ -35,15 +45,33 @@ function ScrollToTop() {
   return null
 }
 
+function LegacyLayout() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <Outlet />
+    </div>
+  )
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-50">
-        <ScrollToTop />
-        <Navbar />
-        <Suspense fallback={null}>
-          <Routes>
-            <Route path="/" element={<Home />} />
+      <ScrollToTop />
+      <Suspense fallback={null}>
+        <Routes>
+          <Route element={<PremiumLayout />}>
+            <Route path="/" element={<PremiumHome />} />
+            <Route path="/philosophy" element={<Philosophy />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/membership" element={<Membership />} />
+            <Route path="/coaches" element={<Coaches />} />
+            <Route path="/experiences" element={<Experiences />} />
+            <Route path="/apply" element={<Apply />} />
+            <Route path="/consultation" element={<Navigate to="/apply" replace />} />
+          </Route>
+
+          <Route element={<LegacyLayout />}>
             <Route path="/discover" element={<Navigate to="/skills" replace />} />
             <Route path="/skills" element={<Skills />} />
             <Route path="/social" element={<Social />} />
@@ -61,9 +89,9 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
             <Route path="/subscribe" element={<Subscribe />} />
-          </Routes>
-        </Suspense>
-      </div>
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }
