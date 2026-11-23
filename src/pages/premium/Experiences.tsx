@@ -8,7 +8,7 @@ export default function Experiences() {
   return (
     <>
       <Helmet>
-        <title>Experiences – Kaiyui</title>
+        <title>{`${c.nav.experiences} – Kaiyui`}</title>
         <meta name="description" content={c.experiences.body} />
       </Helmet>
 

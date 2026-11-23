@@ -8,7 +8,7 @@ export default function Services() {
   return (
     <>
       <Helmet>
-        <title>Services – Kaiyui</title>
+        <title>{`${c.nav.services} – Kaiyui`}</title>
         <meta name="description" content={c.pillarsIntro.body} />
       </Helmet>
 

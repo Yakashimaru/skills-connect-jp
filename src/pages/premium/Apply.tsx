@@ -20,9 +20,9 @@ export default function Apply() {
     email: '',
     phone: '',
     role: '',
-    profile: f.profileOptions[0],
+    profile: '0',
     programme: initialProgramme,
-    level: f.levelOptions[1],
+    level: '1',
     goals: '',
   })
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -44,9 +44,9 @@ export default function Apply() {
     const message = [
       `Phone: ${form.phone || '-'}`,
       `Title & organisation: ${form.role || '-'}`,
-      `Profile: ${form.profile}`,
+      `Profile: ${f.profileOptions[+form.profile]}`,
       `Programme of interest: ${programme ? `${programme.duration} (${programme.price})` : f.undecided}`,
-      `English level: ${form.level}`,
+      `English level: ${f.levelOptions[+form.level]}`,
       '',
       'Goals:',
       form.goals,
@@ -70,7 +70,7 @@ export default function Apply() {
   return (
     <>
       <Helmet>
-        <title>Apply for Membership – Kaiyui</title>
+        <title>{`${c.cta.button} – Kaiyui`}</title>
         <meta name="description" content={c.apply.body} />
       </Helmet>
 
@@ -127,13 +127,13 @@ export default function Apply() {
               <div>
                 <label className={label} htmlFor="profile">{f.profile}</label>
                 <select id="profile" className={field} value={form.profile} onChange={set('profile')}>
-                  {f.profileOptions.map(o => <option key={o}>{o}</option>)}
+                  {f.profileOptions.map((o, i) => <option key={o} value={i}>{o}</option>)}
                 </select>
               </div>
               <div>
                 <label className={label} htmlFor="level">{f.level}</label>
                 <select id="level" className={field} value={form.level} onChange={set('level')}>
-                  {f.levelOptions.map(o => <option key={o}>{o}</option>)}
+                  {f.levelOptions.map((o, i) => <option key={o} value={i}>{o}</option>)}
                 </select>
               </div>
 

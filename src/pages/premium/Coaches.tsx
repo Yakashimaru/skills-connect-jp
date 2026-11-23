@@ -8,7 +8,7 @@ export default function Coaches() {
   return (
     <>
       <Helmet>
-        <title>Our Coaches – Kaiyui</title>
+        <title>{`${c.coaches.eyebrow} – Kaiyui`}</title>
         <meta name="description" content={c.coaches.body} />
       </Helmet>
 

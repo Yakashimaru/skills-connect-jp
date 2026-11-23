@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <>
       <Helmet>
-        <title>Kaiyui – Broaden Your World Horizon Through English</title>
+        <title>{`Kaiyui – ${c.hero.title}`}</title>
         <meta name="description" content={c.hero.subtitle} />
         <link rel="canonical" href="https://www.kaiyui.com/" />
       </Helmet>

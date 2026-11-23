@@ -1,6 +1,28 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { usePremiumContent } from '../../content/premium'
+import { useTranslation } from 'react-i18next'
+import { PREMIUM_LANGS, usePremiumContent } from '../../content/premium'
+
+function LangToggle() {
+  const { i18n } = useTranslation()
+  const current = (i18n.resolvedLanguage ?? 'en').slice(0, 2)
+  return (
+    <div className="flex items-center gap-2 text-[0.72rem] tracking-[0.15em]">
+      {PREMIUM_LANGS.map((l, i) => (
+        <span key={l.code} className="flex items-center gap-2">
+          {i > 0 && <span className="text-ivory/30">/</span>}
+          <button
+            onClick={() => i18n.changeLanguage(l.code)}
+            className={current === l.code ? 'text-gold-light' : 'text-ivory/60 hover:text-ivory'}
+            aria-pressed={current === l.code}
+          >
+            {l.label}
+          </button>
+        </span>
+      ))}
+    </div>
+  )
+}
 
 export default function SiteHeader() {
   const c = usePremiumContent()
@@ -54,6 +76,7 @@ export default function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-6 lg:flex">
+          <LangToggle />
           <Link to="/login" className="text-[0.72rem] uppercase tracking-[0.2em] text-ivory/60 hover:text-ivory">
             {c.nav.login}
           </Link>
@@ -62,13 +85,16 @@ export default function SiteHeader() {
           </Link>
         </div>
 
-        <button
-          className="text-[0.72rem] uppercase tracking-[0.2em] lg:hidden"
-          onClick={() => setOpen(o => !o)}
-          aria-expanded={open}
-        >
-          {open ? c.nav.close : c.nav.menu}
-        </button>
+        <div className="flex items-center gap-5 lg:hidden">
+          <LangToggle />
+          <button
+            className="text-[0.72rem] uppercase tracking-[0.2em]"
+            onClick={() => setOpen(o => !o)}
+            aria-expanded={open}
+          >
+            {open ? c.nav.close : c.nav.menu}
+          </button>
+        </div>
       </div>
 
       {open && (

@@ -8,7 +8,7 @@ export default function Membership() {
   return (
     <>
       <Helmet>
-        <title>Membership – Kaiyui</title>
+        <title>{`${c.nav.membership} – Kaiyui`}</title>
         <meta name="description" content={c.membershipIntro.body} />
       </Helmet>
 
@@ -35,7 +35,7 @@ export default function Membership() {
                 <div>
                   <h3 className="font-display text-2xl text-ink">
                     {s.title}
-                    {s.price && <span className="ml-3 text-base font-body font-semibold text-maroon">{s.price}</span>}
+                    {s.price && <span className="block text-base font-body font-semibold text-maroon sm:ml-3 sm:inline">{s.price}</span>}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{s.body}</p>
                 </div>

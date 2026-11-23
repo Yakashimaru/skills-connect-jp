@@ -8,7 +8,7 @@ export default function Philosophy() {
   return (
     <>
       <Helmet>
-        <title>Our Philosophy – Kaiyui</title>
+        <title>{`${c.philosophy.eyebrow} – Kaiyui`}</title>
         <meta name="description" content={c.philosophy.intro} />
       </Helmet>
 
