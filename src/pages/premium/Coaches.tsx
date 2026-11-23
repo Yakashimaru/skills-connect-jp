@@ -20,7 +20,7 @@ export default function Coaches() {
           <div className="grid gap-10 md:grid-cols-3">
             {c.coaches.profiles.map(p => (
               <article key={p.role} className="bg-paper">
-                <div className="flex aspect-[4/5] items-center justify-center bg-gradient-to-b from-ink-soft to-ink">
+                <div className="flex aspect-[4/5] items-center justify-center" style={{ background: 'linear-gradient(to bottom, #2A1418, #17090D)' }}>
                   <span className="font-display text-7xl text-gold/40">K</span>
                 </div>
                 <div className="p-8">

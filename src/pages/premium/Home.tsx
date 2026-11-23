@@ -15,26 +15,46 @@ export default function Home() {
       </Helmet>
 
       {/* Hero */}
-      <section className="relative flex min-h-screen items-end overflow-hidden bg-ink text-ivory">
-        <img src="/the-reading-room.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/30" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/80 to-transparent" />
-
-        <Container className="relative w-full pb-20 pt-40 md:pb-28">
-          <p className="eyebrow">{c.hero.eyebrow}</p>
-          <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.02] md:text-7xl lg:text-8xl">
-            {c.hero.title}
-          </h1>
-          <p className="mt-8 max-w-2xl text-base leading-relaxed text-ivory/75 md:text-lg">{c.hero.subtitle}</p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link to="/apply" className="btn-gold">
-              {c.hero.primary}
-            </Link>
-            <Link to="/membership" className="btn-outline text-ivory">
-              {c.hero.secondary}
-            </Link>
+      {/* Text sits on solid colour for legibility; the photo is framed at
+          close to its native size so it stays sharp on large screens. */}
+      <section
+        className="relative overflow-hidden text-ivory"
+        style={{
+          background:
+            'radial-gradient(ellipse at 80% 40%, rgba(92,10,30,0.55), transparent 60%), #17090D',
+        }}
+      >
+        <Container className="relative grid min-h-screen items-center gap-14 pb-16 pt-32 md:grid-cols-[1.2fr_0.8fr] md:gap-12 lg:gap-20">
+          <div>
+            <p className="eyebrow">{c.hero.eyebrow}</p>
+            <h1 className="mt-6 font-display text-5xl leading-[1.04] md:text-6xl lg:text-7xl">{c.hero.title}</h1>
+            <p className="mt-8 max-w-xl text-base leading-relaxed text-ivory/80 md:text-lg">{c.hero.subtitle}</p>
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/apply" className="btn-gold">
+                {c.hero.primary}
+              </Link>
+              <Link to="/membership" className="btn-outline text-ivory">
+                {c.hero.secondary}
+              </Link>
+            </div>
           </div>
-          <p className="mt-16 border-t border-white/15 pt-6 text-[0.7rem] uppercase tracking-[0.25em] text-ivory/50">
+
+          <figure className="relative mx-auto w-full max-w-[26rem]">
+            {/* offset gold frame */}
+            <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-t-full border border-gold/50" />
+            <div className="relative aspect-[3/4] overflow-hidden rounded-t-full">
+              <img
+                src="/the-reading-room.jpg"
+                alt=""
+                className="h-full w-full object-cover"
+                style={{ objectPosition: '48% center' }}
+              />
+            </div>
+          </figure>
+        </Container>
+
+        <Container className="relative pb-10">
+          <p className="border-t border-white/15 pt-6 text-[0.7rem] uppercase tracking-[0.25em] text-ivory/55">
             {c.hero.tagline}
           </p>
         </Container>

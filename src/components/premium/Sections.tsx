@@ -49,7 +49,7 @@ export function PageHero({
       {image && (
         <>
           <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/60 to-ink" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(23,9,13,0.8), rgba(23,9,13,0.75) 50%, #17090D)' }} />
         </>
       )}
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
@@ -129,7 +129,7 @@ export function ClosingCTA() {
   return (
     <section className="relative overflow-hidden bg-maroon-deep py-28 text-ivory">
       <img src="/4Lounge13.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
-      <div className="absolute inset-0 bg-gradient-to-r from-maroon-deep via-maroon-deep/85 to-maroon-deep/60" />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #3A0612, rgba(58,6,18,0.88) 50%, rgba(58,6,18,0.7))' }} />
       <Container className="relative text-center">
         <h2 className="mx-auto max-w-3xl font-display text-4xl leading-tight md:text-6xl">{c.cta.title}</h2>
         <p className="mx-auto mt-6 max-w-xl text-ivory/70">{c.cta.body}</p>
