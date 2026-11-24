@@ -28,11 +28,12 @@ export default function Home() {
           <div>
             <p className="eyebrow">{c.hero.eyebrow}</p>
             <h1 className="mt-6 font-display text-5xl leading-[1.04] md:text-7xl lg:text-8xl">{c.hero.title}</h1>
+            <p className="mt-6 font-display text-xl italic text-gold-light [text-wrap:balance] [word-break:auto-phrase] md:text-2xl">{c.hero.subtitle}</p>
             <div className="mt-12 flex flex-wrap gap-4">
               <Link to="/apply" className="btn-gold">
                 {c.hero.primary}
               </Link>
-              <Link to="/membership" className="btn-outline text-ivory">
+              <Link to="/services" className="btn-outline text-ivory">
                 {c.hero.secondary}
               </Link>
             </div>
@@ -82,9 +83,17 @@ export default function Home() {
       </section>
 
       {/* Who it's for */}
-      <section className="relative overflow-hidden bg-ink py-28 text-ivory">
+      {/* Maroon band so it reads as a separate section from the dark hero */}
+      <section
+        className="relative overflow-hidden py-28 text-ivory"
+        style={{ background: 'linear-gradient(135deg, #3A0612, #5C0A1E 60%, #3A0612)' }}
+      >
         <Container>
-          <SectionHeading dark center eyebrow={c.audience.eyebrow} title={c.audience.title} body={c.audience.body} />
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="mx-auto block h-px w-16 bg-gold" />
+            <h2 className="mt-8 font-display text-4xl leading-[1.1] text-gold-light md:text-5xl">{c.audience.title}</h2>
+            <p className="mt-6 text-base leading-relaxed text-ivory/80 [text-wrap:balance] [word-break:auto-phrase] md:text-lg">{c.audience.body}</p>
+          </div>
         </Container>
       </section>
 
@@ -113,9 +122,6 @@ export default function Home() {
             <span className="ml-3 font-body text-base text-muted md:text-lg">{c.membershipIntro.rangeSuffix}</span>
           </p>
           <p className="mx-auto mt-5 max-w-xl text-muted">{c.membershipIntro.rangeNote}</p>
-          <Link to="/membership" className="btn-outline mt-10 text-ink">
-            {c.membershipIntro.viewProgrammes}
-          </Link>
         </Container>
       </section>
 

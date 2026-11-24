@@ -28,7 +28,6 @@ const en = {
     coaches: 'Coaches',
     experiences: 'Experiences',
     apply: 'Apply',
-    login: 'Member login',
     menu: 'Menu',
     close: 'Close',
   },
@@ -36,11 +35,12 @@ const en = {
   hero: {
     eyebrow: 'By application only',
     title: 'Grow beyond borders.',
+    subtitle: 'Where English opens doors to the world.',
     // Not shown on the page; used for the meta description only
     metaDescription:
       'A gateway to a bigger world, not another English school. Elite language coaching, life guidance, international experiences and global business networking.',
     primary: 'Book a consultation',
-    secondary: 'Explore membership',
+    secondary: 'Explore services',
   },
 
   statement: {
@@ -113,8 +113,7 @@ const en = {
   ] as Pillar[],
 
   audience: {
-    eyebrow: 'Who it is for',
-    title: 'Our community',
+    title: 'Who it is for',
     body:
       'Designed for busy, ambitious individuals who value personal growth and global exposure to connect with the world. Our members include business owners, entrepreneurs, executives, public figures and future leaders.',
   },
@@ -158,13 +157,12 @@ const en = {
     eyebrow: 'Membership',
     title: 'Our programmes',
     // Exact programme fees are not published; only this range is shown
-    range: '¥150,000 – ¥200,000',
+    range: 'From ¥100,000',
     rangeSuffix: 'per month',
     rangeNote: '3, 6 and 12-month programmes. Full details are shared at your private consultation.',
-    viewProgrammes: 'View programmes',
     heroBody:
-      'From ¥150,000 to ¥200,000 per month. 3, 6 and 12-month programmes, with full details shared at your private consultation.',
-    metaDescription: 'Membership programmes of 3, 6 or 12 months, from ¥150,000 to ¥200,000 per month.',
+      'From ¥100,000 per month. 3, 6 and 12-month programmes, with full details shared at your private consultation.',
+    metaDescription: 'Membership programmes of 3, 6 or 12 months, from ¥100,000 per month.',
     recommended: 'Recommended',
     cta: 'Apply for this programme',
   },
@@ -239,6 +237,7 @@ const en = {
   philosophy: {
     eyebrow: 'Our philosophy',
     title: 'Beyond language. Beyond borders.',
+    // Not shown on the page; used for the meta description only
     intro:
       'Busy leaders don’t need another English class. They need the confidence to walk into any room in the world, and the relationships that make the journey worthwhile.',
     principles: [
@@ -270,12 +269,6 @@ const en = {
     title: 'Selected for excellence. Matched for you.',
     body:
       'Every Kaiyui coach is chosen for their professional background, communication expertise and ability to guide accomplished people. We match each member personally after the consultation.',
-    criteria: [
-      'International business or executive experience',
-      'Proven coaching and communication expertise',
-      'Cultural fluency across Japan and abroad',
-      'Discretion and professionalism with high-profile clients',
-    ],
     profiles: [
       { role: 'Executive Communication', focus: 'Presentations, board-level English, public speaking' },
       { role: 'Negotiation & Business', focus: 'Deal-making, cross-border partnerships, investor meetings' },
@@ -316,12 +309,10 @@ const en = {
   },
 
   apply: {
-    eyebrow: 'Apply',
-    title: 'Begin with a private consultation.',
-    body:
-      'Membership is by application. Tell us a little about yourself and we will arrange a private consultation to understand your goals and recommend the right programme.',
-    consultation: 'Consultation fee',
-    consultationPrice: '¥10,000',
+    title: 'Apply',
+    // Not shown on the page; used for the meta description only
+    metaDescription:
+      'Membership is by application. Apply for a private consultation to discuss your goals and the right programme.',
     steps: [
       'Submit your application',
       'We contact you within 2 business days',
@@ -367,8 +358,6 @@ const en = {
   footer: {
     tagline: 'Grow beyond borders.',
     explore: 'Explore',
-    contact: 'Contact',
-    contactLink: 'Get in touch',
     rights: 'All rights reserved.',
   },
 }
@@ -383,7 +372,6 @@ const ja: PremiumContent = {
     coaches: 'コーチ',
     experiences: '体験',
     apply: 'お申し込み',
-    login: 'メンバーログイン',
     menu: 'メニュー',
     close: '閉じる',
   },
@@ -391,10 +379,11 @@ const ja: PremiumContent = {
   hero: {
     eyebrow: '審査制メンバーシップ',
     title: '国境を越えて、成長する。',
+    subtitle: '英語が、世界への扉をひらく場所。',
     metaDescription:
       'より大きな世界への扉。ただの英会話スクールではありません。エリート語学コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
     primary: 'カウンセリングを予約',
-    secondary: 'メンバーシップを見る',
+    secondary: 'サービスを見る',
   },
 
   statement: {
@@ -465,8 +454,7 @@ const ja: PremiumContent = {
   ],
 
   audience: {
-    eyebrow: '対象となる方',
-    title: 'コミュニティ',
+    title: '対象となる方',
     body:
       '自己成長と世界への視野を大切にし、世界とつながりたいと願う、多忙で志の高い方のために。メンバーには、経営者、起業家、役員、著名人、そして次世代のリーダーが名を連ねます。',
   },
@@ -507,12 +495,11 @@ const ja: PremiumContent = {
   membershipIntro: {
     eyebrow: 'メンバーシップ',
     title: 'プログラム',
-    range: '¥150,000〜¥200,000',
+    range: '¥100,000〜',
     rangeSuffix: '／月',
     rangeNote: '3ヶ月・6ヶ月・12ヶ月のプログラム。詳細は個別カウンセリングにてご案内いたします。',
-    viewProgrammes: 'プログラムを見る',
-    heroBody: '月額¥150,000〜¥200,000。3ヶ月・6ヶ月・12ヶ月のプログラムをご用意しています。詳細は個別カウンセリングにてご案内いたします。',
-    metaDescription: '3ヶ月・6ヶ月・12ヶ月のメンバーシッププログラム。月額¥150,000〜¥200,000。',
+    heroBody: '月額¥100,000〜。3ヶ月・6ヶ月・12ヶ月のプログラムをご用意しています。詳細は個別カウンセリングにてご案内いたします。',
+    metaDescription: '3ヶ月・6ヶ月・12ヶ月のメンバーシッププログラム。月額¥100,000〜。',
     recommended: 'おすすめ',
     cta: 'このプログラムに申し込む',
   },
@@ -616,12 +603,6 @@ const ja: PremiumContent = {
     title: '卓越性で選び、あなたに合わせて。',
     body:
       'Kaiyuiのコーチは、職歴、コミュニケーションの専門性、そして実績ある方々を導く力を基準に選ばれています。カウンセリング後、一人ひとりに合わせてマッチングいたします。',
-    criteria: [
-      '国際ビジネスまたは経営層での経験',
-      '実証されたコーチング・コミュニケーションの専門性',
-      '日本と海外の双方に通じた文化理解',
-      '著名なクライアントにも対応できる守秘性とプロ意識',
-    ],
     profiles: [
       { role: 'エグゼクティブコミュニケーション', focus: 'プレゼンテーション、経営層向け英語、パブリックスピーキング' },
       { role: '交渉＆ビジネス', focus: '商談、海外パートナーシップ、投資家ミーティング' },
@@ -661,12 +642,8 @@ const ja: PremiumContent = {
   },
 
   apply: {
-    eyebrow: 'お申し込み',
-    title: 'まずは個別カウンセリングから。',
-    body:
-      'ご入会は審査制です。簡単なご経歴をお聞かせください。個別カウンセリングを設定し、目標をお伺いしたうえで最適なプログラムをご提案いたします。',
-    consultation: 'カウンセリング料金',
-    consultationPrice: '¥10,000',
+    title: 'お申し込み',
+    metaDescription: 'ご入会は審査制です。個別カウンセリングにお申し込みいただき、目標と最適なプログラムについてご相談ください。',
     steps: [
       'お申し込みフォームの送信',
       '2営業日以内にご連絡',
@@ -704,8 +681,6 @@ const ja: PremiumContent = {
   footer: {
     tagline: '国境を越えて、成長する。',
     explore: 'メニュー',
-    contact: 'お問い合わせ',
-    contactLink: 'お問い合わせ',
     rights: 'All rights reserved.',
   },
 }

@@ -45,6 +45,10 @@
   /* Long katakana phrases may still break if they cannot fit the width */
   overflow-wrap: anywhere;
 }
+/* Japanese fonts have no italic; avoid the browser's fake slant */
+:lang(ja) .italic {
+  font-style: normal;
+}
 @media (max-width: 640px) {
   :lang(ja) h1 {
     font-size: 2.35rem;

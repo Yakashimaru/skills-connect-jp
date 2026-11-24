@@ -71,26 +71,20 @@ export default function Apply() {
     <>
       <Helmet>
         <title>{`${c.cta.button} – Kaiyui`}</title>
-        <meta name="description" content={c.apply.body} />
+        <meta name="description" content={c.apply.metaDescription} />
       </Helmet>
 
       <section className="bg-ink pb-16 pt-44 text-ivory">
         <Container>
-          <p className="eyebrow">{c.apply.eyebrow}</p>
-          <h1 className="mt-6 max-w-3xl font-display text-5xl leading-[1.05] md:text-7xl">{c.apply.title}</h1>
+          <h1 className="max-w-3xl font-display text-5xl leading-[1.05] md:text-7xl">{c.apply.title}</h1>
         </Container>
       </section>
 
       <section className="bg-paper py-24">
         <Container className="grid gap-16 lg:grid-cols-[1fr_1.5fr]">
-          {/* Left: explanation */}
+          {/* Left: application steps */}
           <aside>
-            <p className="text-lg leading-relaxed text-muted">{c.apply.body}</p>
-            <div className="mt-10 border border-line bg-ivory p-8">
-              <p className={label}>{c.apply.consultation}</p>
-              <p className="mt-2 font-display text-5xl text-ink">{c.apply.consultationPrice}</p>
-            </div>
-            <ol className="mt-10 space-y-5">
+            <ol className="space-y-5">
               {c.apply.steps.map((s, i) => (
                 <li key={s} className="flex gap-5">
                   <span className="font-display text-2xl text-gold">0{i + 1}</span>

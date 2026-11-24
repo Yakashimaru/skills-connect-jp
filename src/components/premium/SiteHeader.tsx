@@ -43,9 +43,7 @@ export default function SiteHeader() {
   const links = [
     { to: '/philosophy', label: c.nav.philosophy },
     { to: '/services', label: c.nav.services },
-    { to: '/membership', label: c.nav.membership },
     { to: '/coaches', label: c.nav.coaches },
-    { to: '/experiences', label: c.nav.experiences },
   ]
 
   return (
@@ -77,9 +75,6 @@ export default function SiteHeader() {
 
         <div className="hidden items-center gap-6 lg:flex">
           <LangToggle />
-          <Link to="/login" className="text-[0.72rem] uppercase tracking-[0.2em] text-ivory/60 hover:text-ivory">
-            {c.nav.login}
-          </Link>
           <Link to="/apply" className="btn-gold px-6 py-3">
             {c.nav.apply}
           </Link>
@@ -114,9 +109,6 @@ export default function SiteHeader() {
           <div className="mt-8 flex flex-col gap-4">
             <Link to="/apply" onClick={() => setOpen(false)} className="btn-gold w-full">
               {c.nav.apply}
-            </Link>
-            <Link to="/login" onClick={() => setOpen(false)} className="text-center text-[0.72rem] uppercase tracking-[0.2em] text-ivory/60">
-              {c.nav.login}
             </Link>
           </div>
         </div>

@@ -6,15 +6,13 @@ export default function SiteFooter() {
   const links = [
     { to: '/philosophy', label: c.nav.philosophy },
     { to: '/services', label: c.nav.services },
-    { to: '/membership', label: c.nav.membership },
     { to: '/coaches', label: c.nav.coaches },
-    { to: '/experiences', label: c.nav.experiences },
     { to: '/apply', label: c.nav.apply },
   ]
 
   return (
     <footer className="bg-ink font-body text-ivory/70">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-[2fr_1fr_1fr] lg:px-10">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-[2fr_1fr] lg:px-10">
         <div>
           <p className="font-display text-3xl tracking-[0.12em] text-ivory">KAIYUI</p>
           <p className="mt-4 max-w-xs font-display text-xl italic text-ivory/60">{c.footer.tagline}</p>
@@ -29,21 +27,6 @@ export default function SiteFooter() {
                 </Link>
               </li>
             ))}
-          </ul>
-        </div>
-        <div>
-          <p className="eyebrow mb-5">{c.footer.contact}</p>
-          <ul className="space-y-3 text-sm">
-            <li>
-              <Link to="/contact" className="hover:text-gold-light">
-                {c.footer.contactLink}
-              </Link>
-            </li>
-            <li>
-              <Link to="/login" className="hover:text-gold-light">
-                {c.nav.login}
-              </Link>
-            </li>
           </ul>
         </div>
       </div>

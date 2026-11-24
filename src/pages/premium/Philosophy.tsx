@@ -15,7 +15,6 @@ export default function Philosophy() {
       <PageHero
         eyebrow={c.philosophy.eyebrow}
         title={c.philosophy.title}
-        body={c.philosophy.intro}
         image="/the-reading-room.jpg"
       />
 

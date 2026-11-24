@@ -8,9 +8,7 @@ import PremiumLayout from './components/premium/PremiumLayout'
 const PremiumHome  = lazy(() => import('./pages/premium/Home'))
 const Philosophy   = lazy(() => import('./pages/premium/Philosophy'))
 const Services     = lazy(() => import('./pages/premium/Services'))
-const Membership   = lazy(() => import('./pages/premium/Membership'))
 const Coaches      = lazy(() => import('./pages/premium/Coaches'))
-const Experiences  = lazy(() => import('./pages/premium/Experiences'))
 const Apply        = lazy(() => import('./pages/premium/Apply'))
 
 // Legacy skills marketplace
@@ -64,9 +62,11 @@ function App() {
             <Route path="/" element={<PremiumHome />} />
             <Route path="/philosophy" element={<Philosophy />} />
             <Route path="/services" element={<Services />} />
-            <Route path="/membership" element={<Membership />} />
+            {/* Membership and Experiences pages are hidden for now; restore the
+                routes and nav links to bring them back */}
+            <Route path="/membership" element={<Navigate to="/" replace />} />
             <Route path="/coaches" element={<Coaches />} />
-            <Route path="/experiences" element={<Experiences />} />
+            <Route path="/experiences" element={<Navigate to="/" replace />} />
             <Route path="/apply" element={<Apply />} />
             <Route path="/consultation" element={<Navigate to="/apply" replace />} />
           </Route>

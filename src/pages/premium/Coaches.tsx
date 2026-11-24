@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { usePremiumContent } from '../../content/premium'
-import { ClosingCTA, Container, PageHero, SectionHeading } from '../../components/premium/Sections'
+import { ClosingCTA, Container, PageHero } from '../../components/premium/Sections'
 
 export default function Coaches() {
   const c = usePremiumContent()
@@ -32,20 +32,6 @@ export default function Coaches() {
             ))}
           </div>
           <p className="mt-10 text-center text-sm italic text-muted">{c.coaches.comingSoon}</p>
-        </Container>
-      </section>
-
-      <section className="bg-ink py-28 text-ivory">
-        <Container className="grid gap-16 lg:grid-cols-2">
-          <SectionHeading dark eyebrow={c.coaches.eyebrow} title={c.coaches.title} />
-          <ul className="border-t border-white/15">
-            {c.coaches.criteria.map(item => (
-              <li key={item} className="flex gap-4 border-b border-white/15 py-6 text-lg text-ivory/85">
-                <span className="mt-[0.8rem] h-px w-6 shrink-0 bg-gold" />
-                {item}
-              </li>
-            ))}
-          </ul>
         </Container>
       </section>
 
