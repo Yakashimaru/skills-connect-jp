@@ -9,7 +9,7 @@ export function SectionHeading({
   dark = false,
   center = false,
 }: {
-  eyebrow: string
+  eyebrow?: string
   title: string
   body?: string
   dark?: boolean
@@ -17,9 +17,9 @@ export function SectionHeading({
 }) {
   return (
     <div className={center ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>
-      <p className="eyebrow">{eyebrow}</p>
+      {eyebrow && <p className="eyebrow mb-5">{eyebrow}</p>}
       <h2
-        className={`mt-5 font-display text-4xl leading-[1.1] md:text-5xl ${dark ? 'text-ivory' : 'text-ink'}`}
+        className={`font-display text-4xl leading-[1.1] md:text-5xl ${dark ? 'text-ivory' : 'text-ink'}`}
       >
         {title}
       </h2>
@@ -101,10 +101,7 @@ export function ProgrammeCard({ programme }: { programme: Programme }) {
       )}
       <p className="eyebrow">{programme.tier}</p>
       <h3 className="mt-4 font-display text-3xl">{programme.duration}</h3>
-      <p className="mt-8 font-display text-5xl tracking-tight">{programme.price}</p>
-      <p className={`mt-2 text-sm ${featured ? 'text-ivory/60' : 'text-muted'}`}>
-        {c.membershipIntro.perMonth} {programme.monthly} {c.membershipIntro.perMonthSuffix}
-      </p>
+      <p className={`mt-3 text-sm ${featured ? 'text-ivory/60' : 'text-muted'}`}>{programme.sessions}</p>
       <div className={`my-8 h-px ${featured ? 'bg-white/15' : 'bg-line'}`} />
       <ul className="flex-1 space-y-4 text-sm">
         {programme.features.map(f => (

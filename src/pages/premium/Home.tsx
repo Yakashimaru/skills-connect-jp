@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { usePremiumContent } from '../../content/premium'
-import { ClosingCTA, Container, PillarCard, ProgrammeCard, SectionHeading } from '../../components/premium/Sections'
+import { ClosingCTA, Container, PillarCard, SectionHeading } from '../../components/premium/Sections'
 
 export default function Home() {
   const c = usePremiumContent()
@@ -10,7 +10,7 @@ export default function Home() {
     <>
       <Helmet>
         <title>{`Kaiyui – ${c.hero.title}`}</title>
-        <meta name="description" content={c.hero.subtitle} />
+        <meta name="description" content={c.hero.metaDescription} />
         <link rel="canonical" href="https://www.kaiyui.com/" />
       </Helmet>
 
@@ -24,12 +24,11 @@ export default function Home() {
             'radial-gradient(ellipse at 80% 40%, rgba(92,10,30,0.55), transparent 60%), #17090D',
         }}
       >
-        <Container className="relative grid min-h-screen items-center gap-14 pb-16 pt-32 md:grid-cols-[1.2fr_0.8fr] md:gap-12 lg:gap-20">
+        <Container className="relative grid min-h-screen items-center gap-14 pb-20 pt-32 md:grid-cols-[1.2fr_0.8fr] md:gap-12 lg:gap-20">
           <div>
             <p className="eyebrow">{c.hero.eyebrow}</p>
-            <h1 className="mt-6 font-display text-5xl leading-[1.04] md:text-6xl lg:text-7xl">{c.hero.title}</h1>
-            <p className="mt-8 max-w-xl text-base leading-relaxed text-ivory/80 md:text-lg">{c.hero.subtitle}</p>
-            <div className="mt-10 flex flex-wrap gap-4">
+            <h1 className="mt-6 font-display text-5xl leading-[1.04] md:text-7xl lg:text-8xl">{c.hero.title}</h1>
+            <div className="mt-12 flex flex-wrap gap-4">
               <Link to="/apply" className="btn-gold">
                 {c.hero.primary}
               </Link>
@@ -52,12 +51,6 @@ export default function Home() {
             </div>
           </figure>
         </Container>
-
-        <Container className="relative pb-10">
-          <p className="border-t border-white/15 pt-6 text-[0.7rem] uppercase tracking-[0.25em] text-ivory/55">
-            {c.hero.tagline}
-          </p>
-        </Container>
       </section>
 
       {/* Statement */}
@@ -65,9 +58,7 @@ export default function Home() {
         <Container className="grid gap-12 md:grid-cols-[1fr_2fr]">
           <p className="eyebrow">{c.statement.eyebrow}</p>
           <div>
-            <blockquote className="font-display text-3xl leading-snug text-ink md:text-5xl">
-              “{c.statement.quote}”
-            </blockquote>
+            <h2 className="font-display text-3xl leading-snug text-ink md:text-5xl">{c.statement.title}</h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted">{c.statement.body}</p>
           </div>
         </Container>
@@ -77,7 +68,7 @@ export default function Home() {
       <section className="bg-ivory py-28">
         <Container>
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <SectionHeading eyebrow={c.pillarsIntro.eyebrow} title={c.pillarsIntro.title} body={c.pillarsIntro.body} />
+            <SectionHeading title={c.pillarsIntro.title} />
             <Link to="/services" className="btn-outline shrink-0 text-ink">
               {c.nav.services}
             </Link>
@@ -92,24 +83,15 @@ export default function Home() {
 
       {/* Who it's for */}
       <section className="relative overflow-hidden bg-ink py-28 text-ivory">
-        <Container className="grid items-center gap-16 lg:grid-cols-2">
-          <div>
-            <SectionHeading dark eyebrow={c.audience.eyebrow} title={c.audience.title} body={c.audience.body} />
-          </div>
-          <ul className="grid grid-cols-1 border-t border-white/15 sm:grid-cols-2">
-            {c.audience.groups.map(g => (
-              <li key={g} className="border-b border-white/15 py-6 font-display text-2xl text-ivory/90 sm:odd:pr-6">
-                {g}
-              </li>
-            ))}
-          </ul>
+        <Container>
+          <SectionHeading dark center eyebrow={c.audience.eyebrow} title={c.audience.title} body={c.audience.body} />
         </Container>
       </section>
 
       {/* Journey */}
       <section className="bg-paper py-28">
         <Container>
-          <SectionHeading eyebrow={c.journeyIntro.eyebrow} title={c.journeyIntro.title} />
+          <SectionHeading title={c.journeyIntro.title} />
           <ol className="mt-16 grid gap-px overflow-hidden border border-line bg-line md:grid-cols-5">
             {c.journey.map(s => (
               <li key={s.step} className="flex flex-col bg-paper p-8">
@@ -123,20 +105,17 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* Membership preview */}
-      <section className="bg-ivory py-28">
-        <Container>
-          <SectionHeading
-            center
-            eyebrow={c.membershipIntro.eyebrow}
-            title={c.membershipIntro.title}
-            body={c.membershipIntro.body}
-          />
-          <div className="mt-20 grid items-stretch gap-8 lg:grid-cols-3 lg:gap-0">
-            {c.programmes.map(p => (
-              <ProgrammeCard key={p.id} programme={p} />
-            ))}
-          </div>
+      {/* Membership price range (exact fees are not published) */}
+      <section className="bg-ivory py-24">
+        <Container className="text-center">
+          <p className="font-display text-5xl tracking-tight text-ink md:text-6xl">
+            {c.membershipIntro.range}
+            <span className="ml-3 font-body text-base text-muted md:text-lg">{c.membershipIntro.rangeSuffix}</span>
+          </p>
+          <p className="mx-auto mt-5 max-w-xl text-muted">{c.membershipIntro.rangeNote}</p>
+          <Link to="/membership" className="btn-outline mt-10 text-ink">
+            {c.membershipIntro.viewProgrammes}
+          </Link>
         </Container>
       </section>
 

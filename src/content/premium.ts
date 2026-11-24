@@ -8,8 +8,6 @@ export type Programme = {
   tier: string
   name: string
   duration: string
-  price: string
-  monthly: string
   sessions: string
   recommended?: boolean
   features: string[]
@@ -37,33 +35,33 @@ const en = {
 
   hero: {
     eyebrow: 'By application only',
-    title: 'Broaden your world horizon through English.',
-    subtitle:
-      'An exclusive international development membership for business owners, entrepreneurs and leaders. Private coaching, life guidance, curated travel and global networking, all in one journey.',
+    title: 'Grow beyond borders.',
+    // Not shown on the page; used for the meta description only
+    metaDescription:
+      'A private international development membership: elite English coaching, life guidance, international experiences and global business networking.',
     primary: 'Book a consultation',
     secondary: 'Explore membership',
-    tagline: 'Speak globally · Think internationally · Connect meaningfully · Grow beyond borders',
   },
 
   statement: {
     eyebrow: 'Our purpose',
-    quote: 'The goal isn’t simply to improve English. It’s to open doors to a bigger world.',
+    title: 'A gateway to a bigger world, not another English school.',
     body:
-      'Kaiyui is not an English school, and not a travel agency. It is a private platform for internationally minded individuals to develop, experience and connect, with English as the foundation and the world as the destination.',
+      'We empower ambitious individuals to expand their horizons through English: to speak globally, think internationally and connect meaningfully.',
   },
 
   pillarsIntro: {
-    eyebrow: 'Four pillars',
-    title: 'One membership. Four ways to grow.',
-    body:
-      'Each member’s journey combines four complementary services, personalised to their goals, industry and lifestyle.',
+    eyebrow: 'Services',
+    title: 'The four pillars',
+    metaDescription:
+      'Elite language coaching, life guidance, international experiences and global business networking.',
   },
 
   pillars: [
     {
       number: '01',
-      title: 'Elite English Coaching',
-      summary: 'One-to-one coaching with carefully selected coaches, built around the way you actually work.',
+      title: 'Elite Language Coaching',
+      summary: 'One-to-one coaching with carefully selected elite coaches and personalised programmes.',
       points: [
         'Private coaching with selected elite coaches',
         'Business English and executive communication',
@@ -74,8 +72,9 @@ const en = {
     },
     {
       number: '02',
-      title: 'Life & Personal Guidance',
-      summary: 'A trusted partner for the bigger questions: direction, leadership and the next chapter.',
+      title: 'Life Guidance',
+      summary:
+        'A trusted confidant to share thoughts, navigate life’s challenges, gain perspective and find clarity through meaningful conversations and personal guidance.',
       points: [
         'Personal development',
         'Leadership and mindset',
@@ -86,10 +85,12 @@ const en = {
     },
     {
       number: '03',
-      title: 'International Experiences',
-      summary: 'Curated journeys abroad that turn language into lived experience.',
+      title: 'International Experience',
+      summary:
+        'Curated journeys abroad that bring language to life through immersive experiences, with personalised concierge planning and thoughtfully designed itineraries.',
       points: [
         'Curated overseas trips',
+        'Personalised concierge planning',
         'Cultural immersion',
         'International lifestyle exposure',
         'Learning through real-world experiences',
@@ -98,8 +99,9 @@ const en = {
     },
     {
       number: '04',
-      title: 'Business & Global Networking',
-      summary: 'Introductions and gatherings that open genuine international opportunities.',
+      title: 'Global Business Networking',
+      summary:
+        'Access to international business conferences, networking events and global connections, with opportunities to meet industry professionals and expand your business.',
       points: [
         'International business conferences',
         'Curated networking opportunities',
@@ -112,22 +114,13 @@ const en = {
 
   audience: {
     eyebrow: 'Who it is for',
-    title: 'For people who are already successful, and want the world to be their stage.',
+    title: 'Our community',
     body:
-      'Our members are busy and accomplished in their own fields. They come to us to communicate with confidence internationally, gain new perspectives and build meaningful global connections.',
-    groups: [
-      'Business owners',
-      'Entrepreneurs & founders',
-      'Aspiring entrepreneurs',
-      'Public figures',
-      'Professionals & executives',
-      'Leaders & decision-makers',
-    ],
+      'Designed for busy, ambitious individuals who value personal growth and global exposure to connect with the world. Our members include business owners, entrepreneurs, executives, public figures and future leaders.',
   },
 
   journeyIntro: {
-    eyebrow: 'The membership journey',
-    title: 'Selective by design. Personal at every step.',
+    title: 'The membership journey',
   },
 
   journey: [
@@ -135,7 +128,7 @@ const en = {
       step: '01',
       title: 'Private consultation',
       price: '¥10,000',
-      body: 'We get to know your goals, background, English level, lifestyle and international ambitions.',
+      body: 'An initial assessment to understand your background, objectives and eligibility for membership.',
     },
     {
       step: '02',
@@ -149,23 +142,29 @@ const en = {
     },
     {
       step: '04',
-      title: 'Weekly private coaching',
-      body: 'One 60-minute session every week, online, from anywhere in the world.',
+      title: 'Weekly English coaching',
+      body:
+        'One 60-minute session per week, scheduled around your availability, with flexible in-person or online options from anywhere in the world.',
     },
     {
       step: '05',
-      title: 'International experiences',
-      body: 'Invitations to selected overseas trips, conferences and networking gatherings.',
+      title: 'Exclusive community',
+      body:
+        'Connect with like-minded individuals and access curated overseas trips, international conferences and networking events.',
     },
   ],
 
   membershipIntro: {
     eyebrow: 'Membership',
-    title: 'A personalised international development journey.',
-    body:
-      'Three programmes, one philosophy. Every programme includes weekly private coaching, personal guidance and access to our international network.',
-    perMonth: 'Equivalent to',
-    perMonthSuffix: '/ month',
+    title: 'Our programmes',
+    // Exact programme fees are not published; only this range is shown
+    range: '¥150,000 – ¥200,000',
+    rangeSuffix: 'per month',
+    rangeNote: '3, 6 and 12-month programmes. Full details are shared at your private consultation.',
+    viewProgrammes: 'View programmes',
+    heroBody:
+      'From ¥150,000 to ¥200,000 per month. 3, 6 and 12-month programmes, with full details shared at your private consultation.',
+    metaDescription: 'Membership programmes of 3, 6 or 12 months, from ¥150,000 to ¥200,000 per month.',
     recommended: 'Recommended',
     cta: 'Apply for this programme',
   },
@@ -176,8 +175,6 @@ const en = {
       tier: '01 · Executive',
       name: 'Executive',
       duration: '3-month programme',
-      price: '¥600,000',
-      monthly: '¥200,000',
       sessions: '12 private sessions',
       features: [
         '12 private coaching sessions, 60 minutes weekly',
@@ -193,8 +190,6 @@ const en = {
       tier: '02 · Global Development',
       name: 'Global Development',
       duration: '6-month programme',
-      price: '¥1,000,000',
-      monthly: '¥166,667',
       sessions: '24 private sessions',
       recommended: true,
       features: [
@@ -213,8 +208,6 @@ const en = {
       tier: '03 · Global Elite',
       name: 'Global Elite',
       duration: '12-month programme',
-      price: '¥1,800,000',
-      monthly: '¥150,000',
       sessions: '48 private sessions',
       features: [
         '48 private coaching sessions, 60 minutes weekly',
@@ -246,6 +239,7 @@ const en = {
   philosophy: {
     eyebrow: 'Our philosophy',
     title: 'Beyond language. Beyond borders.',
+    quote: 'The goal isn’t simply to improve English. It’s to open doors to a bigger world.',
     intro:
       'Busy leaders don’t need another English class. They need the confidence to walk into any room in the world, and the relationships that make the journey worthwhile.',
     principles: [
@@ -267,7 +261,7 @@ const en = {
       {
         title: 'Anytime, anywhere',
         body:
-          'One focused hour a week, online, wherever you are. The programme is built around your schedule, not the other way round.',
+          'One focused hour a week, in person or online, wherever you are. The programme is built around your schedule, not the other way round.',
       },
     ],
   },
@@ -366,13 +360,13 @@ const en = {
   },
 
   cta: {
-    title: 'Your gateway to a bigger world.',
-    body: 'Places are limited to keep the community personal. Begin with a private consultation.',
+    title: 'Exclusively by selection.',
+    body: 'Begin with a private consultation.',
     button: 'Apply for membership',
   },
 
   footer: {
-    tagline: 'Broaden your world horizon through English.',
+    tagline: 'Grow beyond borders.',
     explore: 'Explore',
     contact: 'Contact',
     contactLink: 'Get in touch',
@@ -397,32 +391,30 @@ const ja: PremiumContent = {
 
   hero: {
     eyebrow: '審査制メンバーシップ',
-    title: '英語で、あなたの世界を広げる。',
-    subtitle:
-      '経営者・起業家・リーダーのための、審査制の国際育成メンバーシップ。プライベートコーチング、ライフガイダンス、厳選された海外体験、そしてグローバルなネットワーキングを、ひとつの旅として。',
+    title: '国境を越えて、成長する。',
+    metaDescription:
+      'エリート英語コーチング、ライフガイダンス、海外体験、グローバルなビジネスネットワーキングを提供する、審査制の国際育成メンバーシップ。',
     primary: 'カウンセリングを予約',
     secondary: 'メンバーシップを見る',
-    tagline: '世界と話す · 国際的に考える · 意味あるつながり · 国境を越えて成長する',
   },
 
   statement: {
     eyebrow: '私たちの目的',
-    quote: '目的は、英語を上達させることだけではありません。より大きな世界への扉を開くことです。',
-    body:
-      'Kaiyuiは英会話スクールでも、旅行会社でもありません。国際的な志を持つ方が、学び、体験し、つながるためのプライベートなプラットフォームです。英語を土台に、世界を目的地として。',
+    title: 'より大きな世界への扉。ただの英会話スクールではありません。',
+    body: '志ある方が英語を通じて視野を広げ、世界と話し、国際的に考え、意味あるつながりを築けるよう支えます。',
   },
 
   pillarsIntro: {
-    eyebrow: '4つの柱',
-    title: 'ひとつのメンバーシップ。4つの成長。',
-    body: '一人ひとりの目標・業界・ライフスタイルに合わせて、4つのサービスを組み合わせた成長の旅をご提供します。',
+    eyebrow: 'サービス',
+    title: '4つの柱',
+    metaDescription: 'エリート語学コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
   },
 
   pillars: [
     {
       number: '01',
-      title: 'エリート英語コーチング',
-      summary: '厳選されたコーチによるマンツーマンコーチング。実際のお仕事に即した内容で進めます。',
+      title: 'エリート語学コーチング',
+      summary: '厳選されたエリートコーチによるマンツーマンコーチングと、一人ひとりに合わせたプログラム。',
       points: [
         '厳選されたエリートコーチによるプライベートコーチング',
         'ビジネス英語とエグゼクティブコミュニケーション',
@@ -433,8 +425,9 @@ const ja: PremiumContent = {
     },
     {
       number: '02',
-      title: 'ライフ＆パーソナルガイダンス',
-      summary: '進むべき方向、リーダーシップ、次のステージ。大きな問いに向き合う信頼のパートナー。',
+      title: 'ライフガイダンス',
+      summary:
+        '信頼できる相談相手として、思いを分かち合い、人生の課題に向き合い、意味ある対話と個別のガイダンスを通じて、新たな視点と明確な答えを見つけるお手伝いをします。',
       points: [
         '自己成長',
         'リーダーシップとマインドセット',
@@ -446,9 +439,11 @@ const ja: PremiumContent = {
     {
       number: '03',
       title: '海外体験',
-      summary: '言葉を「生きた経験」に変える、厳選された海外への旅。',
+      summary:
+        '没入型の体験を通じて言葉に命を吹き込む、厳選された海外への旅。専属コンシェルジュによるプランニングと、丁寧に設計された旅程とともに。',
       points: [
         '厳選された海外トリップ',
+        '専属コンシェルジュによるプランニング',
         '文化体験・イマージョン',
         '国際的なライフスタイルに触れる機会',
         '実体験を通じた学び',
@@ -457,8 +452,9 @@ const ja: PremiumContent = {
     },
     {
       number: '04',
-      title: 'ビジネス＆グローバルネットワーキング',
-      summary: '本物の国際的な機会につながる、紹介と出会いの場。',
+      title: 'グローバルビジネスネットワーキング',
+      summary:
+        '国際ビジネスカンファレンス、ネットワーキングイベント、グローバルなつながりへのアクセス。業界のプロフェッショナルと出会い、事業を広げる機会を。',
       points: [
         '国際ビジネスカンファレンス',
         '厳選されたネットワーキングの機会',
@@ -471,22 +467,13 @@ const ja: PremiumContent = {
 
   audience: {
     eyebrow: '対象となる方',
-    title: 'すでに成功を収め、さらに世界を舞台にしたい方へ。',
+    title: 'コミュニティ',
     body:
-      'メンバーの多くは、それぞれの分野で多忙かつ実績のある方々です。国際的な場で自信を持って話し、新たな視点を得て、意味のあるグローバルなつながりを築くために参加されています。',
-    groups: [
-      '経営者',
-      '起業家・創業者',
-      '起業を目指す方',
-      '著名人・公人',
-      'プロフェッショナル・役員',
-      'リーダー・意思決定者',
-    ],
+      '自己成長と世界への視野を大切にし、世界とつながりたいと願う、多忙で志の高い方のために。メンバーには、経営者、起業家、役員、著名人、そして次世代のリーダーが名を連ねます。',
   },
 
   journeyIntro: {
-    eyebrow: 'メンバーシップの流れ',
-    title: '厳選された、一人ひとりのための歩み。',
+    title: 'メンバーシップの流れ',
   },
 
   journey: [
@@ -494,7 +481,7 @@ const ja: PremiumContent = {
       step: '01',
       title: '個別カウンセリング',
       price: '¥10,000',
-      body: '目標、経歴、英語レベル、ライフスタイル、そして国際的な志をお伺いします。',
+      body: 'ご経歴、目標、ご入会の適性を把握するための初回アセスメントです。',
     },
     {
       step: '02',
@@ -508,23 +495,25 @@ const ja: PremiumContent = {
     },
     {
       step: '04',
-      title: '毎週のプライベートコーチング',
-      body: '週1回60分。オンラインで、世界中どこからでも受講いただけます。',
+      title: '毎週の英語コーチング',
+      body: '週1回60分。ご都合に合わせて日程を調整し、対面またはオンラインで、世界中どこからでも受講いただけます。',
     },
     {
       step: '05',
-      title: '海外体験',
-      body: '厳選された海外トリップ、カンファレンス、ネットワーキングイベントへのご招待。',
+      title: '限定コミュニティ',
+      body: '志を同じくする方々とつながり、厳選された海外トリップ、国際カンファレンス、ネットワーキングイベントにご参加いただけます。',
     },
   ],
 
   membershipIntro: {
     eyebrow: 'メンバーシップ',
-    title: 'あなただけの、国際的な成長の旅。',
-    body:
-      '3つのプログラム、ひとつの理念。すべてのプログラムに、毎週のプライベートコーチング、パーソナルガイダンス、国際ネットワークへのアクセスが含まれます。',
-    perMonth: '月額換算',
-    perMonthSuffix: '',
+    title: 'プログラム',
+    range: '¥150,000〜¥200,000',
+    rangeSuffix: '／月',
+    rangeNote: '3ヶ月・6ヶ月・12ヶ月のプログラム。詳細は個別カウンセリングにてご案内いたします。',
+    viewProgrammes: 'プログラムを見る',
+    heroBody: '月額¥150,000〜¥200,000。3ヶ月・6ヶ月・12ヶ月のプログラムをご用意しています。詳細は個別カウンセリングにてご案内いたします。',
+    metaDescription: '3ヶ月・6ヶ月・12ヶ月のメンバーシッププログラム。月額¥150,000〜¥200,000。',
     recommended: 'おすすめ',
     cta: 'このプログラムに申し込む',
   },
@@ -535,8 +524,6 @@ const ja: PremiumContent = {
       tier: '01 · エグゼクティブ',
       name: 'エグゼクティブ',
       duration: '3ヶ月プログラム',
-      price: '¥600,000',
-      monthly: '¥200,000',
       sessions: 'プライベートセッション12回',
       features: [
         'プライベートコーチング12回（毎週60分）',
@@ -552,8 +539,6 @@ const ja: PremiumContent = {
       tier: '02 · グローバル・ディベロップメント',
       name: 'グローバル・ディベロップメント',
       duration: '6ヶ月プログラム',
-      price: '¥1,000,000',
-      monthly: '¥166,667',
       sessions: 'プライベートセッション24回',
       recommended: true,
       features: [
@@ -572,8 +557,6 @@ const ja: PremiumContent = {
       tier: '03 · グローバル・エリート',
       name: 'グローバル・エリート',
       duration: '12ヶ月プログラム',
-      price: '¥1,800,000',
-      monthly: '¥150,000',
       sessions: 'プライベートセッション48回',
       features: [
         'プライベートコーチング48回（毎週60分）',
@@ -604,6 +587,7 @@ const ja: PremiumContent = {
   philosophy: {
     eyebrow: '私たちの理念',
     title: '言葉を超えて。国境を越えて。',
+    quote: '目的は、英語を上達させることだけではありません。より大きな世界への扉を開くことです。',
     intro:
       '多忙なリーダーに必要なのは、もうひとつの英会話レッスンではありません。世界のどんな場にも臆せず臨める自信と、その旅を価値あるものにする人とのつながりです。',
     principles: [
@@ -624,7 +608,7 @@ const ja: PremiumContent = {
       },
       {
         title: 'いつでも、どこでも',
-        body: '週に一度、集中した60分を、オンラインでどこからでも。プログラムはあなたの予定に合わせて組み立てます。',
+        body: '週に一度、集中した60分を、対面またはオンラインでどこからでも。プログラムはあなたの予定に合わせて組み立てます。',
       },
     ],
   },
@@ -714,13 +698,13 @@ const ja: PremiumContent = {
   },
 
   cta: {
-    title: 'より大きな世界への扉。',
-    body: 'コミュニティの質を保つため、定員を設けています。まずは個別カウンセリングから。',
+    title: '厳選された方のためのメンバーシップ。',
+    body: 'まずは個別カウンセリングから。',
     button: 'メンバーシップに申し込む',
   },
 
   footer: {
-    tagline: '英語で、あなたの世界を広げる。',
+    tagline: '国境を越えて、成長する。',
     explore: 'メニュー',
     contact: 'お問い合わせ',
     contactLink: 'お問い合わせ',

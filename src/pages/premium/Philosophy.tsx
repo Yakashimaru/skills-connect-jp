@@ -22,9 +22,8 @@ export default function Philosophy() {
       <section className="bg-paper py-28 md:py-36">
         <Container>
           <blockquote className="mx-auto max-w-4xl text-center font-display text-3xl leading-snug text-ink md:text-5xl">
-            “{c.statement.quote}”
+            “{c.philosophy.quote}”
           </blockquote>
-          <p className="mx-auto mt-8 max-w-2xl text-center text-lg leading-relaxed text-muted">{c.statement.body}</p>
         </Container>
       </section>
 

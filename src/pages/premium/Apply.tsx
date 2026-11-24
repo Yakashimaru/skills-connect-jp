@@ -45,7 +45,7 @@ export default function Apply() {
       `Phone: ${form.phone || '-'}`,
       `Title & organisation: ${form.role || '-'}`,
       `Profile: ${f.profileOptions[+form.profile]}`,
-      `Programme of interest: ${programme ? `${programme.duration} (${programme.price})` : f.undecided}`,
+      `Programme of interest: ${programme ? programme.duration : f.undecided}`,
       `English level: ${f.levelOptions[+form.level]}`,
       '',
       'Goals:',
@@ -140,7 +140,7 @@ export default function Apply() {
               <fieldset className="md:col-span-2">
                 <legend className={label}>{f.programme}</legend>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {[...c.programmes.map(p => ({ id: p.id, title: p.duration, sub: p.price })), { id: '', title: f.undecided, sub: '' }].map(opt => (
+                  {[...c.programmes.map(p => ({ id: p.id, title: p.duration, sub: p.sessions })), { id: '', title: f.undecided, sub: '' }].map(opt => (
                     <label
                       key={opt.id || 'undecided'}
                       className={`cursor-pointer border p-4 text-sm transition-colors ${
@@ -156,7 +156,7 @@ export default function Apply() {
                         className="sr-only"
                       />
                       <span className="block font-medium text-ink">{opt.title}</span>
-                      {opt.sub && <span className="mt-1 block font-display text-lg text-maroon">{opt.sub}</span>}
+                      {opt.sub && <span className="mt-1 block text-xs text-muted">{opt.sub}</span>}
                     </label>
                   ))}
                 </div>

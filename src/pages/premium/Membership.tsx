@@ -9,10 +9,14 @@ export default function Membership() {
     <>
       <Helmet>
         <title>{`${c.nav.membership} – Kaiyui`}</title>
-        <meta name="description" content={c.membershipIntro.body} />
+        <meta name="description" content={c.membershipIntro.metaDescription} />
       </Helmet>
 
-      <PageHero eyebrow={c.membershipIntro.eyebrow} title={c.membershipIntro.title} body={c.membershipIntro.body} />
+      <PageHero
+        eyebrow={c.membershipIntro.eyebrow}
+        title={c.membershipIntro.title}
+        body={c.membershipIntro.heroBody}
+      />
 
       <section className="bg-ivory py-28">
         <Container>
@@ -27,7 +31,7 @@ export default function Membership() {
       {/* Journey recap */}
       <section className="bg-paper py-28">
         <Container className="grid gap-16 lg:grid-cols-[1fr_1.4fr]">
-          <SectionHeading eyebrow={c.journeyIntro.eyebrow} title={c.journeyIntro.title} />
+          <SectionHeading title={c.journeyIntro.title} />
           <ol className="border-t border-line">
             {c.journey.map(s => (
               <li key={s.step} className="grid grid-cols-[4rem_1fr] gap-4 border-b border-line py-7">

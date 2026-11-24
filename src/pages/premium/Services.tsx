@@ -9,13 +9,12 @@ export default function Services() {
     <>
       <Helmet>
         <title>{`${c.nav.services} – Kaiyui`}</title>
-        <meta name="description" content={c.pillarsIntro.body} />
+        <meta name="description" content={c.pillarsIntro.metaDescription} />
       </Helmet>
 
       <PageHero
         eyebrow={c.pillarsIntro.eyebrow}
         title={c.pillarsIntro.title}
-        body={c.pillarsIntro.body}
         image="/4Lounge13.jpg"
       />
 
