@@ -38,7 +38,7 @@ const en = {
     title: 'Grow beyond borders.',
     // Not shown on the page; used for the meta description only
     metaDescription:
-      'A private international development membership: elite English coaching, life guidance, international experiences and global business networking.',
+      'A gateway to a bigger world, not another English school. Elite language coaching, life guidance, international experiences and global business networking.',
     primary: 'Book a consultation',
     secondary: 'Explore membership',
   },
@@ -239,7 +239,6 @@ const en = {
   philosophy: {
     eyebrow: 'Our philosophy',
     title: 'Beyond language. Beyond borders.',
-    quote: 'The goal isn’t simply to improve English. It’s to open doors to a bigger world.',
     intro:
       'Busy leaders don’t need another English class. They need the confidence to walk into any room in the world, and the relationships that make the journey worthwhile.',
     principles: [
@@ -393,7 +392,7 @@ const ja: PremiumContent = {
     eyebrow: '審査制メンバーシップ',
     title: '国境を越えて、成長する。',
     metaDescription:
-      'エリート英語コーチング、ライフガイダンス、海外体験、グローバルなビジネスネットワーキングを提供する、審査制の国際育成メンバーシップ。',
+      'より大きな世界への扉。ただの英会話スクールではありません。エリート語学コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
     primary: 'カウンセリングを予約',
     secondary: 'メンバーシップを見る',
   },
@@ -587,7 +586,6 @@ const ja: PremiumContent = {
   philosophy: {
     eyebrow: '私たちの理念',
     title: '言葉を超えて。国境を越えて。',
-    quote: '目的は、英語を上達させることだけではありません。より大きな世界への扉を開くことです。',
     intro:
       '多忙なリーダーに必要なのは、もうひとつの英会話レッスンではありません。世界のどんな場にも臆せず臨める自信と、その旅を価値あるものにする人とのつながりです。',
     principles: [

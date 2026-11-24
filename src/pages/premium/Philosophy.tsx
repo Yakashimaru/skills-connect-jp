@@ -19,14 +19,6 @@ export default function Philosophy() {
         image="/the-reading-room.jpg"
       />
 
-      <section className="bg-paper py-28 md:py-36">
-        <Container>
-          <blockquote className="mx-auto max-w-4xl text-center font-display text-3xl leading-snug text-ink md:text-5xl">
-            “{c.philosophy.quote}”
-          </blockquote>
-        </Container>
-      </section>
-
       <section className="bg-ivory py-28">
         <Container className="grid gap-x-16 gap-y-16 md:grid-cols-2">
           {c.philosophy.principles.map((p, i) => (
