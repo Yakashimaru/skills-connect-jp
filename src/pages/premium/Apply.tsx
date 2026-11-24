@@ -81,20 +81,8 @@ export default function Apply() {
       </section>
 
       <section className="bg-paper py-24">
-        <Container className="grid gap-16 lg:grid-cols-[1fr_1.5fr]">
-          {/* Left: application steps */}
-          <aside>
-            <ol className="space-y-5">
-              {c.apply.steps.map((s, i) => (
-                <li key={s} className="flex gap-5">
-                  <span className="font-display text-2xl text-gold">0{i + 1}</span>
-                  <span className="pt-1 text-ink/85">{s}</span>
-                </li>
-              ))}
-            </ol>
-          </aside>
-
-          {/* Right: form */}
+        <Container>
+          <div className="mx-auto max-w-5xl">
           {status === 'sent' ? (
             <div className="flex flex-col justify-center border border-line bg-ivory p-12">
               <h2 className="font-display text-5xl text-ink">{f.successTitle}</h2>
@@ -170,6 +158,7 @@ export default function Apply() {
               </div>
             </form>
           )}
+          </div>
         </Container>
       </section>
     </>

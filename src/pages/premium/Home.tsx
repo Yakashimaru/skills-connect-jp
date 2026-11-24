@@ -69,12 +69,12 @@ export default function Home() {
       <section className="bg-ivory py-28">
         <Container>
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <SectionHeading title={c.pillarsIntro.title} />
+            <SectionHeading rule title={c.pillarsIntro.title} />
             <Link to="/services" className="btn-outline shrink-0 text-ink">
               {c.nav.services}
             </Link>
           </div>
-          <div className="mt-16 grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
+          <div className="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
             {c.pillars.map(p => (
               <PillarCard key={p.number} pillar={p} />
             ))}
@@ -87,7 +87,7 @@ export default function Home() {
         <Container>
           <div className="mx-auto max-w-3xl text-center">
             <span className="mx-auto block h-px w-16 bg-gold" />
-            <h2 className="mt-8 font-display text-4xl leading-[1.1] text-ivory md:text-5xl">{c.audience.title}</h2>
+            <h2 className="mt-8 font-display text-3xl leading-[1.1] text-gold-light md:text-4xl">{c.audience.title}</h2>
             <p className="mt-6 text-base leading-relaxed text-ivory/65 [text-wrap:balance] [word-break:auto-phrase] md:text-lg">{c.audience.body}</p>
           </div>
         </Container>
@@ -96,8 +96,8 @@ export default function Home() {
       {/* Journey */}
       <section className="bg-paper py-28">
         <Container>
-          <SectionHeading title={c.journeyIntro.title} />
-          <ol className="mt-16 grid gap-px overflow-hidden border border-line bg-line md:grid-cols-5">
+          <SectionHeading rule title={c.journeyIntro.title} />
+          <ol className="mt-12 grid gap-px overflow-hidden border border-line bg-line md:grid-cols-5">
             {c.journey.map(s => (
               // On wider screens every step shares the same four rows (number,
               // title, highlight, description) so the descriptions line up

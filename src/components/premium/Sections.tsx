@@ -8,15 +8,19 @@ export function SectionHeading({
   body,
   dark = false,
   center = false,
+  rule = false,
 }: {
   eyebrow?: string
   title: string
   body?: string
   dark?: boolean
   center?: boolean
+  /** Short gold line above the heading to anchor it */
+  rule?: boolean
 }) {
   return (
     <div className={center ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>
+      {rule && <span className={`mb-8 block h-px w-16 bg-gold ${center ? 'mx-auto' : ''}`} />}
       {eyebrow && <p className="eyebrow mb-5">{eyebrow}</p>}
       <h2
         className={`font-display text-4xl leading-[1.1] md:text-5xl ${dark ? 'text-ivory' : 'text-ink'}`}
@@ -147,7 +151,7 @@ export function ClosingCTA() {
       <Container className="relative text-center">
         <h2 className="mx-auto max-w-4xl font-display text-4xl leading-tight md:text-6xl">
           {c.cta.title}
-          <span className="mt-2 block text-3xl md:text-5xl">{c.cta.body}</span>
+          <span className="block">{c.cta.body}</span>
         </h2>
         <Link to="/apply" className="btn-gold mt-10">
           {c.cta.button}

@@ -35,7 +35,7 @@ const en = {
   hero: {
     eyebrow: 'By application only',
     title: 'Grow beyond borders.',
-    subtitle: 'Where English opens doors to the world.',
+    subtitle: 'Master English, and the world opens up to you.',
     // Not shown on the page; used for the meta description only
     metaDescription:
       'A gateway to a bigger world, not another English school. Elite English coaching, life guidance, international experiences and global business networking.',
@@ -52,7 +52,7 @@ const en = {
 
   pillarsIntro: {
     eyebrow: 'Services',
-    title: 'The four pillars',
+    title: 'What we offer',
     metaDescription:
       'Elite English coaching, life guidance, international experiences and global business networking.',
   },
@@ -138,15 +138,15 @@ const en = {
     {
       step: '03',
       title: 'Coach matching',
-      highlight: 'Personally matched',
+      highlight: 'Hand-picked for you',
       body: 'We match you with a coach suited to your personality, goals, industry and learning style.',
     },
     {
       step: '04',
-      title: 'Weekly English coaching',
-      highlight: '60 minutes · weekly',
+      title: 'English coaching',
+      highlight: 'Personalised programme',
       body:
-        'One 60-minute session per week, scheduled around your availability, with flexible in-person or online options from anywhere in the world.',
+        'Weekly sessions scheduled around your availability, with flexible in-person or online options from anywhere in the world.',
     },
     {
       step: '05',
@@ -316,12 +316,6 @@ const en = {
     // Not shown on the page; used for the meta description only
     metaDescription:
       'Membership is by application. Apply for a private consultation to discuss your goals and the right programme.',
-    steps: [
-      'Submit your application',
-      'We contact you within 2 business days',
-      'Private consultation (¥10,000)',
-      'Programme recommendation and coach matching',
-    ],
     form: {
       name: 'Full name',
       email: 'Email',
@@ -382,7 +376,7 @@ const ja: PremiumContent = {
   hero: {
     eyebrow: '審査制メンバーシップ',
     title: '国境を越えて、成長する。',
-    subtitle: '英語が、世界への扉をひらく場所。',
+    subtitle: '英語を極めれば、世界がひらける。',
     metaDescription:
       'より大きな世界への扉。ただの英会話スクールではありません。エリート英語コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
     primary: 'カウンセリングを予約',
@@ -397,7 +391,7 @@ const ja: PremiumContent = {
 
   pillarsIntro: {
     eyebrow: 'サービス',
-    title: '4つの柱',
+    title: 'サービス内容',
     metaDescription: 'エリート英語コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
   },
 
@@ -482,14 +476,14 @@ const ja: PremiumContent = {
     {
       step: '03',
       title: 'コーチのマッチング',
-      highlight: '一人ひとりに合わせて',
+      highlight: '厳選してご紹介',
       body: '性格、目標、業界、学習スタイルに合ったコーチをご紹介します。',
     },
     {
       step: '04',
-      title: '毎週の英語コーチング',
-      highlight: '週1回・60分',
-      body: '週1回60分。ご都合に合わせて日程を調整し、対面またはオンラインで、世界中どこからでも受講いただけます。',
+      title: '英語コーチング',
+      highlight: 'パーソナルプログラム',
+      body: '毎週のセッションはご都合に合わせて日程を調整し、対面またはオンラインで、世界中どこからでも受講いただけます。',
     },
     {
       step: '05',
@@ -650,12 +644,6 @@ const ja: PremiumContent = {
   apply: {
     title: 'お申し込み',
     metaDescription: 'ご入会は審査制です。個別カウンセリングにお申し込みいただき、目標と最適なプログラムについてご相談ください。',
-    steps: [
-      'お申し込みフォームの送信',
-      '2営業日以内にご連絡',
-      '個別カウンセリング（¥10,000）',
-      'プログラムのご提案とコーチのマッチング',
-    ],
     form: {
       name: 'お名前',
       email: 'メールアドレス',
