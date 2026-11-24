@@ -45,6 +45,20 @@
   /* Long katakana phrases may still break if they cannot fit the width */
   overflow-wrap: anywhere;
 }
+/* Homepage motto stays on one line on desktop; Japanese needs a smaller
+   size to fit the column */
+@media (min-width: 1024px) {
+  :lang(ja) .hero-title {
+    font-size: 2.6rem;
+    text-wrap: nowrap;
+  }
+}
+@media (min-width: 1280px) {
+  :lang(ja) .hero-title {
+    font-size: 3.25rem;
+  }
+}
+
 /* Japanese fonts have no italic; avoid the browser's fake slant */
 :lang(ja) .italic {
   font-style: normal;

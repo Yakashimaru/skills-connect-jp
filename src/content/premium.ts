@@ -38,7 +38,7 @@ const en = {
     subtitle: 'Where English opens doors to the world.',
     // Not shown on the page; used for the meta description only
     metaDescription:
-      'A gateway to a bigger world, not another English school. Elite language coaching, life guidance, international experiences and global business networking.',
+      'A gateway to a bigger world, not another English school. Elite English coaching, life guidance, international experiences and global business networking.',
     primary: 'Book a consultation',
     secondary: 'Explore services',
   },
@@ -54,13 +54,13 @@ const en = {
     eyebrow: 'Services',
     title: 'The four pillars',
     metaDescription:
-      'Elite language coaching, life guidance, international experiences and global business networking.',
+      'Elite English coaching, life guidance, international experiences and global business networking.',
   },
 
   pillars: [
     {
       number: '01',
-      title: 'Elite Language Coaching',
+      title: 'Elite English Coaching',
       summary: 'One-to-one coaching with carefully selected elite coaches and personalised programmes.',
       points: [
         'Private coaching with selected elite coaches',
@@ -126,28 +126,32 @@ const en = {
     {
       step: '01',
       title: 'Private consultation',
-      price: '¥10,000',
+      highlight: '¥10,000',
       body: 'An initial assessment to understand your background, objectives and eligibility for membership.',
     },
     {
       step: '02',
       title: 'Choose your programme',
+      highlight: 'From ¥100,000 / month',
       body: 'Commit to a 3, 6 or 12-month programme shaped around your schedule and objectives.',
     },
     {
       step: '03',
       title: 'Coach matching',
+      highlight: 'Personally matched',
       body: 'We match you with a coach suited to your personality, goals, industry and learning style.',
     },
     {
       step: '04',
       title: 'Weekly English coaching',
+      highlight: '60 minutes · weekly',
       body:
         'One 60-minute session per week, scheduled around your availability, with flexible in-person or online options from anywhere in the world.',
     },
     {
       step: '05',
       title: 'Exclusive community',
+      highlight: 'Members only',
       body:
         'Connect with like-minded individuals and access curated overseas trips, international conferences and networking events.',
     },
@@ -266,9 +270,8 @@ const en = {
 
   coaches: {
     eyebrow: 'Our coaches',
-    title: 'Selected for excellence. Matched for you.',
     body:
-      'Every Kaiyui coach is chosen for their professional background, communication expertise and ability to guide accomplished people. We match each member personally after the consultation.',
+      'Every coach is carefully selected for their educational background, professional experience, communication expertise and ability to build meaningful relationships.',
     profiles: [
       { role: 'Executive Communication', focus: 'Presentations, board-level English, public speaking' },
       { role: 'Negotiation & Business', focus: 'Deal-making, cross-border partnerships, investor meetings' },
@@ -381,7 +384,7 @@ const ja: PremiumContent = {
     title: '国境を越えて、成長する。',
     subtitle: '英語が、世界への扉をひらく場所。',
     metaDescription:
-      'より大きな世界への扉。ただの英会話スクールではありません。エリート語学コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
+      'より大きな世界への扉。ただの英会話スクールではありません。エリート英語コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
     primary: 'カウンセリングを予約',
     secondary: 'サービスを見る',
   },
@@ -395,13 +398,13 @@ const ja: PremiumContent = {
   pillarsIntro: {
     eyebrow: 'サービス',
     title: '4つの柱',
-    metaDescription: 'エリート語学コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
+    metaDescription: 'エリート英語コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
   },
 
   pillars: [
     {
       number: '01',
-      title: 'エリート語学コーチング',
+      title: 'エリート英語コーチング',
       summary: '厳選されたエリートコーチによるマンツーマンコーチングと、一人ひとりに合わせたプログラム。',
       points: [
         '厳選されたエリートコーチによるプライベートコーチング',
@@ -467,27 +470,31 @@ const ja: PremiumContent = {
     {
       step: '01',
       title: '個別カウンセリング',
-      price: '¥10,000',
+      highlight: '¥10,000',
       body: 'ご経歴、目標、ご入会の適性を把握するための初回アセスメントです。',
     },
     {
       step: '02',
       title: 'プログラムの選択',
+      highlight: '月額¥100,000〜',
       body: 'ご予定と目標に合わせて、3ヶ月・6ヶ月・12ヶ月のプログラムからお選びいただきます。',
     },
     {
       step: '03',
       title: 'コーチのマッチング',
+      highlight: '一人ひとりに合わせて',
       body: '性格、目標、業界、学習スタイルに合ったコーチをご紹介します。',
     },
     {
       step: '04',
       title: '毎週の英語コーチング',
+      highlight: '週1回・60分',
       body: '週1回60分。ご都合に合わせて日程を調整し、対面またはオンラインで、世界中どこからでも受講いただけます。',
     },
     {
       step: '05',
       title: '限定コミュニティ',
+      highlight: 'メンバー限定',
       body: '志を同じくする方々とつながり、厳選された海外トリップ、国際カンファレンス、ネットワーキングイベントにご参加いただけます。',
     },
   ],
@@ -600,9 +607,8 @@ const ja: PremiumContent = {
 
   coaches: {
     eyebrow: 'コーチ紹介',
-    title: '卓越性で選び、あなたに合わせて。',
     body:
-      'Kaiyuiのコーチは、職歴、コミュニケーションの専門性、そして実績ある方々を導く力を基準に選ばれています。カウンセリング後、一人ひとりに合わせてマッチングいたします。',
+      'すべてのコーチは、学歴、職務経験、コミュニケーションの専門性、そして信頼関係を築く力をもとに厳選されています。',
     profiles: [
       { role: 'エグゼクティブコミュニケーション', focus: 'プレゼンテーション、経営層向け英語、パブリックスピーキング' },
       { role: '交渉＆ビジネス', focus: '商談、海外パートナーシップ、投資家ミーティング' },

@@ -39,7 +39,7 @@ export function PageHero({
   body,
   image,
 }: {
-  eyebrow: string
+  eyebrow?: string
   title: string
   body?: string
   image?: string
@@ -53,8 +53,8 @@ export function PageHero({
         </>
       )}
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-        <p className="eyebrow">{eyebrow}</p>
-        <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.05] md:text-7xl">{title}</h1>
+        {eyebrow && <p className="eyebrow mb-6">{eyebrow}</p>}
+        <h1 className="max-w-4xl font-display text-5xl leading-[1.05] md:text-7xl">{title}</h1>
         {body && <p className="mt-8 max-w-2xl text-lg leading-relaxed text-ivory/70">{body}</p>}
       </div>
     </section>
@@ -65,22 +65,27 @@ export function Container({ children, className = '' }: { children: ReactNode; c
   return <div className={`mx-auto max-w-7xl px-6 lg:px-10 ${className}`}>{children}</div>
 }
 
+/** On wider screens, break before the last word so card titles are all
+ *  two lines and the text under them lines up. Titles without spaces
+ *  (e.g. Japanese) wrap normally. */
+export function TwoLineTitle({ text }: { text: string }) {
+  const lastSpace = text.lastIndexOf(' ')
+  if (lastSpace <= 0) return <>{text}</>
+  return (
+    <>
+      {text.slice(0, lastSpace)}
+      <br className="hidden md:block" /> {text.slice(lastSpace + 1)}
+    </>
+  )
+}
+
 export function PillarCard({ pillar, detailed = false }: { pillar: Pillar; detailed?: boolean }) {
-  const lastSpace = pillar.title.lastIndexOf(' ')
   return (
     <article className="flex h-full flex-col border-t border-gold/60 pt-8">
       <p className="font-display text-5xl text-gold">{pillar.number}</p>
-      {/* Reserve two lines so descriptions line up across cards, and on
-          wider screens break before the last word so every title is two lines */}
+      {/* Reserve two lines so descriptions line up across cards */}
       <h3 className="mt-6 font-display text-3xl leading-tight text-ink md:min-h-[2.5em]">
-        {lastSpace > 0 ? (
-          <>
-            {pillar.title.slice(0, lastSpace)}
-            <br className="hidden md:block" /> {pillar.title.slice(lastSpace + 1)}
-          </>
-        ) : (
-          pillar.title
-        )}
+        <TwoLineTitle text={pillar.title} />
       </h3>
       <p className="mt-4 leading-relaxed text-muted">{pillar.summary}</p>
       {detailed && (
@@ -140,8 +145,10 @@ export function ClosingCTA() {
       <img src="/4Lounge13.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #3A0612, rgba(58,6,18,0.88) 50%, rgba(58,6,18,0.7))' }} />
       <Container className="relative text-center">
-        <h2 className="mx-auto max-w-3xl font-display text-4xl leading-tight md:text-6xl">{c.cta.title}</h2>
-        <p className="mx-auto mt-6 max-w-xl font-display text-2xl text-ivory/75 md:text-3xl">{c.cta.body}</p>
+        <h2 className="mx-auto max-w-4xl font-display text-4xl leading-tight md:text-6xl">
+          {c.cta.title}
+          <span className="mt-2 block text-3xl md:text-5xl">{c.cta.body}</span>
+        </h2>
         <Link to="/apply" className="btn-gold mt-10">
           {c.cta.button}
         </Link>

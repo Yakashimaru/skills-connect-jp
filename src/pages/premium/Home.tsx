@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { usePremiumContent } from '../../content/premium'
-import { ClosingCTA, Container, PillarCard, SectionHeading } from '../../components/premium/Sections'
+import { ClosingCTA, Container, PillarCard, SectionHeading, TwoLineTitle } from '../../components/premium/Sections'
 
 export default function Home() {
   const c = usePremiumContent()
@@ -27,7 +27,7 @@ export default function Home() {
         <Container className="relative grid min-h-screen items-center gap-14 pb-20 pt-32 md:grid-cols-[1.2fr_0.8fr] md:gap-12 lg:gap-20">
           <div>
             <p className="eyebrow">{c.hero.eyebrow}</p>
-            <h1 className="mt-6 font-display text-5xl leading-[1.04] md:text-7xl lg:text-8xl">{c.hero.title}</h1>
+            <h1 className="hero-title mt-6 font-display text-5xl leading-[1.04] lg:whitespace-nowrap lg:text-6xl">{c.hero.title}</h1>
             <p className="mt-6 font-display text-xl italic text-gold-light [text-wrap:balance] [word-break:auto-phrase] md:text-2xl">{c.hero.subtitle}</p>
             <div className="mt-12 flex flex-wrap gap-4">
               <Link to="/apply" className="btn-gold">
@@ -83,16 +83,12 @@ export default function Home() {
       </section>
 
       {/* Who it's for */}
-      {/* Maroon band so it reads as a separate section from the dark hero */}
-      <section
-        className="relative overflow-hidden py-28 text-ivory"
-        style={{ background: 'linear-gradient(135deg, #3A0612, #5C0A1E 60%, #3A0612)' }}
-      >
+      <section className="relative overflow-hidden bg-ink py-28 text-ivory">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
             <span className="mx-auto block h-px w-16 bg-gold" />
-            <h2 className="mt-8 font-display text-4xl leading-[1.1] text-gold-light md:text-5xl">{c.audience.title}</h2>
-            <p className="mt-6 text-base leading-relaxed text-ivory/80 [text-wrap:balance] [word-break:auto-phrase] md:text-lg">{c.audience.body}</p>
+            <h2 className="mt-8 font-display text-4xl leading-[1.1] text-ivory md:text-5xl">{c.audience.title}</h2>
+            <p className="mt-6 text-base leading-relaxed text-ivory/65 [text-wrap:balance] [word-break:auto-phrase] md:text-lg">{c.audience.body}</p>
           </div>
         </Container>
       </section>
@@ -103,25 +99,18 @@ export default function Home() {
           <SectionHeading title={c.journeyIntro.title} />
           <ol className="mt-16 grid gap-px overflow-hidden border border-line bg-line md:grid-cols-5">
             {c.journey.map(s => (
-              <li key={s.step} className="flex flex-col bg-paper p-8">
+              // On wider screens every step shares the same four rows (number,
+              // title, highlight, description) so the descriptions line up
+              <li key={s.step} className="flex flex-col bg-paper p-8 md:row-span-4 md:grid md:grid-rows-subgrid">
                 <span className="font-display text-4xl text-gold">{s.step}</span>
-                <h3 className="mt-6 font-display text-2xl leading-tight text-ink">{s.title}</h3>
-                {s.price && <p className="mt-2 text-sm font-semibold tracking-wide text-maroon">{s.price}</p>}
+                <h3 className="mt-6 font-display text-2xl leading-tight text-ink">
+                  <TwoLineTitle text={s.title} />
+                </h3>
+                <p className="mt-2 text-sm font-semibold tracking-wide text-maroon">{s.highlight}</p>
                 <p className="mt-4 text-sm leading-relaxed text-muted">{s.body}</p>
               </li>
             ))}
           </ol>
-        </Container>
-      </section>
-
-      {/* Membership price range (exact fees are not published) */}
-      <section className="bg-ivory py-24">
-        <Container className="text-center">
-          <p className="font-display text-5xl tracking-tight text-ink md:text-6xl">
-            {c.membershipIntro.range}
-            <span className="ml-3 font-body text-base text-muted md:text-lg">{c.membershipIntro.rangeSuffix}</span>
-          </p>
-          <p className="mx-auto mt-5 max-w-xl text-muted">{c.membershipIntro.rangeNote}</p>
         </Container>
       </section>
 

@@ -12,7 +12,7 @@ export default function Coaches() {
         <meta name="description" content={c.coaches.body} />
       </Helmet>
 
-      <PageHero eyebrow={c.coaches.eyebrow} title={c.coaches.title} body={c.coaches.body} />
+      <PageHero title={c.coaches.eyebrow} body={c.coaches.body} />
 
       {/* Placeholder profiles until real coaches are confirmed */}
       <section className="bg-ivory py-28">
