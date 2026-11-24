@@ -9,6 +9,7 @@ export function SectionHeading({
   dark = false,
   center = false,
   rule = false,
+  gold = false,
 }: {
   eyebrow?: string
   title: string
@@ -17,13 +18,15 @@ export function SectionHeading({
   center?: boolean
   /** Short gold line above the heading to anchor it */
   rule?: boolean
+  /** Gold heading, used for section titles so they stand apart from statements */
+  gold?: boolean
 }) {
   return (
     <div className={center ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>
       {rule && <span className={`mb-8 block h-px w-16 bg-gold ${center ? 'mx-auto' : ''}`} />}
       {eyebrow && <p className="eyebrow mb-5">{eyebrow}</p>}
       <h2
-        className={`font-display text-4xl leading-[1.1] md:text-5xl ${dark ? 'text-ivory' : 'text-ink'}`}
+        className={`font-display text-4xl leading-[1.1] md:text-5xl ${gold ? 'text-gold' : dark ? 'text-ivory' : 'text-ink'}`}
       >
         {title}
       </h2>
@@ -86,7 +89,7 @@ export function TwoLineTitle({ text }: { text: string }) {
 export function PillarCard({ pillar, detailed = false }: { pillar: Pillar; detailed?: boolean }) {
   return (
     <article className="flex h-full flex-col border-t border-gold/60 pt-8">
-      <p className="font-display text-5xl text-gold">{pillar.number}</p>
+      <p className="font-display text-5xl text-maroon/80">{pillar.number}</p>
       {/* Reserve two lines so descriptions line up across cards */}
       <h3 className="mt-6 font-display text-3xl leading-tight text-ink md:min-h-[2.5em]">
         <TwoLineTitle text={pillar.title} />
@@ -149,7 +152,7 @@ export function ClosingCTA() {
       <img src="/4Lounge13.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #3A0612, rgba(58,6,18,0.88) 50%, rgba(58,6,18,0.7))' }} />
       <Container className="relative text-center">
-        <h2 className="mx-auto max-w-4xl font-display text-4xl leading-tight md:text-6xl">
+        <h2 className="mx-auto max-w-4xl font-display text-3xl leading-tight md:text-5xl">
           {c.cta.title}
           <span className="block">{c.cta.body}</span>
         </h2>

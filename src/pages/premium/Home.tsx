@@ -28,7 +28,14 @@ export default function Home() {
           <div>
             <p className="eyebrow">{c.hero.eyebrow}</p>
             <h1 className="hero-title mt-6 font-display text-5xl leading-[1.04] lg:whitespace-nowrap lg:text-6xl">{c.hero.title}</h1>
-            <p className="mt-6 font-display text-xl italic text-gold-light [text-wrap:balance] [word-break:auto-phrase] md:text-2xl">{c.hero.subtitle}</p>
+            {/* Each sentence is kept whole, so narrow screens break between sentences */}
+            <p className="mt-6 font-display text-xl italic text-gold-light [word-break:auto-phrase] md:text-2xl">
+              {c.hero.subtitle.split(/(?<=[.。])\s*/).filter(Boolean).map(sentence => (
+                <span key={sentence} className="inline-block pr-[0.3em]">
+                  {sentence}
+                </span>
+              ))}
+            </p>
             <div className="mt-12 flex flex-wrap gap-4">
               <Link to="/apply" className="btn-gold">
                 {c.hero.primary}
@@ -57,9 +64,19 @@ export default function Home() {
       {/* Statement */}
       <section className="bg-paper py-28 md:py-36">
         <Container className="grid gap-12 md:grid-cols-[1fr_2fr]">
-          <p className="eyebrow">{c.statement.eyebrow}</p>
           <div>
-            <h2 className="font-display text-3xl leading-snug text-ink md:text-5xl">{c.statement.title}</h2>
+            <span className="block h-px w-16 bg-gold" />
+            <p className="eyebrow mt-6">{c.statement.eyebrow}</p>
+          </div>
+          <div>
+            {/* On wider screens each clause gets its own line */}
+            <h2 className="font-display text-3xl leading-snug text-ink md:text-5xl">
+              {c.statement.title.split(/(?<=[,。])\s*/).filter(Boolean).map(part => (
+                <span key={part} className="md:block">
+                  {part}{' '}
+                </span>
+              ))}
+            </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted">{c.statement.body}</p>
           </div>
         </Container>
@@ -69,7 +86,7 @@ export default function Home() {
       <section className="bg-ivory py-28">
         <Container>
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <SectionHeading rule title={c.pillarsIntro.title} />
+            <SectionHeading rule gold title={c.pillarsIntro.title} />
             <Link to="/services" className="btn-outline shrink-0 text-ink">
               {c.nav.services}
             </Link>
@@ -96,13 +113,13 @@ export default function Home() {
       {/* Journey */}
       <section className="bg-paper py-28">
         <Container>
-          <SectionHeading rule title={c.journeyIntro.title} />
+          <SectionHeading rule gold title={c.journeyIntro.title} />
           <ol className="mt-12 grid gap-px overflow-hidden border border-line bg-line md:grid-cols-5">
             {c.journey.map(s => (
               // On wider screens every step shares the same four rows (number,
               // title, highlight, description) so the descriptions line up
               <li key={s.step} className="flex flex-col bg-paper p-8 md:row-span-4 md:grid md:grid-rows-subgrid">
-                <span className="font-display text-4xl text-gold">{s.step}</span>
+                <span className="font-display text-4xl text-maroon/80">{s.step}</span>
                 <h3 className="mt-6 font-display text-2xl leading-tight text-ink">
                   <TwoLineTitle text={s.title} />
                 </h3>

@@ -35,7 +35,7 @@ const en = {
   hero: {
     eyebrow: 'By application only',
     title: 'Grow beyond borders.',
-    subtitle: 'Master English, and the world opens up to you.',
+    subtitle: 'Master English. Open doors to greater opportunities.',
     // Not shown on the page; used for the meta description only
     metaDescription:
       'A gateway to a bigger world, not another English school. Elite English coaching, life guidance, international experiences and global business networking.',
@@ -376,7 +376,7 @@ const ja: PremiumContent = {
   hero: {
     eyebrow: '審査制メンバーシップ',
     title: '国境を越えて、成長する。',
-    subtitle: '英語を極めれば、世界がひらける。',
+    subtitle: '英語を極める。さらなる可能性への扉をひらく。',
     metaDescription:
       'より大きな世界への扉。ただの英会話スクールではありません。エリート英語コーチング、ライフガイダンス、海外体験、グローバルビジネスネットワーキング。',
     primary: 'カウンセリングを予約',
@@ -385,7 +385,7 @@ const ja: PremiumContent = {
 
   statement: {
     eyebrow: '私たちの目的',
-    title: 'より大きな世界への扉。ただの英会話スクールではありません。',
+    title: 'より大きな世界への扉。ただの英会話スクールではない。',
     body: '志ある方が英語を通じて視野を広げ、世界と話し、国際的に考え、意味あるつながりを築けるよう支えます。',
   },
 
